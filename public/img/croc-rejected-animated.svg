@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 240" width="280" height="240">
+  <defs>
+    <style>
+      .croc-walk { animation: crocBounce 1.8s ease-in-out infinite; transform-origin: 140px 160px; }
+      @keyframes crocBounce {
+        0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+        50%       { transform: translateY(-7px) rotate(1.5deg); }
+      }
+      .leaf-left { animation: leafSway 2.5s ease-in-out infinite; transform-origin: 55px 130px; }
+      @keyframes leafSway {
+        0%, 100% { transform: rotate(-5deg); }
+        50%       { transform: rotate(5deg); }
+      }
+      .leaf-right { animation: leafSway2 2.5s ease-in-out infinite 0.8s; transform-origin: 215px 120px; }
+      @keyframes leafSway2 {
+        0%, 100% { transform: rotate(5deg); }
+        50%       { transform: rotate(-4deg); }
+      }
+      .envelope { animation: envShake 1.8s ease-in-out infinite; transform-origin: 115px 163px; }
+      @keyframes envShake {
+        0%, 100% { transform: rotate(-2deg); }
+        25%       { transform: rotate(2deg); }
+        75%       { transform: rotate(-1deg); }
+      }
+      .xmark { animation: xPulse 1.8s ease-in-out infinite; transform-origin: 115px 163px; }
+      @keyframes xPulse {
+        0%, 100% { transform: scale(1); }
+        50%       { transform: scale(1.12); }
+      }
+    </style>
+  </defs>
+
+  <!-- === LEAVES - behind croc === -->
+  <!-- Big left tropical leaf -->
+  <g class="leaf-left">
+    <ellipse cx="55" cy="78" rx="50" ry="68" fill="#4ade80" opacity="0.6" transform="rotate(-30 55 78)"/>
+    <path d="M55 30 Q30 78 45 115" stroke="#22c55e" stroke-width="2.5" fill="none" opacity="0.6"/>
+    <path d="M30 50 Q55 78 45 110" stroke="#22c55e" stroke-width="1.5" fill="none" opacity="0.35"/>
+    <path d="M72 42 Q55 78 62 112" stroke="#22c55e" stroke-width="1.5" fill="none" opacity="0.35"/>
+  </g>
+
+  <!-- Small right leaves cluster -->
+  <g class="leaf-right">
+    <ellipse cx="215" cy="95" rx="28" ry="44" fill="#86efac" opacity="0.55" transform="rotate(18 215 95)"/>
+    <path d="M215 58 Q228 95 220 125" stroke="#4ade80" stroke-width="1.5" fill="none" opacity="0.45"/>
+    <!-- Smaller leaf -->
+    <ellipse cx="238" cy="120" rx="17" ry="28" fill="#4ade80" opacity="0.45" transform="rotate(30 238 120)"/>
+    <!-- Bottom small decorative sprout -->
+    <ellipse cx="195" cy="175" rx="14" ry="20" fill="#4ade80" opacity="0.4" transform="rotate(15 195 175)"/>
+    <path d="M195 157 Q202 175 198 188" stroke="#22c55e" stroke-width="1.5" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- === CROCODILE WALKING === -->
+  <g class="croc-walk">
+    <!-- Tail -->
+    <path d="M168 152 Q192 142 202 132 Q212 120 206 114" stroke="#15803d" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <!-- Spines on tail -->
+    <path d="M175 148 L178 140" stroke="#166534" stroke-width="3" stroke-linecap="round"/>
+    <path d="M186 143 L190 134" stroke="#166534" stroke-width="3" stroke-linecap="round"/>
+    <path d="M196 136 L200 128" stroke="#166534" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Body -->
+    <ellipse cx="122" cy="155" rx="58" ry="30" fill="#16a34a"/>
+    <!-- Belly -->
+    <ellipse cx="110" cy="163" rx="32" ry="14" fill="#4ade80" opacity="0.6"/>
+
+    <!-- Legs -->
+    <ellipse cx="90"  cy="180" rx="14" ry="8"  fill="#15803d"/>
+    <ellipse cx="115" cy="183" rx="14" ry="8"  fill="#15803d"/>
+    <ellipse cx="140" cy="180" rx="13" ry="8"  fill="#15803d"/>
+    <!-- Claws -->
+    <path d="M80 183 Q83 188 87 186 M84 187 Q87 192 91 190" stroke="#0f5132" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    <path d="M105 187 Q108 192 112 190 M109 191 Q112 196 116 194" stroke="#0f5132" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    
+    <!-- Spines on back -->
+    <path d="M100 127 L103 118" stroke="#166534" stroke-width="4" stroke-linecap="round"/>
+    <path d="M114 123 L117 113" stroke="#166534" stroke-width="4" stroke-linecap="round"/>
+    <path d="M128 122 L131 112" stroke="#166534" stroke-width="4" stroke-linecap="round"/>
+    <path d="M142 124 L145 114" stroke="#166534" stroke-width="4" stroke-linecap="round"/>
+    <path d="M156 130 L159 120" stroke="#166534" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Head -->
+    <ellipse cx="82" cy="132" rx="36" ry="26" fill="#22c55e"/>
+    <!-- Snout -->
+    <ellipse cx="56" cy="138" rx="22" ry="13" fill="#22c55e"/>
+    <!-- Nostril dots -->
+    <circle cx="49" cy="136" r="3" fill="#15803d"/>
+    <circle cx="63" cy="136" r="3" fill="#15803d"/>
+    <!-- Teeth top snout -->
+    <rect x="51" y="127" width="5" height="8" rx="2.5" fill="white"/>
+    <rect x="61" y="125" width="5" height="9" rx="2.5" fill="white"/>
+    <!-- Smile line -->
+    <path d="M44 140 Q56 150 78 144" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- Eyes -->
+    <circle cx="76" cy="118" r="9" fill="white"/>
+    <circle cx="78" cy="119" r="5" fill="#1a1a1a"/>
+    <circle cx="80" cy="117" r="2" fill="white"/>
+    <circle cx="96" cy="116" r="9" fill="white"/>
+    <circle cx="98" cy="117" r="5" fill="#1a1a1a"/>
+    <circle cx="100" cy="115" r="2" fill="white"/>
+  </g>
+
+  <!-- === ENVELOPE with X held in front === -->
+  <g class="envelope">
+    <rect x="78" y="145" width="74" height="52" rx="6" fill="#b2e5de" stroke="#0F766E" stroke-width="2.5"/>
+    <path d="M78 151 L115 175 L152 151" stroke="#0F766E" stroke-width="2" fill="none"/>
+    <!-- Windows on envelope (like error screen) -->
+    <rect x="85" y="157" width="20" height="6" rx="2" fill="#0F766E" opacity="0.3"/>
+    <rect x="109" y="157" width="12" height="6" rx="2" fill="#0F766E" opacity="0.3"/>
+    <!-- Red X mark -->
+    <g class="xmark">
+      <circle cx="115" cy="170" r="14" fill="white" stroke="#ef4444" stroke-width="2"/>
+      <line x1="107" y1="163" x2="122" y2="177" stroke="#ef4444" stroke-width="4.5" stroke-linecap="round"/>
+      <line x1="122" y1="163" x2="107" y2="177" stroke="#ef4444" stroke-width="4.5" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

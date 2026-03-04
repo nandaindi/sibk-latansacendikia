@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" width="240" height="260">
+  <defs>
+    <!-- Sand falling animation -->
+    <style>
+      .hourglass-body { animation: sway 3s ease-in-out infinite; transform-origin: 120px 160px; }
+      @keyframes sway {
+        0%, 100% { transform: rotate(-4deg); }
+        50%       { transform: rotate(4deg); }
+      }
+      .sand-top { animation: shrinkSand 2.5s ease-in-out infinite alternate; transform-origin: 120px 100px; }
+      @keyframes shrinkSand {
+        0%   { transform: scaleY(1); opacity: 1; }
+        100% { transform: scaleY(0.35); opacity: 0.7; }
+      }
+      .sand-bottom { animation: growSand 2.5s ease-in-out infinite alternate; transform-origin: 120px 195px; }
+      @keyframes growSand {
+        0%   { transform: scaleY(0.4); op: 0.7; }
+        100% { transform: scaleY(1); opacity: 1; }
+      }
+      .sand-drop { animation: fallDrop 2.5s ease-in infinite; }
+      @keyframes fallDrop {
+        0%   { transform: translateY(-30px); opacity: 0; }
+        20%  { opacity: 1; }
+        80%  { opacity: 1; }
+        100% { transform: translateY(50px); opacity: 0; }
+      }
+      /* Sparkles */
+      .spark1 { animation: sparkAppear1 3s ease-in-out infinite; }
+      .spark2 { animation: sparkAppear2 3s ease-in-out infinite 0.5s; }
+      .spark3 { animation: sparkAppear3 3s ease-in-out infinite 1s; }
+      @keyframes sparkAppear1 {
+        0%, 100% { opacity: 0; transform: scale(0.5); }
+        50%       { opacity: 1; transform: scale(1.1); }
+      }
+      @keyframes sparkAppear2 {
+        0%, 100% { opacity: 0; transform: scale(0.4) rotate(15deg); }
+        50%       { opacity: 1; transform: scale(1) rotate(15deg); }
+      }
+      @keyframes sparkAppear3 {
+        0%, 100% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+        50%       { opacity: 0.9; transform: scale(1.1) rotate(-10deg); }
+      }
+    </style>
+  </defs>
+
+  <!-- Sparkles outside the hourglass (not affected by sway) -->
+  <!-- Spark top-right pink -->
+  <g class="spark1" style="transform-origin: 195px 80px;">
+    <path d="M195 65 L197 73 L205 73 L199 78 L201 87 L195 82 L189 87 L191 78 L185 73 L193 73 Z" fill="#f472b6"/>
+  </g>
+  <!-- Spark middle-right yellow star lines -->
+  <g class="spark2" style="transform-origin: 205px 120px;">
+    <line x1="205" y1="112" x2="205" y2="120" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+    <line x1="201" y1="116" x2="209" y2="116" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+    <line x1="202" y1="113" x2="208" y2="119" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="208" y1="113" x2="202" y2="119" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  <!-- Spark bottom-left green -->
+  <g class="spark3" style="transform-origin: 42px 175px;">
+    <path d="M42 165 L44 172 L51 172 L46 176 L48 183 L42 179 L36 183 L38 176 L33 172 L40 172 Z" fill="#4ade80"/>
+  </g>
+  <!-- Dot top-left pink -->
+  <circle cx="55" cy="95" r="5" fill="#f9a8d4" class="spark1" style="animation-duration:2.2s;"/>
+  <!-- Dot right side -->
+  <circle cx="196" cy="148" r="4" fill="#f472b6" class="spark3" style="animation-duration:2.8s; animation-delay:0.3s;"/>
+
+  <!-- Hourglass group with sway -->
+  <g class="hourglass-body">
+    <!-- Top bar -->
+    <rect x="72" y="44" width="96" height="14" rx="7" fill="#1e293b"/>
+    <!-- Bottom bar -->
+    <rect x="72" y="202" width="96" height="14" rx="7" fill="#1e293b"/>
+
+    <!-- Left frame struts -->
+    <line x1="77" y1="57" x2="120" y2="130" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+    <!-- Right frame struts -->
+    <line x1="163" y1="57" x2="120" y2="130" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+    <line x1="77" y1="202" x2="120" y2="130" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+    <line x1="163" y1="202" x2="120" y2="130" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Top blue sand bulk -->
+    <clipPath id="topClip">
+      <polygon points="79,57 161,57 121,128 119,128"/>
+    </clipPath>
+    <g class="sand-top">
+      <polygon points="79,57 161,57 121,128 119,128" fill="#6366f1"/>
+      <!-- Shine -->
+      <path d="M84 60 Q92 75 98 95" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.3"/>
+    </g>
+
+    <!-- Bottom yellow sand bulk -->
+    <g class="sand-bottom">
+      <polygon points="79,202 161,202 121,132 119,132" fill="#f59e0b"/>
+    </g>
+
+    <!-- Sand falling drop -->
+    <g class="sand-drop">
+      <line x1="120" y1="130" x2="120" y2="140" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+    </g>
+  </g>
+</svg>
