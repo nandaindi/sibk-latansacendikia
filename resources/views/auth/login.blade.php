@@ -114,6 +114,10 @@
                 <label for="remember" class="text-[0.85rem] text-[#666] cursor-pointer select-none">Ingat saya</label>
             </div>
 
+            <div class="flex items-center justify-between mb-7">
+                <a href="{{ route('password.request') }}" class="text-[0.85rem] text-[#1a9488] hover:text-[#14b8a6] hover:underline transition-colors duration-200">Lupa Password?</a>
+            </div>
+
             <button type="submit" class="w-full py-[14px] bg-gradient-to-br from-[#1a9488] to-[#14b8a6] text-white border-none rounded-xl text-[0.95rem] font-semibold font-sans cursor-pointer tracking-[0.3px] transition-all duration-150 ease-out shadow-[0_4px_18px_rgba(26,148,136,0.35)] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(26,148,136,0.45)] hover:brightness-105 active:translate-y-0">Login</button>
         </form>
     </div>

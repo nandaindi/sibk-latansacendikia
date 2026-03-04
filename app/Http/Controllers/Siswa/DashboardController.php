@@ -164,6 +164,12 @@ class DashboardController extends Controller
             ->where('status', 'selesai')
             ->firstOrFail();
 
+        // Tandai sudah dibaca begitu siswa membuka laporan ini
+        if (!$laporan->is_read) {
+            $laporan->is_read = true;
+            $laporan->save();
+        }
+
         return view('siswa.detail-laporan', compact('laporan'));
     }
 
@@ -212,5 +218,12 @@ class DashboardController extends Controller
     {
         $artikel = \App\Models\Artikel::with('penulis')->where('slug', $slug)->firstOrFail();
         return view('siswa.artikel-detail', compact('artikel'));
+    }
+
+    /** Daftar Semua Artikel Edukasi */
+    public function indexArtikel()
+    {
+        $articles = \App\Models\Artikel::with('penulis')->latest()->paginate(12);
+        return view('siswa.artikel-index', compact('articles'));
     }
 }

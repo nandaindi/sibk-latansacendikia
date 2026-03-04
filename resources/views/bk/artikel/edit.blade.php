@@ -78,18 +78,41 @@
             <div class="border-[2px] border-[#1a9488] rounded-[18px] overflow-hidden bg-white shadow-sm focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                 <div id="quill-editor"></div>
             </div>
-            <textarea name="konten" id="konten-hidden" class="hidden" required>{{ old('konten', $artikel->konten) }}</textarea>
+            <textarea name="konten" id="konten-hidden" class="hidden">{{ old('konten', $artikel->konten) }}</textarea>
         </div>
 
         <div class="flex justify-end mt-2 gap-3">
             <a href="{{ route('bk.artikel.index') }}" class="px-6 py-3.5 bg-white border-2 border-[#eee] text-[#777] rounded-full text-[1rem] font-semibold hover:border-[#ccc] transition-all no-underline">
                 Batal
             </a>
-            <button type="submit" class="px-8 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
+            <button type="button" onclick="validateAndShowModal()" class="px-8 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
                 Simpan Perubahan
             </button>
         </div>
     </form>
+
+    {{-- ===== KONFIRMASI EDIT MODAL ===== --}}
+    <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="hideConfirmModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-[320px] md:w-[420px] p-8 md:p-10 flex flex-col items-center gap-6 z-10 border-[2px] border-[#1a9488]">
+            <div class="h-40 w-full">
+                <img src="{{ asset('img/question mark icon.svg') }}" alt="Question Mark" class="w-full h-full object-contain">
+            </div>
+            <p class="text-[1.1rem] md:text-[1.2rem] font-semibold text-[#1a1a1a] text-center">Apakah anda yakin ingin menyimpan perubahan artikel ini?</p>
+            <div class="flex gap-5 w-full justify-center mt-2">
+                <button type="button" onclick="document.getElementById('editForm').submit()" class="h-[48px] w-[90px] bg-[#1a9488] text-white rounded-full flex items-center justify-center hover:brightness-105 transition-all shadow-[0_4px_12px_rgba(26,148,136,0.3)] border-none cursor-pointer">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
+                </button>
+                <button type="button" onclick="hideConfirmModal()" class="h-[48px] w-[90px] bg-[#b94040] text-white rounded-full flex items-center justify-center hover:brightness-110 transition-all shadow-[0_4px_12px_rgba(185,64,64,0.3)] border-none cursor-pointer">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 </main>
 @endsection
 
@@ -120,15 +143,28 @@
         quill.root.innerHTML = existingKonten;
     }
 
-    // Sync ke textarea sebelum submit
-    document.getElementById('editForm').addEventListener('submit', function(e) {
+    // Sync ke textarea lalu munculkan modal
+    function validateAndShowModal() {
+        const form = document.getElementById('editForm');
+        if(!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
         if (quill.getText().trim().length === 0) {
-            e.preventDefault();
             alert('Isi artikel tidak boleh kosong.');
             return;
         }
         document.getElementById('konten-hidden').value = quill.root.innerHTML;
-    });
+        
+        document.getElementById('confirmModal').classList.remove('hidden');
+        document.getElementById('confirmModal').classList.add('flex');
+    }
+
+    function hideConfirmModal() {
+        document.getElementById('confirmModal').classList.add('hidden');
+        document.getElementById('confirmModal').classList.remove('flex');
+    }
 
     // Preview gambar
     function previewImage(input) {

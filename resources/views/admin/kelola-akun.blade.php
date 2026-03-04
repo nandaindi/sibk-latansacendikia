@@ -31,14 +31,24 @@
     </div>
 </div>
 
+{{-- Table Header --}}
+<div class="hidden sm:flex items-center gap-4 bg-[#1a9488] text-white rounded-2xl px-5 py-3 mb-1 font-bold text-[0.85rem] tracking-wide uppercase">
+    <span class="w-[40px] shrink-0 text-center">No</span>
+    <span class="flex-1 min-w-[160px]">Nama</span>
+    <span class="flex-1 hidden sm:block">Email</span>
+    <span class="flex-1 hidden md:block">No. Telepon</span>
+    <span class="w-[112px] shrink-0 text-center">Aksi</span>
+</div>
+
 {{-- Account List --}}
 <div id="akunList" class="flex flex-col gap-3 w-full">
     @forelse($akuns as $akun)
     <div class="akun-item bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <span class="w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($akuns->currentPage() - 1) * $akuns->perPage() }}</span>
         <span class="flex-1 text-[0.93rem] font-semibold text-[#1a1a1a] min-w-[160px]">{{ $akun->name }} ({{ strtoupper($akun->role) }})</span>
         <span class="flex-1 text-[0.9rem] text-[#555] hidden sm:block">{{ $akun->email }}</span>
         <span class="flex-1 text-[0.9rem] text-[#555] hidden md:block">{{ $akun->telepon ?? '-' }}</span>
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center justify-center gap-2 shrink-0 w-[112px]">
             <a href="{{ route('admin.detail-akun', ['id' => $akun->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </a>

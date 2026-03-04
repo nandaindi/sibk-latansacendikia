@@ -157,14 +157,7 @@
 
         </div>
 
-        {{-- Footer --}}
-        <div class="px-6 md:px-12 py-5 border-t border-[#edf2f1] bg-[#fafdfb] flex items-center justify-between flex-wrap gap-3">
-            <span class="text-sm text-[#aaa]">Semoga artikel ini bermanfaat untukmu 💚</span>
-            <a href="{{ route('siswa.dashboard') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#1a9488] hover:text-[#157a70] transition-colors no-underline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                Kembali ke Beranda
-            </a>
-        </div>
+       
 
     </article>
 </div>

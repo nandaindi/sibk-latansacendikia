@@ -107,9 +107,15 @@
                                 @else
                                     <!-- Siswa Notification Item -->
                                     @if($notif->status === 'selesai')
-                                    <a href="{{ route('siswa.detail-laporan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline">
-                                        <div class="text-[0.85rem] font-semibold text-[#1a1a1a] mb-0.5">Laporan Konseling Tersedia</div>
-                                        <div class="text-xs text-[#555] mb-1">Sesi {{ ucfirst($notif->jenis) }} tanggal {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M Y') }}</div>
+                                    @php $isUnreadSelesai = !$notif->is_read; @endphp
+                                    <a href="{{ route('siswa.detail-laporan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnreadSelesai ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
+                                        <div class="flex items-center gap-2 mb-0.5">
+                                            @if($isUnreadSelesai)
+                                            <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
+                                            @endif
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnreadSelesai ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Laporan Konseling Tersedia</div>
+                                        </div>
+                                        <div class="text-xs mb-1 {{ $isUnreadSelesai ? 'text-[#555]' : 'text-[#999]' }}">Sesi {{ ucfirst($notif->jenis) }} tanggal {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M Y') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
                                     @else
@@ -224,9 +230,15 @@
                                 @else
                                     <!-- Siswa Notification Item -->
                                     @if($notif->status === 'selesai')
-                                    <a href="{{ route('siswa.detail-laporan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline">
-                                        <div class="text-[0.85rem] font-semibold text-[#1a1a1a] mb-0.5">Laporan Konseling Tersedia</div>
-                                        <div class="text-xs text-[#555] mb-1">Sesi {{ ucfirst($notif->jenis) }} tanggal {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M Y') }}</div>
+                                    @php $isUnreadSelesai = !$notif->is_read; @endphp
+                                    <a href="{{ route('siswa.detail-laporan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnreadSelesai ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
+                                        <div class="flex items-center gap-2 mb-0.5">
+                                            @if($isUnreadSelesai)
+                                            <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
+                                            @endif
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnreadSelesai ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Laporan Konseling Tersedia</div>
+                                        </div>
+                                        <div class="text-xs mb-1 {{ $isUnreadSelesai ? 'text-[#555]' : 'text-[#999]' }}">Sesi {{ ucfirst($notif->jenis) }} tanggal {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M Y') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
                                     @else

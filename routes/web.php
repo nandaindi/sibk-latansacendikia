@@ -14,10 +14,21 @@ Route::get('/', function () {
     return view('splash');
 });
 
+// Redirect old reset-password GET to forgot-password
+Route::get('/reset-password', function() {
+    return redirect()->route('password.request');
+});
+
 // Auth routes
 Route::get('/login',  [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout',[LoginController::class, 'logout'])->name('logout');
+
+// Password Reset Routes
+Route::get('/forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [LoginController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [LoginController::class, 'reset'])->name('password.update');
 
 // Siswa routes
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
@@ -49,6 +60,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/chat/fetch',   [ChatController::class, 'fetchPesan'])->name('chat.fetch');
 
     // Artikel Edukasi
+    Route::get('/artikel',           [DashboardController::class, 'indexArtikel'])->name('artikel.index');
     Route::get('/artikel/{slug}',    [DashboardController::class, 'bacaArtikel'])->name('artikel.show');
 
     // Profile Edit
