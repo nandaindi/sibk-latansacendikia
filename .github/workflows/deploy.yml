@@ -7,14 +7,10 @@ on:
 
 jobs:
   web-deploy:
-    name: Deploy
     runs-on: ubuntu-latest
 
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup PHP
@@ -23,21 +19,21 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, intl, bcmath, soap, gd, zip
 
-      - name: Install Composer Dependencies
+      - name: Install Composer
         run: composer install --no-dev --optimize-autoloader
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Install NPM Dependencies
+      - name: Install NPM
         run: npm ci
 
-      - name: Build Assets
+      - name: Build Vite
         run: npm run build
 
-      - name: Deploy via FTP
+      - name: Deploy via FTP (FIX UTAMA)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -45,7 +41,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           server-dir: /public_html/
-          security: loose
           exclude: |
             **/.git*
             **/.git*/**
@@ -56,6 +51,3 @@ jobs:
             .env.*
             README.md
             phpunit.xml
-            vite.config.js
-            tailwind.config.js
-            postcss.config.js
