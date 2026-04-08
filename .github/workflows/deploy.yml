@@ -9,8 +9,10 @@ jobs:
   web-deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,12 +24,12 @@ jobs:
           extensions: mbstring, intl, bcmath, soap, gd, zip
 
       - name: Install Composer Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install --no-dev --optimize-autoloader
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install NPM Dependencies
         run: npm ci
@@ -35,22 +37,23 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-      - name: Sync files
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ./
           protocol: ftps
+          server-dir: /public_html/
           security: loose
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
             **/tests/**
-            .editorconfig
-            .env.example
+            storage/**
+            .env
+            .env.*
             README.md
             phpunit.xml
             vite.config.js
