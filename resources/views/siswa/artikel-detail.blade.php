@@ -98,15 +98,7 @@
 @endpush
 
 @section('content')
-<div class="w-full max-w-3xl mx-auto px-4 pb-16 pt-2">
-
-    {{-- Back Button --}}
-    <div class="mb-6">
-        <a href="{{ route('siswa.dashboard') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#e0e0e0] rounded-full text-[#555] font-semibold text-sm hover:border-[#1a9488] hover:text-[#1a9488] hover:shadow-[0_4px_12px_rgba(26,148,136,0.1)] transition-all no-underline">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-            Kembali
-        </a>
-    </div>
+<div class="w-full max-w-7xl mx-auto px-4 pb-16 pt-2">
 
     {{-- Article Container --}}
     <article class="bg-white rounded-[24px] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.06)] border border-[#edf2f1]">
@@ -124,23 +116,6 @@
 
         {{-- Article Content --}}
         <div class="px-6 py-8 md:px-12 md:py-10">
-
-            {{-- Category Tag + Date --}}
-            <div class="flex items-center gap-3 mb-5 flex-wrap">
-                <span class="text-[0.78rem] font-bold px-3 py-1 rounded-full bg-[#e0f5f3] text-[#1a9488] border border-[#c7ece8] uppercase tracking-wide">Artikel Edukasi</span>
-                @if($artikel->created_at)
-                <span class="text-[0.8rem] text-[#aaa] flex items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    {{ \Carbon\Carbon::parse($artikel->created_at)->translatedFormat('d F Y') }}
-                </span>
-                @endif
-                @if($artikel->penulis)
-                <span class="text-[0.8rem] text-[#aaa] flex items-center gap-1">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    {{ $artikel->penulis->name ?? 'Guru BK' }}
-                </span>
-                @endif
-            </div>
 
             {{-- Title --}}
             <h1 class="text-[1.65rem] md:text-[2.25rem] font-extrabold text-[#1a1a1a] leading-[1.25] mb-8 tracking-tight">
