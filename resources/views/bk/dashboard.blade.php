@@ -60,7 +60,7 @@
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] flex items-center gap-2">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    Jadwal Hari Ini
+                    Jadwal Hari Ini tes
                 </h3>
                 <a href="{{ route('bk.sesi-konseling') }}" class="text-sm text-[#1a9488] font-bold hover:underline">Lihat Semua</a>
             </div>
