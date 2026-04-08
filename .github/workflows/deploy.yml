@@ -8,7 +8,6 @@ on:
 jobs:
   web-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -32,6 +31,9 @@ jobs:
 
       - name: Build Vite
         run: npm run build
+        
+      - name: Create Deploy Timestamp
+        run: date > public/deploy-status.txt
 
       - name: Deploy via FTP (FIX UTAMA)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -40,7 +42,10 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
-          server-dir: /public_html/
+          port: 21
+          # Gunakan path domain kamu 
+          server-dir: /sibk-latansacendekia.my.id/
+          security: loose
           exclude: |
             **/.git*
             **/.git*/**
