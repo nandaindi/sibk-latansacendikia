@@ -1,9 +1,11 @@
 name: Deploy to cPanel
-
 on:
   push:
     branches:
       - main
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # ← tambah ini
 
 jobs:
   web-deploy:
@@ -24,18 +26,18 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Install NPM
         run: npm ci
 
       - name: Build Vite
         run: npm run build
-        
+
       - name: Create Deploy Timestamp
         run: date > public/deploy-status.txt
 
-      - name: Deploy via FTP (FIX UTAMA)
+      - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
