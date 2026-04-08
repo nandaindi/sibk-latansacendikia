@@ -43,8 +43,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           port: 21
-          # Gunakan path domain kamu 
-          server-dir: /sibk-latansacendekia.my.id/
+          server-dir: /public_html/
           security: loose
           exclude: |
             **/.git*
