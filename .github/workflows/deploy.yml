@@ -34,16 +34,27 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-      - name: Deploy via Appleboy FTP
-        uses: appleboy/ftp-action@master
-        with:
-          host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          secure: true
-          proxy_strict: false
-          timeout: 100000
-          target: "sibk-latansacendekia.my.id/"
-          source: "."
-          exclude: ".git,.github,node_modules,tests,.env.example,README.md,phpunit.xml"
+      - name: Deploy via LFTP Script
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          
+          # Buat file script secara aman tanpa masalah karakter unik pada password
+          cat <<EOF > deploy_script.lftp
+          set ftp:ssl-allow true
+          set ssl:verify-certificate false
+          open -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER"
+          mirror -R --verbose \
+            --exclude-glob .git \
+            --exclude-glob .github \
+            --exclude node_modules/ \
+            --exclude tests/ \
+            . sibk-latansacendekia.my.id/
+          quit
+          EOF
+          
+          # Eksekusi deployment
+          lftp -f deploy_script.lftp
