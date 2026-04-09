@@ -131,14 +131,24 @@
             <!-- Horizontal scroll on mobile, Grid on Web -->
             <div class="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 hide-scroll snap-x snap-mandatory pb-2 md:pb-0">
                 @forelse($articles as $artikel)
-                <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" class="bg-white rounded-2xl p-5 md:p-6 flex flex-col items-center gap-3 md:gap-4 no-underline border border-[#edf2f1] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full shrink-0 w-[220px] md:w-auto snap-start cursor-pointer group">
-                    @if($artikel->gambar)
-                        <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="h-[100px] w-full md:h-[120px] object-cover rounded-xl transition-transform group-hover:scale-105">
-                    @else
-                        <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="{{ $artikel->judul }}" class="h-[100px] w-[100px] md:h-[110px] md:w-[110px] object-contain rounded-2xl transition-transform group-hover:scale-105">
-                    @endif
-                    <div class="text-base md:text-[1.05rem] font-bold text-[#1a1a1a] text-center line-clamp-2 mt-2" title="{{ $artikel->judul }}">{{ $artikel->judul }}</div>
-                    <div class="text-[0.85rem] md:text-sm text-[#777] text-center leading-relaxed line-clamp-3">{{ strip_tags($artikel->konten) }}</div>
+                <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" class="bg-white rounded-[16px] p-4 flex flex-col gap-4 no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_30px_rgba(26,148,136,0.1)] shadow-[0_4px_12px_rgba(0,0,0,0.03)] h-full shrink-0 w-[260px] md:w-auto snap-start cursor-pointer group">
+                    {{-- Image Container (Fixed Aspect Ratio) --}}
+                    <div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#f8fcfb] shrink-0 relative">
+                        <div class="absolute inset-0 bg-black/5 z-10 group-hover:bg-transparent transition-colors duration-300"></div>
+                        @if($artikel->gambar)
+                            <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center p-6">
+                                <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="{{ $artikel->judul }}" class="w-full h-full object-contain opacity-80">
+                            </div>
+                        @endif
+                    </div>
+                    
+                    {{-- Text Content --}}
+                    <div class="flex flex-col flex-1">
+                        <h3 class="text-[1.05rem] md:text-[1.15rem] font-extrabold text-[#1a1a1a] leading-snug line-clamp-2 mb-2 group-hover:text-[#1a9488] transition-colors" title="{{ $artikel->judul }}">{{ $artikel->judul }}</h3>
+                        <p class="text-[0.85rem] md:text-[0.9rem] text-[#666] leading-relaxed line-clamp-3 mt-auto">{{ strip_tags($artikel->konten) }}</p>
+                    </div>
                 </a>
                 @empty
                 <div class="col-span-1 md:col-span-2 lg:col-span-4 text-center py-8 text-[#888] font-medium bg-white rounded-2xl border border-[#edf2f1]">

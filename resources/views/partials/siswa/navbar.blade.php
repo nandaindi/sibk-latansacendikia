@@ -71,6 +71,10 @@
                class="{{ request()->routeIs('bk.artikel*') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
                Kelola Artikel
             </a>
+            <a href="{{ route('bk.laporan-konseling') }}"
+               class="{{ request()->routeIs('bk.laporan-konseling') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
+               Riwayat Konseling
+            </a>
             @endif
 
             <!-- Divider -->

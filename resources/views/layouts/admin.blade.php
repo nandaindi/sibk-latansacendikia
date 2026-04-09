@@ -13,6 +13,7 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
+    @stack('styles')
 </head>
 <body class="bg-[#f4f6f9] min-h-screen text-[#1a1a1a]">
 

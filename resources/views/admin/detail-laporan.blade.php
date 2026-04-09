@@ -4,18 +4,22 @@
 
 @section('content')
 
-<div class="w-full">
+<div id="main-content" class="w-full">
 
     {{-- Title & Desktop Breadcrumb --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-2">
         <div>
             <h2 class="text-[1.3rem] md:text-[1.5rem] font-extrabold text-[#1a1a1a]">Detail Laporan</h2>
-            
+
             {{-- Action Buttons --}}
             <div class="flex gap-4 mt-3">
-                <button class="w-10 h-10 md:w-11 md:h-11 bg-[#1eb808] text-white rounded-[10px] flex items-center justify-center hover:brightness-105 transition-all shadow-sm">
+                <button onclick="window.print()"
+                        class="w-10 h-10 md:w-11 md:h-11 bg-[#1eb808] text-white rounded-[10px] flex items-center justify-center hover:brightness-105 transition-all shadow-sm"
+                        title="Cetak Laporan">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+                        <polyline points="6 9 6 2 18 2 18 9"/>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                        <rect x="6" y="14" width="12" height="8"/>
                     </svg>
                 </button>
             </div>
@@ -33,50 +37,198 @@
                 <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
             </svg>
         </div>
-        
+
         {{-- Details --}}
         <div class="flex flex-col gap-1.5 md:gap-2 text-[1.1rem] md:text-[1.2rem]">
             <div class="flex items-start">
                 <span class="font-bold text-[#1a1a1a] w-[85px] shrink-0">Nama</span>
                 <span class="font-bold text-[#1a1a1a] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">Laporan 1</span>
+                <span class="font-bold text-[#1a1a1a]">{{ $laporan->nama_laporan }}</span>
             </div>
             <div class="flex items-start">
                 <span class="font-bold text-[#1a1a1a] w-[85px] shrink-0">Autor</span>
                 <span class="font-bold text-[#1a1a1a] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">Ibu Eni Kustiyorini S.Psi</span>
+                <span class="font-bold text-[#1a1a1a]">{{ $laporan->author->name ?? 'Admin / BK' }}</span>
             </div>
             <div class="flex items-start">
                 <span class="font-bold text-[#1a1a1a] w-[85px] shrink-0">Date</span>
                 <span class="font-bold text-[#1a1a1a] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">Minggu, 2 Juli 2025</span>
+                <span class="font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
             </div>
         </div>
     </div>
 
     {{-- Data List inside Detail --}}
     <div class="flex flex-col gap-3">
-        @php
-        $items = [
-            ['nama' => 'Nanda Indi Lestari', 'tanggal' => 'Minggu, 2 Juli 2025', 'type' => 'Online'],
-            ['nama' => 'Nanda Indi Lestari', 'tanggal' => 'Minggu, 2 Juli 2025', 'type' => 'offline'],
-            ['nama' => 'Nanda Indi Lestari', 'tanggal' => 'Minggu, 2 Juli 2025', 'type' => 'Online'],
-            ['nama' => 'Nanda Indi Lestari', 'tanggal' => 'Minggu, 2 Juli 2025', 'type' => 'offline'],
-        ];
-        @endphp
-
-        @foreach($items as $item)
-        <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <span class="text-[0.95rem] text-[#555] flex-1 min-w-[150px]">{{ $item['nama'] }}</span>
-            <span class="text-[0.9rem] text-[#555] flex-1 text-center hidden md:block">{{ $item['tanggal'] }}</span>
-            <span class="text-[0.9rem] text-[#555] flex-1 text-center capitalize">{{ $item['type'] }}</span>
-            <a href="#" class="text-[#1a9488] text-[0.95rem] font-bold shrink-0 text-right no-underline hover:text-[#12635a] transition-colors">
-                Detail
-            </a>
+        @forelse($items as $item)
+        <div class="bg-white border-[2px] border-[#1a9488] rounded-[20px] shadow-sm overflow-hidden flex flex-col mb-2">
+            <div class="bg-[#f0f9f8] border-b border-[#1a9488] px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div>
+                    <h3 class="font-bold text-[#1a1a1a] text-[1.05rem]">Sesi: {{ $item->user->name ?? '-' }}</h3>
+                    <div class="text-[0.85rem] text-[#555] mt-1">{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }} &bull; {{ ucfirst($item->jenis) }}</div>
+                </div>
+            </div>
+            <div class="p-6 text-[0.95rem] text-[#333] leading-relaxed">
+                {!! $item->catatan_bk ? nl2br(e(trim($item->catatan_bk))) : '<span class="italic text-gray-500">Tidak ada catatan sesi.</span>' !!}
+            </div>
         </div>
-        @endforeach
+        @empty
+        <div class="text-center py-8 text-gray-500 font-medium bg-white rounded-[20px] border-[2px] border-[#edf2f1]">Belum ada data sesi pada laporan ini.</div>
+        @endforelse
     </div>
 
 </div>
 
+{{-- Area cetak – disiapkan statis dan hanya muncul saat window.print() --}}
+<div id="printArea">
+    <div class="pr-header">
+        <h1>Detail Laporan Konseling</h1>
+        <div class="pr-subtitle">Sistem Informasi Bimbingan Konseling &ndash; Latansa Cendekia</div>
+    </div>
+    
+    <div class="pr-section">
+        <h2>Informasi Laporan</h2>
+        <div class="pr-field"><label>Nama Laporan</label><span>: {{ $laporan->nama_laporan }}</span></div>
+        <div class="pr-field"><label>Autor</label><span>: {{ $laporan->author->name ?? 'Admin / BK' }}</span></div>
+        <div class="pr-field"><label>Tanggal Buat</label><span>: {{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span></div>
+    </div>
+
+    <div class="pr-section">
+        <h2>Isi Laporan / Catatan Sesi</h2>
+        <div class="pr-log-container">
+            @forelse($items as $index => $item)
+            <div class="pr-log-item">
+                <div class="pr-log-title">
+                    Sesi: {{ $item->user->name ?? '-' }}
+                    <span style="font-weight:normal; font-size:0.85em; color:#555;">
+                        ({{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('D MMMM YYYY') }} - {{ ucfirst($item->jenis) }})
+                    </span>
+                </div>
+                <div class="pr-log-content">
+                    {!! $item->catatan_bk ? nl2br(e(trim($item->catatan_bk))) : '<i>Tidak ada catatan.</i>' !!}
+                </div>
+            </div>
+            @empty
+            <div class="pr-field" style="font-style: italic;">Belum ada sesi pada laporan ini.</div>
+            @endforelse
+        </div>
+    </div>
+
+    <div class="pr-footer">
+        Dicetak pada: <span id="printDate"></span>
+    </div>
+</div>
+
 @endsection
+
+@push('styles')
+<style>
+/* Sembunyikan printArea saat normal */
+#printArea { display: none; }
+
+@media print {
+    aside,
+    header,
+    .no-print { display: none !important; }
+    
+    .ml-\[220px\] { margin-left: 0 !important; }
+    main { padding: 0 !important; background: white !important; }
+    
+    /* Sembunyikan tampilan layar di halaman ini */
+    #main-content { display: none !important; }
+
+    /* Tampilkan printArea */
+    #printArea {
+        display: block !important;
+        font-family: Arial, sans-serif;
+        padding: 32px;
+        color: #1a1a1a;
+        width: 100%;
+    }
+    #printArea .pr-header {
+        border-bottom: 3px solid #1a9488;
+        padding-bottom: 14px;
+        margin-bottom: 24px;
+    }
+    #printArea .pr-header h1 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #1a9488;
+        margin: 0 0 4px;
+    }
+    #printArea .pr-subtitle {
+        font-size: 0.85rem;
+        color: #888;
+    }
+    #printArea .pr-section {
+        margin-bottom: 24px;
+    }
+    #printArea .pr-section h2 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a9488;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #cce8e5;
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+        margin-top: 0;
+    }
+    #printArea .pr-field {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+    }
+    #printArea .pr-field label {
+        font-weight: 700;
+        min-width: 140px;
+        color: #333;
+    }
+    #printArea .pr-log-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 10px;
+    }
+    #printArea .pr-log-item {
+        border: 1px solid #cce8e5;
+        border-radius: 8px;
+        overflow: hidden;
+        page-break-inside: avoid;
+    }
+    #printArea .pr-log-title {
+        background-color: #f0f9f8;
+        padding: 10px 14px;
+        font-weight: bold;
+        color: #1a9488;
+        border-bottom: 1px solid #cce8e5;
+    }
+    #printArea .pr-log-content {
+        padding: 14px;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #333;
+    }
+    #printArea .pr-footer {
+        margin-top: 50px;
+        font-size: 0.8rem;
+        color: #888;
+        border-top: 1px solid #eee;
+        padding-top: 12px;
+    }
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    // Set view date on print date field
+    document.addEventListener("DOMContentLoaded", function() {
+        var today = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+        document.getElementById('printDate').innerText = today;
+    });
+</script>
+@endpush

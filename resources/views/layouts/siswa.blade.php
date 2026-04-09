@@ -39,7 +39,10 @@
         const toast = document.getElementById('toast');
         if (toast) {
             toast.classList.replace('-translate-y-[80px]', 'translate-y-0');
-            setTimeout(() => toast.classList.replace('translate-y-0', '-translate-y-[80px]'), 3500);
+            setTimeout(() => {
+                toast.classList.replace('translate-y-0', '-translate-y-[80px]');
+                setTimeout(() => toast.remove(), 600); // Hapus elemen dari DOM agar tidak tersimpan di cache history (BFCache)
+            }, 3500);
         }
         @endif
     });

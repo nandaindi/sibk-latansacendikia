@@ -70,4 +70,113 @@
     </div>
 </section>
 
+{{-- Cetak Laporan Section --}}
+
+
+{{-- Area print tersembunyi --}}
+<div id="adminPrintArea"></div>
+
 @endsection
+
+@push('styles')
+<style>
+#adminPrintArea { display: none; }
+
+@media print {
+    body > * { display: none !important; }
+    #adminPrintArea {
+        display: block !important;
+        font-family: Arial, sans-serif;
+        padding: 32px;
+        color: #1a1a1a;
+    }
+    #adminPrintArea .ap-header {
+        border-bottom: 3px solid #1a9488;
+        padding-bottom: 14px;
+        margin-bottom: 24px;
+    }
+    #adminPrintArea .ap-header h1 {
+        font-size: 1.3rem; font-weight: 800; color: #1a9488; margin: 0 0 4px;
+    }
+    #adminPrintArea .ap-subtitle { font-size: 0.82rem; color: #888; }
+    #adminPrintArea .ap-field {
+        display: flex; gap: 8px; margin-bottom: 10px;
+        font-size: 0.95rem; line-height: 1.6;
+    }
+    #adminPrintArea .ap-field label { font-weight: 700; min-width: 140px; color: #333; }
+    #adminPrintArea .ap-footer {
+        margin-top: 40px; font-size: 0.78rem; color: #888;
+        border-top: 1px solid #eee; padding-top: 10px;
+    }
+    #adminPrintArea table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    #adminPrintArea th { background: #1a9488; color: white; padding: 8px 12px; text-align: left; }
+    #adminPrintArea td { padding: 8px 12px; border-bottom: 1px solid #eee; }
+    #adminPrintArea tr:nth-child(even) td { background: #f5fffe; }
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+function printSingleReport(btn) {
+    // Ambil data dari elemen parent (.laporan-cetak-item)
+    var row = btn.closest('.laporan-cetak-item');
+    var nama    = row.dataset.nama;
+    var tanggal = row.dataset.tanggal;
+    var penulis = row.dataset.penulis;
+
+    var today = new Date().toLocaleDateString('id-ID', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    document.getElementById('adminPrintArea').innerHTML =
+        '<div class="ap-header">' +
+            '<h1>Laporan Konseling</h1>' +
+            '<div class="ap-subtitle">Sistem Informasi Bimbingan Konseling &ndash; Latansa Cendekia</div>' +
+        '</div>' +
+        '<div class="ap-field"><label>Nama Laporan</label><span>: ' + nama + '</span></div>' +
+        '<div class="ap-field"><label>Tanggal</label><span>: ' + tanggal + '</span></div>' +
+        '<div class="ap-field"><label>Dibuat Oleh</label><span>: ' + penulis + '</span></div>' +
+        '<div class="ap-footer">Dicetak pada: ' + today + '</div>';
+
+    window.print();
+}
+
+function printAllReport() {
+    var items = document.querySelectorAll('.laporan-cetak-item');
+    var rows = '';
+    items.forEach(function(el, i) {
+        rows += '<tr>' +
+            '<td style="text-align:center">' + (i + 1) + '</td>' +
+            '<td>' + el.dataset.nama + '</td>' +
+            '<td>' + el.dataset.tanggal + '</td>' +
+            '<td>' + el.dataset.penulis + '</td>' +
+            '</tr>';
+    });
+
+    var today = new Date().toLocaleDateString('id-ID', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    document.getElementById('adminPrintArea').innerHTML =
+        '<div class="ap-header">' +
+            '<h1>Daftar Laporan Konseling</h1>' +
+            '<div class="ap-subtitle">Sistem Informasi Bimbingan Konseling &ndash; Latansa Cendekia</div>' +
+        '</div>' +
+        '<table>' +
+            '<thead><tr>' +
+                '<th style="width:40px">No</th>' +
+                '<th>Nama Laporan</th>' +
+                '<th>Tanggal</th>' +
+                '<th>Penulis</th>' +
+            '</tr></thead>' +
+            '<tbody>' +
+                (rows || '<tr><td colspan="4" style="text-align:center;padding:16px">Tidak ada data.</td></tr>') +
+            '</tbody>' +
+        '</table>' +
+        '<div class="ap-footer">Dicetak pada: ' + today + '</div>';
+
+    window.print();
+}
+</script>
+@endpush
