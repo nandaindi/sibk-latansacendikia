@@ -18,12 +18,12 @@ Broadcast::channel('chat.{konselingId}', function ($user, $konselingId) {
     if (!$konseling) return false;
 
     // BK hanya bisa join sesi miliknya
-    if ($user->role === 'bk' && $konseling->bk_id === $user->id) {
+    if ($user->role === 'bk' && (int)$konseling->bk_id === (int)$user->id) {
         return ['id' => $user->id, 'name' => $user->name, 'role' => $user->role];
     }
 
     // Siswa hanya bisa join sesi miliknya
-    if ($user->role === 'siswa' && $konseling->user_id === $user->id) {
+    if ($user->role === 'siswa' && (int)$konseling->user_id === (int)$user->id) {
         return ['id' => $user->id, 'name' => $user->name, 'role' => $user->role];
     }
 

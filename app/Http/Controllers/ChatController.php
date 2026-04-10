@@ -21,8 +21,8 @@ class ChatController extends Controller
         ]);
 
         $konseling = Konseling::findOrFail($request->konseling_id);
-        if (auth()->user()->role === 'bk' && $konseling->bk_id !== auth()->id()) abort(403, 'Unauthorized BK');
-        if (auth()->user()->role === 'siswa' && $konseling->user_id !== auth()->id()) abort(403, 'Unauthorized Siswa');
+        if (auth()->user()->role === 'bk' && (int)$konseling->bk_id !== (int)auth()->id()) abort(403, 'Unauthorized BK');
+        if (auth()->user()->role === 'siswa' && (int)$konseling->user_id !== (int)auth()->id()) abort(403, 'Unauthorized Siswa');
 
         $pesan = PesanChat::create([
             'konseling_id' => $request->konseling_id,
@@ -60,8 +60,8 @@ class ChatController extends Controller
         $konselingId = $request->konseling_id;
 
         $konseling = Konseling::findOrFail($konselingId);
-        if ($user->role === 'bk' && $konseling->bk_id !== $user->id) abort(403, 'Unauthorized BK');
-        if ($user->role === 'siswa' && $konseling->user_id !== $user->id) abort(403, 'Unauthorized Siswa');
+        if ($user->role === 'bk' && (int)$konseling->bk_id !== (int)$user->id) abort(403, 'Unauthorized BK');
+        if ($user->role === 'siswa' && (int)$konseling->user_id !== (int)$user->id) abort(403, 'Unauthorized Siswa');
 
         $pesans = PesanChat::with('user')
             ->where('konseling_id', $konselingId)
@@ -89,7 +89,7 @@ class ChatController extends Controller
         ]);
 
         $konseling = Konseling::with('user')->findOrFail($request->konseling_id);
-        if (auth()->user()->role === 'bk' && $konseling->bk_id !== auth()->id()) abort(403, 'Unauthorized BK');
+        if (auth()->user()->role === 'bk' && (int)$konseling->bk_id !== (int)auth()->id()) abort(403, 'Unauthorized BK');
         $konseling->update(['status' => 'selesai']);
 
         Laporan::create([
