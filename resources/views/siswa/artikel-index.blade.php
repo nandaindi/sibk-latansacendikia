@@ -61,9 +61,9 @@
             <h1 style="color:#157a70; font-size:clamp(1.8rem, 5vw, 2.5rem); font-weight:900; line-height:1.2; margin-bottom:16px;">
                 Artikel Edukasi<br>Bimbingan Konseling
             </h1>
-            <p style="color:#64748b; font-size:1rem; line-height:1.6; max-width:600px; margin:0 auto; font-weight: 500;">
+            <!-- <p style="color:#64748b; font-size:1rem; line-height:1.6; max-width:600px; margin:0 auto; font-weight: 500;">
                 Temukan informasi terbaru seputar kesehatan mental, pengembangan diri, dan dunia remaja dari tim Guru BK Nanda.
-            </p>
+            </p> -->
             <span class="art-accent-bar"></span>
         </div>
     </section>
