@@ -218,12 +218,11 @@ class DashboardController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
-            'durasi'       => 'required|integer|min:1',
             'problem'      => 'required|string',
             'solution'     => 'required|string',
-            'rtl'          => 'nullable|string',
             'note'         => 'nullable|string',
         ]);
+
 
 
         $catatanFormatted = "Problem:\n" . $request->problem . "\n\nSolution:\n" . $request->solution;
@@ -232,12 +231,19 @@ class DashboardController extends Controller
         }
 
         $konseling = Konseling::findOrFail($request->konseling_id);
+        
+        // Hitung durasi otomatis menit
+        $durasi = 1;
+        if ($konseling->started_at) {
+            $durasi = max(1, now()->diffInMinutes($konseling->started_at));
+        }
+
         $konseling->update([
             'status'     => 'selesai',
-            'durasi'     => $request->durasi,
+            'durasi'     => $durasi,
             'catatan_bk' => $catatanFormatted,
-            'rtl'        => $request->rtl,
         ]);
+
 
 
         // Buat laporan otomatis dari sesi yang selesai
@@ -265,11 +271,11 @@ class DashboardController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
-            'durasi'       => 'required|integer|min:1',
             'problem'      => 'required|string',
             'solution'     => 'required|string',
             'note'         => 'nullable|string',
         ]);
+
 
         $catatanFormatted = "Problem:\n" . $request->problem . "\n\nSolution:\n" . $request->solution;
         if ($request->note) {
@@ -277,10 +283,18 @@ class DashboardController extends Controller
         }
 
         $konseling = Konseling::findOrFail($request->konseling_id);
+        
+        // Hitung durasi otomatis menit
+        $durasi = 1;
+        if ($konseling->started_at) {
+            $durasi = max(1, now()->diffInMinutes($konseling->started_at));
+        }
+
         $konseling->update([
-            'durasi'     => $request->durasi,
+            'durasi'     => $durasi,
             'catatan_bk' => $catatanFormatted,
         ]);
+
 
         // Buat laporan otomatis
         Laporan::create([
