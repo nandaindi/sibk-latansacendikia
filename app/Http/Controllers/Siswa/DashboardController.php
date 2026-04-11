@@ -106,6 +106,7 @@ class DashboardController extends Controller
         \App\Models\Konseling::create([
             'user_id' => auth()->id(),
             'jenis' => 'online',
+            'problem_type' => $request->problem_type,
             'tanggal' => now()->format('Y-m-d'),
             'status' => 'pending'
         ]);
@@ -133,6 +134,7 @@ class DashboardController extends Controller
         \App\Models\Konseling::create([
             'user_id' => auth()->id(),
             'jenis' => 'offline',
+            'problem_type' => $request->problem_type,
             'tanggal' => now()->format('Y-m-d'),
             'status' => 'pending'
         ]);

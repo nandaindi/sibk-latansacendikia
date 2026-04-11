@@ -172,6 +172,12 @@ class DashboardController extends Controller
     public function konselingOnline(Request $request)
     {
         $konseling = Konseling::with('user')->findOrFail($request->id);
+        
+        // Catat waktu mulai jika belum ada
+        if (!$konseling->started_at) {
+            $konseling->update(['started_at' => now()]);
+        }
+
         return view('bk.konseling-online', compact('konseling'));
     }
 
@@ -179,6 +185,12 @@ class DashboardController extends Controller
     public function formKonselingOffline($id)
     {
         $konseling = Konseling::with('user')->findOrFail($id);
+        
+        // Catat waktu mulai jika belum ada (untuk offline, waktu mulai dihitung saat form dibuka)
+        if (!$konseling->started_at) {
+            $konseling->update(['started_at' => now()]);
+        }
+
         return view('bk.form-konseling-offline', compact('konseling'));
     }
 
@@ -187,6 +199,7 @@ class DashboardController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
+            'durasi'       => 'required|integer|min:1',
             'problem'      => 'required|string',
             'solution'     => 'required|string',
             'note'         => 'nullable|string',
@@ -200,6 +213,7 @@ class DashboardController extends Controller
         $konseling = Konseling::findOrFail($request->konseling_id);
         $konseling->update([
             'status'     => 'selesai',
+            'durasi'     => $request->durasi,
             'catatan_bk' => $catatanFormatted,
         ]);
 
@@ -228,6 +242,7 @@ class DashboardController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
+            'durasi'       => 'required|integer|min:1',
             'problem'      => 'required|string',
             'solution'     => 'required|string',
             'note'         => 'nullable|string',
@@ -240,6 +255,7 @@ class DashboardController extends Controller
 
         $konseling = Konseling::findOrFail($request->konseling_id);
         $konseling->update([
+            'durasi'     => $request->durasi,
             'catatan_bk' => $catatanFormatted,
         ]);
 

@@ -35,6 +35,14 @@
 
         <div class="h-px w-full bg-[#1a9488] opacity-20 my-1"></div>
 
+        <!-- Duration Input -->
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+            <label class="text-[0.8rem] font-bold text-[#1a9488] block mb-1">Durasi Sesi (Menit)</label>
+            <input type="number" name="durasi" id="durasiInput" value="45" min="1" required
+                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium" />
+            <p class="text-[0.7rem] text-[#888] mt-1 font-bold italic">*Terhitung otomatis sejak sesi dimulai.</p>
+        </div>
+
         <!-- Problem -->
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="text-[0.8rem] font-bold text-[#1a9488] block mb-1">Permasalahan Utama (Problem)</label>
@@ -69,4 +77,26 @@
     </div>
 
 </main>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const startedAt = new Date("{{ $konseling->started_at->toIso8601String() }}");
+        const durasiInput = document.getElementById('durasiInput');
+
+        function updateDuration() {
+            const now = new Date();
+            const diffMs = now - startedAt;
+            const diffMins = Math.max(1, Math.floor(diffMs / 60000));
+            durasiInput.value = diffMins;
+        }
+
+        // Jalankan sekali saat load
+        updateDuration();
+
+        // Update setiap menit
+        setInterval(updateDuration, 60000);
+    });
+</script>
+@endpush
 @endsection

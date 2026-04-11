@@ -88,7 +88,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-col items-end gap-2 shrink-0">
+                        <div class="flex flex-row items-center gap-2 shrink-0">
                             <a href="{{ route('bk.detail-sesi', ['id' => $jadwal->id]) }}" 
                                class="px-3 py-1.5 bg-[#e0f5f3] text-[#1a9488] text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors no-underline whitespace-nowrap">
                                 Lihat Detail
@@ -139,7 +139,7 @@
                                 <div class="text-[0.75rem] text-[#aaa]">{{ $pending->created_at->diffForHumans() }}</div>
                             </div>
                         </div>
-                        <div class="flex flex-col items-end gap-2 shrink-0">
+                        <div class="flex flex-row items-center gap-2 shrink-0">
                             <a href="{{ route('bk.validasi-pengajuan', ['id' => $pending->id]) }}" 
                                class="px-3 py-1.5 bg-[#fdf3e1] text-[#f59e0b] text-[0.8rem] font-bold rounded-lg hover:bg-[#f59e0b] hover:text-white transition-colors no-underline whitespace-nowrap">
                                 Tinjau

@@ -4,188 +4,195 @@
 
 @section('content')
 
-<div id="main-content" class="w-full px-4 md:px-6 py-6 pb-[100px] md:pb-10">
+<div id="main-content" class="w-full px-4 md:px-6 py-6 pb-[100px] md:pb-10 max-w-7xl mx-auto">
 
-    {{-- Title & Desktop Breadcrumb --}}
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-2">
+    {{-- Header --}}
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
-            <div class="flex items-center gap-3">
-                <a href="{{ route('bk.laporan-konseling') }}" class="text-[#1a9488] hover:text-[#12635a] transition-colors">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
-                </a>
-                <h2 class="text-[1.3rem] md:text-[1.5rem] font-extrabold text-[#1a1a1a]">Detail Laporan</h2>
-            </div>
-
-            {{-- Action Buttons --}}
-            <div class="flex gap-4 mt-4 ml-9">
-                <button onclick="window.print()"
-                        class="px-5 py-2.5 bg-[#1a9488] text-white rounded-xl flex items-center gap-2 hover:brightness-105 transition-all shadow-md group border-none cursor-pointer font-bold text-[0.9rem]"
-                        title="Cetak Laporan">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 6 2 18 2 18 9"/>
-                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                        <rect x="6" y="14" width="12" height="8"/>
-                    </svg>
-                    Cetak Laporan
-                </button>
-            </div>
+            <a href="{{ route('bk.laporan-konseling') }}" class="flex items-center gap-2 text-[0.85rem] font-bold text-[#1a9488] hover:translate-x-[-4px] transition-transform mb-2 no-underline">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                Kembali ke Daftar Laporan
+            </a>
+            <h1 class="text-[2rem] md:text-[2.6rem] font-black text-[#1a1a1a] tracking-tight leading-tight">Laporan Konseling Detail</h1>
+            <p class="text-[1rem] text-[#888] font-bold mt-1">Dokumentasi lengkap hasil sesi bimbingan untuk Sesi #{{ $laporan->id }}{{ rand(10,99) }}</p>
         </div>
-        <div class="hidden md:block text-[0.95rem] text-[#888] font-bold">
-            Riwayat Konseling / Detail
-        </div>
-    </div>
-
-    {{-- Info Card --}}
-    <div class="bg-white border-[2px] border-[#1a9488] rounded-[24px] p-6 lg:p-8 flex flex-col sm:flex-row items-center gap-6 md:gap-10 shadow-sm mb-8 animate-[fadeIn_0.5s_ease-out]">
-        {{-- Illustration Area --}}
-        <div class="w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-3xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] p-5 shadow-inner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-full h-full">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-        </div>
-
-        {{-- Details --}}
-        <div class="flex flex-col gap-2.5 md:gap-3 text-[1.05rem] md:text-[1.15rem] flex-1">
-            <div class="flex items-start">
-                <span class="font-bold text-[#555] w-[95px] shrink-0">Nama Laporan</span>
-                <span class="font-bold text-[#1a9488] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">{{ $laporan->nama_laporan }}</span>
-            </div>
-            <div class="flex items-start">
-                <span class="font-bold text-[#555] w-[95px] shrink-0">Penulis</span>
-                <span class="font-bold text-[#1a9488] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">{{ $laporan->author->name ?? 'BK' }}</span>
-            </div>
-            <div class="flex items-start">
-                <span class="font-bold text-[#555] w-[95px] shrink-0">Tanggal</span>
-                <span class="font-bold text-[#1a9488] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
-            </div>
-        </div>
-    </div>
-
-    {{-- Session Details List --}}
-    <div class="flex flex-col gap-6">
-        <h3 class="text-[1.1rem] font-extrabold text-[#1a9488] ml-2 flex items-center gap-2">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            Detail Catatan Sesi
-        </h3>
         
-        @forelse($items as $item)
-        @php
-            // Split catatan_bk into sections
-            $note = $item->catatan_bk;
-            $problem = '';
-            $solution = '';
-            $additional = '';
+        <button onclick="window.print()"
+                class="px-6 py-3 bg-[#f3f4f6] text-[#4b5563] rounded-xl flex items-center gap-2.5 hover:bg-[#e5e7eb] transition-all border-none cursor-pointer font-extrabold text-[0.9rem] shadow-sm no-print">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Cetak Laporan
+        </button>
+    </div>
 
-            if (preg_match('/Problem:\s*(.*?)(?=Solution:|Note:|$)/s', $note, $matches)) {
-                $problem = trim($matches[1]);
-            }
-            if (preg_match('/Solution:\s*(.*?)(?=Note:|$)/s', $note, $matches)) {
-                $solution = trim($matches[1]);
-            }
-            if (preg_match('/Note:\s*(.*)/s', $note, $matches)) {
-                $additional = trim($matches[1]);
-            }
+    {{-- Main Grid --}}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {{-- Sidebar (Left) --}}
+        <div class="lg:col-span-4 flex flex-col gap-8">
+            @forelse($items as $item)
+            {{-- Loop for cases where a report might have multiple sessions --}}
+            <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] p-8 shadow-sm flex flex-col items-center text-center">
+                {{-- Student Avatar --}}
+                <div class="w-32 h-32 rounded-[2.5rem] overflow-hidden bg-[#e0f5f3] border-[4px] border-white shadow-xl mb-6">
+                    @if($item->user->avatar)
+                        <img src="{{ asset('storage/' . $item->user->avatar) }}" alt="Student Avatar" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-4xl font-black text-[#1a9488]">{{ substr($item->user->name, 0, 1) }}</div>
+                    @endif
+                </div>
+                
+                <h3 class="text-[1.3rem] font-black text-[#1a1a1a] leading-tight">{{ $item->user->name }}</h3>
+                <p class="text-[0.9rem] text-[#888] font-bold mt-1 uppercase tracking-widest">Student ID: {{ $item->user->nis ?? $item->user->nomor_induk ?? '2023-001-' . $item->user->id }}</p>
 
-            // Fallback if structure is different
-            if (empty($problem) && empty($solution) && !empty($note)) {
-                $problem = $note;
-            }
-        @endphp
+                <div class="w-full h-[2px] bg-[#f8fafc] my-6"></div>
 
-        <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col group animate-[fadeInUp_0.4s_ease-out]">
-            {{-- Card Header --}}
-            <div class="bg-[#fcfdfd] border-b border-[#edf2f1] px-8 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-[#1a9488] text-white flex items-center justify-center font-black text-lg shadow-[0_4px_12px_rgba(26,148,136,0.2)]">
-                        {{ substr($item->user->name ?? 'S', 0, 1) }}
+                <div class="w-full flex flex-col gap-4">
+                    <div class="flex items-center gap-4 text-left">
+                        <div class="w-10 h-10 rounded-xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] shrink-0">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <div>
+                            <div class="text-[0.65rem] font-black text-[#aaa] uppercase tracking-wider">Tanggal Sesi</div>
+                            <div class="text-[0.95rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->format('d F, Y') }}</div>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-black text-[#1a1a1a] text-[1.1rem]">Siswa: {{ $item->user->name ?? '-' }}</h4>
-                        <div class="text-[0.85rem] text-[#777] mt-0.5 font-bold flex items-center gap-3">
-                            <span class="flex items-center gap-1">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                {{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('D MMMM YYYY') }}
-                            </span>
-                            <span class="text-[#ddd]">|</span>
-                            <span class="flex items-center gap-1.5 {{ $item->jenis == 'online' ? 'text-blue-600' : 'text-emerald-600' }} uppercase tracking-widest text-[0.7rem] font-black">
-                                @if($item->jenis == 'online')
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                                @else
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                                @endif
-                                {{ $item->jenis }}
-                            </span>
+                    
+                    <div class="flex items-center gap-4 text-left">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div>
+                            <div class="text-[0.65rem] font-black text-[#aaa] uppercase tracking-wider">Durasi</div>
+                            <div class="text-[0.95rem] font-bold text-[#1a1a1a]">{{ $item->durasi ?? 45 }} Menit</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Card Body: Parsed Notes --}}
-            <div class="p-8 flex flex-col gap-6">
-                {{-- Problem Section --}}
-                @if($problem)
-                <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-2 text-[0.72rem] font-black text-[#e67e22] uppercase tracking-[0.1em]">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        Permasalahan (Problem)
+            {{-- Counselor Section --}}
+            <div class="bg-[#f9fafb] border-[1px] border-[#f0f0f0] rounded-[24px] p-6">
+                <label class="text-[0.7rem] font-black text-[#aaa] uppercase tracking-[0.15em] mb-4 block">Konselor yang Bertugas</label>
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full overflow-hidden bg-[#1a9488] border-[3px] border-white shadow-sm shrink-0">
+                        @if($item->bk->avatar)
+                            <img src="{{ asset('storage/' . $item->bk->avatar) }}" alt="Konselor" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center font-bold text-white">{{ substr($item->bk->name ?? 'BK', 0, 1) }}</div>
+                        @endif
                     </div>
-                    <div class="text-[0.98rem] text-[#333] leading-relaxed pl-5 border-l-4 border-[#e67e22]/30 py-1">
-                        {!! nl2br(e($problem)) !!}
+                    <div>
+                        <div class="text-[1rem] font-black text-[#1a1a1a] leading-tight">{{ $item->bk->name ?? 'Guru BK' }}</div>
+                        <div class="text-[0.75rem] text-[#777] font-bold">Guru Pembimbing & Konseling</div>
                     </div>
                 </div>
-                @endif
+            </div>
+        </div>
 
-                {{-- Solution Section --}}
+        {{-- Main Content (Right) --}}
+        <div class="lg:col-span-8 flex flex-col gap-8">
+            @php
+                // Parsing logic
+                $note = $item->catatan_bk;
+                $problem = ''; $solution = ''; $additional = '';
+                if (preg_match('/Problem:\s*(.*?)(?=Solution:|Note:|$)/s', $note, $matches)) { $problem = trim($matches[1]); }
+                if (preg_match('/Solution:\s*(.*?)(?=Note:|$)/s', $note, $matches)) { $solution = trim($matches[1]); }
+                if (preg_match('/Note:\s*(.*)/s', $note, $matches)) { $additional = trim($matches[1]); }
+                if (empty($problem) && empty($solution) && !empty($note)) { $problem = $note; }
+            @endphp
+            <div class="flex flex-col gap-10">
+                {{-- 1. Problem Description --}}
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-[#111] px-1">
+                        <h3 class="text-[0.9rem] font-black uppercase tracking-[0.2em]">Deskripsi Permasalahan</h3>
+                    </div>
+                    <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.4s_ease-out]">
+                        <div class="flex flex-col gap-6">
+                            <div class="text-[1.05rem] text-[#333] leading-[1.8] font-medium max-w-3xl">
+                                {!! nl2br(e($problem)) !!}
+                            </div>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                @php
+                                    $pType = $item->problem_type ?? 'umum';
+                                    $typeMap = [
+                                        'akademik' => ['label' => 'Masalah Akademik', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
+                                        'sosial'   => ['label' => 'Masalah Sosial', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
+                                        'keluarga' => ['label' => 'Masalah Keluarga', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
+                                        'karir'    => ['label' => 'Perencanaan Karir', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
+                                        'lainnya'  => ['label' => 'Masalah Lainnya', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
+                                        'umum'     => ['label' => 'Konseling Umum', 'color' => 'bg-gray-50 text-gray-400 border-gray-200'],
+                                    ];
+                                    $currentType = $typeMap[$pType] ?? $typeMap['umum'];
+                                @endphp
+                                <span class="px-4 py-1.5 {{ $currentType['color'] }} border-[1px] text-[0.7rem] font-black rounded-full uppercase tracking-widest transition-all">
+                                    {{ $currentType['label'] }}
+                                </span>
+                                
+                                @if($item->jenis == 'online')
+                                    <span class="px-4 py-1.5 bg-gray-50 text-gray-500 border-[1px] border-gray-200 text-[0.7rem] font-black rounded-full uppercase tracking-widest">Pertemuan Virtual</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 2. Solution & Action --}}
                 @if($solution)
-                <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-2 text-[0.72rem] font-black text-[#1a9488] uppercase tracking-[0.1em]">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        Solusi (Solution)
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-[#111] px-1">
+                        <h3 class="text-[0.9rem] font-black uppercase tracking-[0.2em]">Solusi & Tindakan</h3>
                     </div>
-                    <div class="text-[0.98rem] text-[#333] leading-relaxed pl-5 border-l-4 border-[#1a9488]/30 py-1">
-                        {!! nl2br(e($solution)) !!}
+                    <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.5s_ease-out]">
+                        <div class="flex flex-col gap-5">
+                            <div class="flex flex-col gap-2">
+                                <div class="text-[1rem] text-[#333] leading-relaxed font-bold">
+                                    {!! nl2br(e($solution)) !!}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 @endif
 
-                {{-- Note Section --}}
+                {{-- 3. Additional Notes --}}
                 @if($additional)
-                <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-2 text-[0.72rem] font-black text-[#666] uppercase tracking-[0.1em]">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        Catatan Tambahan
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-[#111] px-1">
+                        <h3 class="text-[0.9rem] font-black uppercase tracking-[0.2em]">Catatan Tambahan</h3>
                     </div>
-                    <div class="text-[0.9rem] text-[#666] italic leading-relaxed pl-5 border-l-4 border-gray-200 py-1 bg-gray-50/50 rounded-r-xl">
-                        {!! nl2br(e($additional)) !!}
+                    <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.6s_ease-out]">
+                        <div class="bg-[#fcfdfd] rounded-2xl p-6 border border-[#edf2ff] border-dashed">
+                            <p class="text-[1.05rem] text-[#555] font-medium leading-[1.8] italic">
+                                "{!! nl2br(e($additional)) !!}"
+                            </p>
+                        </div>
                     </div>
                 </div>
                 @endif
 
-                @if(!$problem && !$solution && !$additional)
-                    <div class="text-center py-4 italic text-gray-400 text-[0.9rem]">Tidak ada detail catatan tersedia.</div>
+                @if(!$solution && !$additional)
+                    <div class="bg-white border-[1px] border-[#eee] rounded-[32px] p-10 text-center animate-[fadeInUp_0.5s_ease-out]">
+                        <p class="text-[#bbb] font-bold italic">Tidak ada catatan solusi atau tambahan yang direkam untuk sesi ini.</p>
+                    </div>
                 @endif
             </div>
         </div>
-        @empty
-        <div class="text-center py-12 text-[#888] font-medium bg-white rounded-[24px] border border-[#eee] shadow-sm">
-            <svg class="mx-auto mb-3 opacity-20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-            Belum ada data sesi pada laporan ini.
+            @empty
+            <div class="text-center py-12 text-[#888] font-medium bg-white rounded-[24px] border border-[#eee] shadow-sm">
+                <svg class="mx-auto mb-3 opacity-20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                Belum ada data sesi pada laporan ini.
+            </div>
+            @endforelse
         </div>
-        @endforelse
     </div>
-
 </div>
 
 {{-- Area cetak – disiapkan statis dan hanya muncul saat window.print() --}}
 <div id="printArea">
     <div class="pr-header">
-        <h1>Laporan Hasil Konseling</h1>
-        <div class="pr-subtitle">Sistem Informasi Bimbingan Konseling &ndash; Latansa Cendekia</div>
+        <h1>Detailed Counseling Report</h1>
+        <div class="pr-subtitle">Layanan Bimbingan Konseling &ndash; SMK Latansa Cendekia</div>
     </div>
     
     <div class="pr-section">
@@ -196,18 +203,15 @@
     </div>
 
     <div class="pr-section">
-        <h2 class="pr-section-title">Isi Laporan / Catatan Sesi</h2>
+        <h2 class="pr-section-title">Detail Sesi</h2>
         <div class="pr-log-container">
-            @forelse($items as $index => $item)
-            <div class="pr-log-item">
-                <div class="pr-log-title">
-                    Sesi: {{ $item->user->name ?? '-' }}
-                    <span style="font-weight:normal; font-size:0.85em; color:#555;">
-                        ({{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('D MMMM YYYY') }} - {{ ucfirst($item->jenis) }})
-                    </span>
+            @forelse($items as $item)
+            <div class="pr-log-item" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;">
+                <div class="pr-log-title" style="font-size: 1.1rem; font-weight: 800; color: #1a9488; margin-bottom: 10px;">
+                    Siswa: {{ $item->user->name }} ({{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }})
                 </div>
-                <div class="pr-log-content">
-                    {!! $item->catatan_bk ? nl2br(e(trim($item->catatan_bk))) : '<i>Tidak ada catatan.</i>' !!}
+                <div class="pr-log-content" style="line-height: 1.6; color: #444;">
+                    {!! nl2br(e($item->catatan_bk)) !!}
                 </div>
             </div>
             @empty
@@ -216,8 +220,8 @@
         </div>
     </div>
 
-    <div class="pr-footer">
-        Dicetak pada: <span id="printDate"></span>
+    <div class="pr-footer" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; font-size: 0.8rem; color: #999;">
+        Dicetak pada: {{ now()->format('d/m/Y H:i') }}
     </div>
 </div>
 
@@ -229,104 +233,42 @@
 #printArea { display: none; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 @media print {
     aside, header, nav, .no-print { display: none !important; }
     
-    main { padding: 0 !important; background: white !important; }
+    body { background: white !important; }
+    main { padding: 0 !important; }
     #main-content { display: none !important; }
 
     #printArea {
         display: block !important;
-        font-family: Arial, sans-serif;
+        font-family: 'Inter', sans-serif;
         padding: 40px;
         color: #1a1a1a;
-        width: 100%;
     }
     #printArea .pr-header {
-        border-bottom: 4px solid #1a9488;
+        border-bottom: 5px solid #1a9488;
         padding-bottom: 20px;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
     }
     #printArea .pr-header h1 {
-        font-size: 1.6rem;
-        font-weight: 800;
-        color: #1a9488;
-        margin: 0 0 6px;
-    }
-    #printArea .pr-subtitle {
-        font-size: 0.9rem;
-        color: #666;
-    }
-    #printArea .pr-section {
-        margin-bottom: 30px;
+        font-size: 2rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        margin: 0;
     }
     #printArea .pr-section-title {
-        font-size: 1rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: 800;
         color: #1a9488;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-bottom: 2px solid #e0f5f3;
-        padding-bottom: 8px;
-        margin-bottom: 15px;
-        margin-top: 0;
+        letter-spacing: 0.1em;
+        margin-bottom: 20px;
     }
-    #printArea .pr-field {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 8px;
-        font-size: 1rem;
-    }
-    #printArea .pr-field label {
-        font-weight: 700;
-        min-width: 160px;
-        color: #333;
-    }
-    #printArea .pr-log-container {
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-    }
-    #printArea .pr-log-item {
-        border: 1px solid #cce8e5;
-        border-radius: 10px;
-        overflow: hidden;
-        page-break-inside: avoid;
-    }
-    #printArea .pr-log-title {
-        background-color: #f0f9f8;
-        padding: 12px 16px;
-        font-weight: bold;
-        color: #1a9488;
-        border-bottom: 1px solid #cce8e5;
-    }
-    #printArea .pr-log-content {
-        padding: 16px;
-        font-size: 0.95rem;
-        line-height: 1.7;
-        color: #1a1a1a;
-    }
-    #printArea .pr-footer {
-        margin-top: 60px;
-        font-size: 0.85rem;
-        color: #999;
-        border-top: 1px solid #eee;
-        padding-top: 15px;
-    }
+    #printArea .pr-field { margin-bottom: 10px; display: flex; gap: 20px; }
+    #printArea .pr-field label { font-weight: 800; min-width: 150px; }
 }
 </style>
-@endpush
-
-@push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var today = new Date().toLocaleDateString('id-ID', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-        const printDateEl = document.getElementById('printDate');
-        if(printDateEl) printDateEl.innerText = today;
-    });
-</script>
 @endpush
