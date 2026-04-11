@@ -17,7 +17,7 @@
             <p class="text-[1rem] text-[#888] font-bold mt-1">Dokumentasi lengkap hasil sesi bimbingan untuk Sesi #{{ $laporan->id }}{{ rand(10,99) }}</p>
         </div>
         
-        <button onclick="window.print()"
+        <button onclick="cetakLaporan()"
                 class="px-6 py-3 bg-[#f3f4f6] text-[#4b5563] rounded-xl flex items-center gap-2.5 hover:bg-[#e5e7eb] transition-all border-none cursor-pointer font-extrabold text-[0.9rem] shadow-sm no-print">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
@@ -239,30 +239,31 @@
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 @media print {
-    aside, header, nav, .no-print { display: none !important; }
+    /* Hide layout elements explicitly */
+    aside, header, nav, .no-print, #app-wrapper, #main-content { display: none !important; }
     
-    body { background: white !important; }
-    main { padding: 0 !important; }
-    #main-content { display: none !important; }
+    body { background: white !important; margin: 0; padding: 0; }
 
-    #printArea {
+    #printWrap {
         display: block !important;
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', sans-serif, Arial;
         padding: 40px;
         color: #1a1a1a;
+        width: 100%;
+        background: white;
     }
-    #printArea .pr-header {
+    #printWrap .pr-header {
         border-bottom: 5px solid #1a9488;
         padding-bottom: 20px;
         margin-bottom: 40px;
     }
-    #printArea .pr-header h1 {
+    #printWrap .pr-header h1 {
         font-size: 2rem;
         font-weight: 900;
         color: #1a1a1a;
         margin: 0;
     }
-    #printArea .pr-section-title {
+    #printWrap .pr-section-title {
         font-size: 1.1rem;
         font-weight: 800;
         color: #1a9488;
@@ -270,8 +271,47 @@
         letter-spacing: 0.1em;
         margin-bottom: 20px;
     }
-    #printArea .pr-field { margin-bottom: 10px; display: flex; gap: 20px; }
-    #printArea .pr-field label { font-weight: 800; min-width: 150px; }
+    #printWrap .pr-field { margin-bottom: 10px; display: flex; gap: 20px; font-size: 0.95rem; }
+    #printWrap .pr-field label { font-weight: 800; min-width: 150px; }
 }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+function cetakLaporan() {
+    // Hide original body children
+    const children = Array.from(document.body.children);
+    children.forEach(child => {
+        if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
+            child.dataset.originalDisplay = child.style.display;
+            child.style.display = 'none';
+        }
+    });
+
+    // Create or get print container
+    let printWrap = document.getElementById('printWrap');
+    if(!printWrap) {
+        printWrap = document.createElement('div');
+        printWrap.id = 'printWrap';
+        document.body.appendChild(printWrap);
+    }
+
+    // Assign content
+    printWrap.innerHTML = document.getElementById('printArea').innerHTML;
+    printWrap.style.display = 'block';
+
+    // Print
+    window.print();
+
+    // Restore
+    printWrap.style.display = 'none';
+    printWrap.innerHTML = '';
+    children.forEach(child => {
+        if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
+            child.style.display = child.dataset.originalDisplay || '';
+        }
+    });
+}
+</script>
 @endpush

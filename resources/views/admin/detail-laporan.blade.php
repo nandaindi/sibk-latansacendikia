@@ -13,7 +13,7 @@
 
             {{-- Action Buttons --}}
             <div class="flex gap-4 mt-3">
-                <button onclick="window.print()"
+                <button onclick="cetakLaporanAdmin()"
                         class="w-10 h-10 md:w-11 md:h-11 bg-[#1eb808] text-white rounded-[10px] flex items-center justify-center hover:brightness-105 transition-all shadow-sm"
                         title="Cetak Laporan">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -127,43 +127,38 @@
 #printArea { display: none; }
 
 @media print {
-    aside,
-    header,
-    .no-print { display: none !important; }
+    /* Hide layout elements explicitly */
+    aside, header, nav, .no-print, #app-wrapper, #main-content { display: none !important; }
     
-    .ml-\[220px\] { margin-left: 0 !important; }
-    main { padding: 0 !important; background: white !important; }
-    
-    /* Sembunyikan tampilan layar di halaman ini */
-    #main-content { display: none !important; }
+    body { background: white !important; margin: 0; padding: 0; }
 
-    /* Tampilkan printArea */
-    #printArea {
+    #printWrap {
         display: block !important;
         font-family: Arial, sans-serif;
-        padding: 32px;
+        padding: 40px;
         color: #1a1a1a;
         width: 100%;
+        background: white;
     }
-    #printArea .pr-header {
+    #printWrap .pr-header {
         border-bottom: 3px solid #1a9488;
         padding-bottom: 14px;
         margin-bottom: 24px;
     }
-    #printArea .pr-header h1 {
+    #printWrap .pr-header h1 {
         font-size: 1.4rem;
         font-weight: 800;
         color: #1a9488;
         margin: 0 0 4px;
     }
-    #printArea .pr-subtitle {
+    #printWrap .pr-subtitle {
         font-size: 0.85rem;
         color: #888;
     }
-    #printArea .pr-section {
+    #printWrap .pr-section {
         margin-bottom: 24px;
     }
-    #printArea .pr-section h2 {
+    #printWrap .pr-section h2 {
         font-size: 0.9rem;
         font-weight: 700;
         color: #1a9488;
@@ -174,43 +169,43 @@
         margin-bottom: 12px;
         margin-top: 0;
     }
-    #printArea .pr-field {
+    #printWrap .pr-field {
         display: flex;
         gap: 8px;
         margin-bottom: 6px;
         font-size: 0.95rem;
     }
-    #printArea .pr-field label {
+    #printWrap .pr-field label {
         font-weight: 700;
         min-width: 140px;
         color: #333;
     }
-    #printArea .pr-log-container {
+    #printWrap .pr-log-container {
         display: flex;
         flex-direction: column;
         gap: 20px;
         margin-top: 10px;
     }
-    #printArea .pr-log-item {
+    #printWrap .pr-log-item {
         border: 1px solid #cce8e5;
         border-radius: 8px;
         overflow: hidden;
         page-break-inside: avoid;
     }
-    #printArea .pr-log-title {
+    #printWrap .pr-log-title {
         background-color: #f0f9f8;
         padding: 10px 14px;
         font-weight: bold;
         color: #1a9488;
         border-bottom: 1px solid #cce8e5;
     }
-    #printArea .pr-log-content {
+    #printWrap .pr-log-content {
         padding: 14px;
         font-size: 0.9rem;
         line-height: 1.6;
         color: #333;
     }
-    #printArea .pr-footer {
+    #printWrap .pr-footer {
         margin-top: 50px;
         font-size: 0.8rem;
         color: #888;
@@ -223,12 +218,46 @@
 
 @push('scripts')
 <script>
-    // Set view date on print date field
     document.addEventListener("DOMContentLoaded", function() {
         var today = new Date().toLocaleDateString('id-ID', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
         document.getElementById('printDate').innerText = today;
     });
+
+function cetakLaporanAdmin() {
+    // Hide original body children
+    const children = Array.from(document.body.children);
+    children.forEach(child => {
+        if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
+            child.dataset.originalDisplay = child.style.display;
+            child.style.display = 'none';
+        }
+    });
+
+    // Create or get print container
+    let printWrap = document.getElementById('printWrap');
+    if(!printWrap) {
+        printWrap = document.createElement('div');
+        printWrap.id = 'printWrap';
+        document.body.appendChild(printWrap);
+    }
+
+    // Assign content
+    printWrap.innerHTML = document.getElementById('printArea').innerHTML;
+    printWrap.style.display = 'block';
+
+    // Print
+    window.print();
+
+    // Restore
+    printWrap.style.display = 'none';
+    printWrap.innerHTML = '';
+    children.forEach(child => {
+        if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
+            child.style.display = child.dataset.originalDisplay || '';
+        }
+    });
+}
 </script>
 @endpush
