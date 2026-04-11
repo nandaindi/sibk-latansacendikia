@@ -19,33 +19,37 @@
 
         {{-- Nama --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nama" placeholder="Nama" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap Siswa</label>
+            <input type="text" name="nama" placeholder="Contoh: Nanda Indi" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- NIS --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nis" placeholder="NIS" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">NIS (Nomor Induk Siswa)</label>
+            <input type="text" name="nis" placeholder="Contoh: 12345" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="email" name="email" placeholder="Email" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Alamat Email</label>
+            <input type="email" name="email" placeholder="Contoh: nanda@gmail.com" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="password" name="password" placeholder="Password" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password Akun</label>
+            <input type="password" name="password" placeholder="Min. 6 karakter" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Save Button (Triggers Edit Modal) --}}
         <div class="mt-4">
             <button type="button" onclick="showConfirmTambahDataModal()"
-                    class="w-full py-4 bg-[#1a7a70] text-white rounded-full text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,122,112,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95">
-                Tambah Data
+                    class="w-full py-4 bg-[#1a7a70] text-white rounded-full text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,122,112,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
+                Tambah Data Siswa
             </button>
         </div>
     </form>

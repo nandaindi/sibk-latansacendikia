@@ -20,187 +20,76 @@
     @endif
 
     <!-- Laporan list dari DB -->
-    <div class="flex flex-col gap-3 mb-8">
-        <h3 class="text-[1rem] font-bold text-[#1a1a1a]">Daftar Laporan</h3>
+    <div class="flex flex-col gap-4 mb-8">
+        <h3 class="text-[1rem] font-extrabold text-[#1a9488] border-l-4 border-[#1a9488] pl-3 mb-1">Daftar Laporan</h3>
+        
         @forelse($laporans as $laporan)
-        <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="w-10 h-10 shrink-0 rounded-full bg-[#e0f5f3] flex items-center justify-center">
-                <svg width="20" height="20" fill="none" stroke="#1a9488" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <div class="text-[0.95rem] font-semibold text-[#1a1a1a] truncate">{{ $laporan->nama_laporan }}</div>
-                <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</div>
+        <div class="bg-white border-[2px] border-[#edf2f1] rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-[#1a9488]/30 transition-all group">
+            <div class="flex flex-col md:flex-row justify-between gap-4">
+                
+                {{-- Left Side: Student Info & Type --}}
+                <div class="flex flex-col gap-3">
+                    <div class="flex flex-wrap items-center gap-2">
+                        @if(($laporan->konseling->jenis ?? '') == 'online')
+                        <span class="flex items-center gap-1.5 text-[0.68rem] font-black px-3 py-1 rounded-full bg-blue-100 text-blue-700 uppercase tracking-widest">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            Online
+                        </span>
+                        @else
+                        <span class="flex items-center gap-1.5 text-[0.68rem] font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 uppercase tracking-widest">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Offline
+                        </span>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-col">
+                        <h4 class="text-[1.1rem] font-extrabold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors leading-tight">
+                            {{ $laporan->user->name ?? ($laporan->nama_laporan) }}
+                        </h4>
+                        <div class="flex items-center gap-2 text-[0.88rem] text-[#777] mt-1 font-semibold">
+                            {{ $laporan->user->kelas ?? '-' }} {{ $laporan->user->jurusan ?? '' }}
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Right Side: Date & Actions --}}
+                <div class="flex flex-col md:items-end justify-between gap-4">
+                    <div class="text-left md:text-right">
+                        <div class="text-[0.9rem] font-bold text-[#1a1a1a]">
+                            {{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
+                        </div>
+                        @if($laporan->konseling->waktu ?? null)
+                        <div class="text-[0.85rem] font-black text-[#1a9488] mt-0.5">
+                            {{ \Carbon\Carbon::parse($laporan->konseling->waktu)->format('H:i') }} WIB
+                        </div>
+                        @else
+                        <div class="text-[0.85rem] font-bold text-[#aaa] mt-0.5 italic">Waktu tidak tercatat</div>
+                        @endif
+                    </div>
+
+                    <a href="{{ route('bk.detail-laporan', ['id' => $laporan->id]) }}"
+                        class="w-full md:w-auto px-6 py-2.5 bg-[#1a9488] text-white text-[0.85rem] font-extrabold rounded-full hover:bg-[#12635a] hover:shadow-lg transition-all flex items-center justify-center gap-2 no-underline shadow-[0_4px_12px_rgba(26,148,136,0.15)]">
+                        Lihat Detail
+                    </a>
+                </div>
+
             </div>
         </div>
         @empty
-        <div class="text-center py-8 text-gray-500 font-medium bg-white rounded-2xl border-[2px] border-[#edf2f1]">Belum ada laporan yang dibuat.</div>
+        <div class="text-center py-12 text-gray-500 font-medium bg-white rounded-3xl border-[2px] border-dashed border-[#edf2f1]">
+            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            Belum ada laporan yang dibuat.
+        </div>
         @endforelse
-        <div class="mt-2">{{ $laporans->links() }}</div>
+        <div class="mt-4">{{ $laporans->links() }}</div>
     </div>
 
-    <!-- Sesi Selesai — bisa cetak laporan -->
-    <div class="flex flex-col gap-3">
-        <h3 class="text-[1rem] font-bold text-[#1a1a1a]">Sesi Selesai</h3>
-        @forelse($selesSesi as $sesi)
-        <div class="bg-white border border-[#e5e7eb] rounded-2xl px-5 py-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex-1 min-w-0">
-                <div class="text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $sesi->user->name ?? '-' }}</div>
-                <div class="text-[0.82rem] text-[#888] mt-0.5">
-                    {{ \Carbon\Carbon::parse($sesi->tanggal)->format('d F Y') }} · <span class="capitalize">{{ $sesi->jenis }}</span>
-                    @if($sesi->user->kelas)
-                    · {{ $sesi->user->kelas }} {{ $sesi->user->jurusan ?? '' }}
-                    @endif
-                </div>
-                @if($sesi->catatan_bk)
-                <div class="text-[0.82rem] text-[#555] mt-1 italic truncate">{{ $sesi->catatan_bk }}</div>
-                @endif
-            </div>
-            <button
-                onclick="printLaporan(
-                    {{ Js::from($sesi->user->name ?? '-') }},
-                    {{ Js::from(\Carbon\Carbon::parse($sesi->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY')) }},
-                    {{ Js::from($sesi->catatan_bk ?? '') }},
-                    {{ Js::from($sesi->jenis ?? '') }},
-                    {{ Js::from($sesi->user->kelas ?? '') }},
-                    {{ Js::from($sesi->user->jurusan ?? '') }},
-                    {{ Js::from($sesi->waktu ? \Carbon\Carbon::parse($sesi->waktu)->format('H:i') . ' WIB' : '-') }}
-                )"
-                class="shrink-0 px-4 py-2 border-[2px] border-[#1a9488] text-[#1a9488] text-[0.85rem] font-bold rounded-full hover:bg-[#1a9488] hover:text-white transition-all flex items-center gap-1.5">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
-                </svg>
-                Cetak
-            </button>
-        </div>
-        @empty
-        <div class="text-center py-6 text-gray-500 font-medium bg-white rounded-2xl border border-[#edf2f1]">Belum ada sesi yang selesai.</div>
-        @endforelse
-        <div class="mt-2">{{ $selesSesi->links() }}</div>
     </div>
 
 </main>
 
-{{-- Area cetak – hanya muncul saat window.print() dipanggil --}}
-<div id="printArea"></div>
-
 @endsection
 
-@push('styles')
-<style>
-/* Sembunyikan printArea saat normal */
-#printArea { display: none; }
-
-/* Saat mencetak: sembunyikan semua kecuali printArea */
-@media print {
-    header, nav, main, footer, .no-print { display: none !important; }
-    body { background-color: white !important; }
-
-    #printArea {
-        display: block !important;
-        font-family: Arial, sans-serif;
-        padding: 32px;
-        color: #1a1a1a;
-    }
-    #printArea .pr-header {
-        border-bottom: 3px solid #1a9488;
-        padding-bottom: 14px;
-        margin-bottom: 24px;
-    }
-    #printArea .pr-header h1 {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: #1a9488;
-        margin: 0 0 4px;
-    }
-    #printArea .pr-subtitle {
-        font-size: 0.82rem;
-        color: #888;
-    }
-    #printArea .pr-section {
-        margin-bottom: 18px;
-    }
-    #printArea .pr-section h2 {
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: #1a9488;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-bottom: 1px solid #cce8e5;
-        padding-bottom: 5px;
-        margin-bottom: 10px;
-        margin-top: 0;
-    }
-    #printArea .pr-field {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 8px;
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
-    #printArea .pr-field label {
-        font-weight: 700;
-        min-width: 140px;
-        flex-shrink: 0;
-        color: #333;
-    }
-    #printArea .pr-catatan {
-        background: #f5fffe;
-        border: 1px solid #cce8e5;
-        border-radius: 6px;
-        padding: 12px 14px;
-        font-size: 0.9rem;
-        line-height: 1.75;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-    #printArea .pr-footer {
-        margin-top: 40px;
-        font-size: 0.78rem;
-        color: #888;
-        border-top: 1px solid #eee;
-        padding-top: 10px;
-    }
-}
-</style>
-@endpush
-
-@push('scripts')
-<script>
-function printLaporan(nama, tanggal, catatan, jenis, kelas, jurusan, waktu) {
-    var today = new Date().toLocaleDateString('id-ID', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-    });
-
-    var kelasHtml = kelas
-        ? '<div class="pr-field"><label>Kelas / Jurusan</label><span>: ' + kelas + ' ' + jurusan + '</span></div>'
-        : '';
-
-    var catatanHtml = catatan
-        ? '<div class="pr-section"><h2>Catatan BK</h2><div class="pr-catatan">' + catatan.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div></div>'
-        : '';
-
-    var jenisFormatted = jenis ? jenis.charAt(0).toUpperCase() + jenis.slice(1) : '-';
-
-    document.getElementById('printArea').innerHTML =
-        '<div class="pr-header">' +
-            '<h1>Laporan Konseling</h1>' +
-            '<div class="pr-subtitle">Sistem Informasi Bimbingan Konseling \u2013 Latansa Cendekia</div>' +
-        '</div>' +
-        '<div class="pr-section">' +
-            '<h2>Data Siswa</h2>' +
-            '<div class="pr-field"><label>Nama Siswa</label><span>: ' + nama + '</span></div>' +
-            kelasHtml +
-        '</div>' +
-        '<div class="pr-section">' +
-            '<h2>Informasi Sesi</h2>' +
-            '<div class="pr-field"><label>Tanggal</label><span>: ' + tanggal + '</span></div>' +
-            '<div class="pr-field"><label>Waktu</label><span>: ' + waktu + '</span></div>' +
-            '<div class="pr-field"><label>Jenis Sesi</label><span>: ' + jenisFormatted + '</span></div>' +
-        '</div>' +
-        catatanHtml +
-        '<div class="pr-footer">Dicetak pada: ' + today + '</div>';
-
-    window.print();
-}
-</script>
-@endpush

@@ -36,13 +36,19 @@
     // Toast masuk (Animasi dengan Tailwind classes)
     window.addEventListener('load', () => {
         @if(session('login_success'))
+        const loginToastShown = sessionStorage.getItem('login_toast_shown');
         const toast = document.getElementById('toast');
-        if (toast) {
+        
+        if (toast && !loginToastShown) {
             toast.classList.replace('-translate-y-[80px]', 'translate-y-0');
+            sessionStorage.setItem('login_toast_shown', 'true');
+            
             setTimeout(() => {
                 toast.classList.replace('translate-y-0', '-translate-y-[80px]');
                 setTimeout(() => toast.remove(), 600); // Hapus elemen dari DOM agar tidak tersimpan di cache history (BFCache)
             }, 3500);
+        } else if (toast) {
+            toast.remove(); // Jika sudah pernah tampil (misal via back button), hapus langsung
         }
         @endif
     });

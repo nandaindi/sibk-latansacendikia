@@ -56,14 +56,14 @@
             @endphp
 
             @forelse($riwayatPanggilan as $item)
-            <div class="bg-white rounded-2xl border-l-[5px] border-l-[#1a9488] border-t border-t-[#f0f0f0] border-r border-r-[#f0f0f0] border-b border-b-[#f0f0f0] p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-5 cursor-default transition-all duration-200 shrink-0 opacity-60">
-                <div class="w-14 h-14 rounded-[14px] bg-[#e0f5f3] flex-shrink-0 flex items-center justify-center">
-                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="bg-[#f9fafb] rounded-2xl border-l-[5px] border-l-[#94a3b8] border-t border-r border-b border-[#f0f0f0] p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-5 cursor-default transition-all duration-200 shrink-0">
+                <div class="w-14 h-14 rounded-[14px] bg-[#f1f5f9] flex-shrink-0 flex items-center justify-center opacity-60">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.61 19"/>
                         <path d="M14.05 2l5 5M2 2l20 20"/>
                     </svg>
                 </div>
-                <div class="flex-1 w-full md:mr-0 mb-3 md:mb-0">
+                <div class="flex-1 w-full md:mr-0 mb-3 md:mb-0 opacity-60">
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] mb-1">Guru BK</div>
                     <div class="text-[0.9rem] text-[#777]">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }} · {{ $item->waktu ?? '-' }}</div>
                 </div>

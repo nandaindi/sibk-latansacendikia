@@ -14,39 +14,60 @@
         </div>
     </div>
 
-    <form id="editAkunForm" method="POST" action="{{ route('admin.edit-akun.update') }}" class="flex flex-col gap-4">
+    <form id="editAkunForm" method="POST" action="{{ route('admin.edit-akun.update', ['id' => $user->id]) }}" class="flex flex-col gap-4">
         @csrf
         @method('PUT')
 
         {{-- Nama --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nama" placeholder="Nama" value="Ibu Eni Kustiyorini S.Psi" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap</label>
+            <input type="text" name="nama" placeholder="Nama" value="{{ old('nama', $user->name) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
-        {{-- NIS / NIP (Assuming NIS for student, NIP for admin/guru) --}}
+        {{-- NIS / NIP --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nomor_induk" placeholder="NIS" value=""
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nomor Induk (Optional)</label>
+            <input type="text" name="nomor_induk" placeholder="NIS/NIP" value="{{ old('nomor_induk', $user->nis ?? '') }}"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="email" name="email" placeholder="Email" value="example@gmail.com" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Alamat Email</label>
+            <input type="email" name="email" placeholder="Email" value="{{ old('email', $user->email) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+        </div>
+
+        {{-- No. Telepon --}}
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">No. Telepon</label>
+            <input type="text" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon', $user->telepon) }}"
+                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+        </div>
+
+        {{-- Role --}}
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Role Akses</label>
+            <select name="role" required class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium cursor-pointer">
+                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="bk" {{ $user->role == 'bk' ? 'selected' : '' }}>BK / Konselor</option>
+                <option value="siswa" {{ $user->role == 'siswa' ? 'selected' : '' }}>Siswa</option>
+            </select>
         </div>
 
         {{-- Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="password" name="password" placeholder="Password"
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
+            <input type="password" name="password" placeholder="Password Baru"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Save Button (Triggers Edit Modal) --}}
         <div class="mt-4">
             <button type="button" onclick="showConfirmEditModal()"
-                    class="w-full py-4 bg-[#1a7a70] text-white rounded-full text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,122,112,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95">
-                Edit Akun
+                    class="w-full py-4 bg-[#1a7a70] text-white rounded-full text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,122,112,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
+                Simpan Perubahan
             </button>
         </div>
     </form>

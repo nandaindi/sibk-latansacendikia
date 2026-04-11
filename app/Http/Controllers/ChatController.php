@@ -81,6 +81,7 @@ class ChatController extends Controller
 
     /**
      * BK menyelesaikan sesi konseling → update status + buat laporan otomatis.
+     * BK menyelesaikan sesi konseling → update status.
      */
     public function selesaiSesi(Request $request)
     {
@@ -90,15 +91,12 @@ class ChatController extends Controller
 
         $konseling = Konseling::with('user')->findOrFail($request->konseling_id);
         if (auth()->user()->role === 'bk' && (int)$konseling->bk_id !== (int)auth()->id()) abort(403, 'Unauthorized BK');
+        
         $konseling->update(['status' => 'selesai']);
 
-        Laporan::create([
-            'nama_laporan' => 'Laporan Konseling: ' . $konseling->user->name,
-            'author_id'    => auth()->id(),
-            'tanggal'      => now()->format('Y-m-d'),
-            'search_key'   => now()->format('l, d F Y'),
+        return response()->json([
+            'ok' => true,
+            'id' => $konseling->id
         ]);
-
-        return response()->json(['ok' => true]);
     }
 }

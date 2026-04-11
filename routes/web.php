@@ -57,6 +57,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     // Riwayat & Laporan
     Route::get('/riwayat-konseling', [DashboardController::class, 'riwayatKonseling'])->name('riwayat-konseling');
     Route::get('/laporan/{id}',      [DashboardController::class, 'detailLaporan'])->name('detail-laporan');
+    Route::post('/konseling/feedback', [DashboardController::class, 'storeFeedback'])->name('konseling.feedback');
 
     // Chat real-time routes (siswa)
     Route::post('/chat/send',   [ChatController::class, 'sendPesan'])->name('chat.send');
@@ -86,11 +87,14 @@ Route::middleware(['auth', 'role:bk'])->prefix('bk')->name('bk.')->group(functio
     Route::get('/konseling-online',              [BKController::class, 'konselingOnline'])->name('konseling-online');
     Route::get('/form-konseling-offline/{id}',   [BKController::class, 'formKonselingOffline'])->name('form-konseling-offline');
     Route::post('/store-form-konseling-offline', [BKController::class, 'storeFormKonselingOffline'])->name('store-form-konseling-offline');
+    Route::get('/form-konseling-online/{id}',    [BKController::class, 'formKonselingOnline'])->name('form-konseling-online');
+    Route::post('/store-form-konseling-online',  [BKController::class, 'storeFormKonselingOnline'])->name('store-form-konseling-online');
 
     // Artikel Management (BK)
     Route::resource('artikel', \App\Http\Controllers\BK\ArtikelController::class);
 
     Route::get('/laporan-konseling',             [BKController::class, 'laporanKonseling'])->name('laporan-konseling');
+    Route::get('/laporan/detail',                [BKController::class, 'detailLaporan'])->name('detail-laporan');
 
     // Chat real-time routes (bk)
     Route::post('/chat/send',    [ChatController::class, 'sendPesan'])->name('chat.send');
@@ -118,6 +122,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/kelola-data/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailKonseling'])->name('kelola-data.detail');
     Route::get('/kelola-data/edit-akun', [\App\Http\Controllers\Admin\DashboardController::class, 'editAkunData'])->name('kelola-data.edit-akun');
     Route::put('/kelola-data/edit-akun', [\App\Http\Controllers\Admin\DashboardController::class, 'updateEditAkunData'])->name('kelola-data.edit-akun.update');
+    Route::delete('/kelola-data', [\App\Http\Controllers\Admin\DashboardController::class, 'destroyData'])->name('kelola-data.destroy');
     
     Route::get('/kelola-laporan',     [\App\Http\Controllers\Admin\DashboardController::class, 'kelolaLaporan'])->name('kelola-laporan');
     Route::get('/kelola-laporan/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailLaporan'])->name('kelola-laporan.detail');

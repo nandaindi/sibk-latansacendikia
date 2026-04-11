@@ -59,25 +59,20 @@
         </div>
 
         {{-- Jurusan --}}
-        @php
-            $predefinedJurusan = ['IPA', 'IPS', 'RPL', 'TKJ', 'BDP'];
-            $isCustomJurusan = $user->jurusan && !in_array($user->jurusan, $predefinedJurusan);
-            $selectedJurusan = $isCustomJurusan ? 'Lainnya' : $user->jurusan;
-        @endphp
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Jurusan</label>
-            <select name="jurusan_select" id="jurusanSelect" onchange="toggleJurusanCustom()" class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium appearance-none cursor-pointer">
-                <option value="" disabled {{ !$selectedJurusan ? 'selected' : '' }}>Pilih Jurusan</option>
-                <option value="IPA" {{ $selectedJurusan == 'IPA' ? 'selected' : '' }}>Ilmu Pengetahuan Alam (IPA)</option>
-                <option value="IPS" {{ $selectedJurusan == 'IPS' ? 'selected' : '' }}>Ilmu Pengetahuan Sosial (IPS)</option>
-                <option value="RPL" {{ $selectedJurusan == 'RPL' ? 'selected' : '' }}>Rekayasa Perangkat Lunak (RPL)</option>
-                <option value="TKJ" {{ $selectedJurusan == 'TKJ' ? 'selected' : '' }}>Teknik Komputer & Jaringan (TKJ)</option>
-                <option value="BDP" {{ $selectedJurusan == 'BDP' ? 'selected' : '' }}>Bisnis Daring & Pemasaran (BDP)</option>
-                <option value="Lainnya" {{ $selectedJurusan == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-            </select>
-            <input type="text" name="jurusan_custom" id="jurusanCustomInput" value="{{ $isCustomJurusan ? $user->jurusan : '' }}" 
-                   placeholder="Ketik jurusan Anda..." 
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium mt-2 pt-2 border-t-[1px] border-[#eee] {{ $selectedJurusan == 'Lainnya' ? 'block' : 'hidden' }}"/>
+            <label class="block text-[0.8rem] text-[#888] font-bold mb-3 uppercase tracking-wider">Jurusan</label>
+            <div class="flex gap-8">
+                <label class="flex items-center gap-2.5 cursor-pointer group">
+                    <input type="radio" name="jurusan_select" value="IPA" {{ $user->jurusan == 'IPA' ? 'checked' : '' }}
+                           class="w-5 h-5 accent-[#1a9488] cursor-pointer"/>
+                    <span class="text-[1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors">IPA</span>
+                </label>
+                <label class="flex items-center gap-2.5 cursor-pointer group">
+                    <input type="radio" name="jurusan_select" value="IPS" {{ $user->jurusan == 'IPS' ? 'checked' : '' }}
+                           class="w-5 h-5 accent-[#1a9488] cursor-pointer"/>
+                    <span class="text-[1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors">IPS</span>
+                </label>
+            </div>
         </div>
 
         {{-- Email --}}
@@ -137,21 +132,6 @@
 
 @push('scripts')
 <script>
-function toggleJurusanCustom() {
-    const select = document.getElementById('jurusanSelect');
-    const input = document.getElementById('jurusanCustomInput');
-    if (select.value === 'Lainnya') {
-        input.classList.remove('hidden');
-        input.classList.add('block');
-        input.required = true;
-    } else {
-        input.classList.remove('block');
-        input.classList.add('hidden');
-        input.required = false;
-        input.value = ''; // Reset value
-    }
-}
-
 function previewImage(event) {
     const input = event.target;
     if (input.files && input.files[0]) {

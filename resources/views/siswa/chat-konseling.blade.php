@@ -43,20 +43,60 @@
         </div>
     </div>
 
-    <!-- Input Bar -->
-    <div class="sticky bottom-0 md:relative px-4 md:px-6 py-3 bg-[#d4e9e7] border-t border-[#c5dbd9]">
-        <div class="flex items-center gap-3">
-            <input id="chatInput" type="text" placeholder="Ketik pesan…"
-                class="flex-1 bg-transparent border-none outline-none text-[0.97rem] text-[#555] placeholder-[#90a8a6] font-medium"
-                onkeydown="if(event.key==='Enter') sendMessage()"/>
-            <button onclick="sendMessage()" class="text-[#1a9488] hover:text-[#12635a] transition-colors p-1">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-        </div>
+    <!-- Input Bar / Feedback Form -->
+    <div class="sticky bottom-0 md:relative px-4 md:px-6 py-4 bg-[#d4e9e7] border-t border-[#c5dbd9] z-10">
+        @if($konseling->status === 'disetujui')
+            {{-- Baris Input Chat --}}
+            <div class="flex items-center gap-3">
+                <input id="chatInput" type="text" placeholder="Ketik pesan…"
+                    class="flex-1 bg-transparent border-none outline-none text-[0.97rem] text-[#555] placeholder-[#90a8a6] font-medium"
+                    onkeydown="if(event.key==='Enter') sendMessage()"/>
+                <button onclick="sendMessage()" class="text-[#1a9488] hover:text-[#12635a] transition-colors p-1 border-none bg-transparent cursor-pointer">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </div>
+        @else
+            {{-- Sesi Selesai - Tampilkan Form Feedback --}}
+            <div class="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-[#1a9488]/30 shadow-lg -mt-10 mb-4 animate-[fadeInUp_0.4s_ease-out]">
+                <div class="flex items-center gap-2 mb-4 text-[#1a9488]">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <h3 class="font-bold text-[1.05rem]">Sesi Telah Selesai</h3>
+                </div>
+                <p class="text-[0.88rem] text-[#555] mb-5 leading-relaxed italic">"Bimbingan hari ini telah berakhir. Sebelum kembali ke dashboard, silakan isi kesimpulan dan saran kamu untuk sesi ini."</p>
+                
+                <form action="{{ route('siswa.konseling.feedback') }}" method="POST" class="flex flex-col gap-4">
+                    @csrf
+                    <input type="hidden" name="konseling_id" value="{{ $konseling->id }}">
+                    
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[0.82rem] font-bold text-[#1a9488] uppercase tracking-wide">Kesimpulan Kamu</label>
+                        <textarea name="kesimpulan_siswa" rows="2" required placeholder="Apa yang kamu simpulkan dari bimbingan ini?"
+                                  class="w-full bg-[#f9fbfb] border-2 border-[#1a9488]/20 rounded-xl px-4 py-2.5 text-[0.93rem] outline-none focus:border-[#1a9488] transition-colors resize-none"></textarea>
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[0.82rem] font-bold text-[#1a9488] uppercase tracking-wide">Saran Untuk Guru BK</label>
+                        <textarea name="saran_siswa" rows="2" required placeholder="Berikan saran jika ada..."
+                                  class="w-full bg-[#f9fbfb] border-2 border-[#1a9488]/20 rounded-xl px-4 py-2.5 text-[0.93rem] outline-none focus:border-[#1a9488] transition-colors resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#1a9488] text-white py-3 rounded-xl font-bold text-[0.95rem] shadow-md hover:brightness-105 active:scale-95 transition-all mt-2 border-none cursor-pointer">
+                        Selesaikan & Simpan
+                    </button>
+                </form>
+            </div>
+        @endif
     </div>
     @endif
 
 </div>
+
+<style>
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
 @endsection
 
 @push('scripts')

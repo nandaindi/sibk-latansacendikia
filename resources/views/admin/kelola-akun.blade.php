@@ -4,6 +4,17 @@
 
 @section('content')
 
+{{-- Notifications --}}
+@if(session('sukses_tambah'))
+    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl">Akun berhasil ditambahkan.</div>
+@endif
+@if(session('sukses_edit'))
+    <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded-xl">Akun berhasil diperbarui.</div>
+@endif
+@if(session('sukses_hapus'))
+    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">Akun berhasil dihapus.</div>
+@endif
+
 <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
     <div>
         <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Daftar Akun</h2>
@@ -55,7 +66,7 @@
             <a href="{{ route('admin.edit-akun', ['id' => $akun->id]) }}" title="Edit" class="w-8 h-8 rounded-full bg-[#fff4e5] text-[#f59e0b] flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </a>
-            <button type="button" onclick="showDeleteModal()" title="Hapus" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
+            <button type="button" onclick="showDeleteModal({{ $akun->id }})" title="Hapus" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
         </div>
@@ -86,7 +97,7 @@
 
         <div class="flex gap-5 w-full justify-center mt-2">
             {{-- Button OK (Hapus) --}}
-            <form action="{{ route('admin.detail-akun.destroy') }}" method="POST">
+            <form id="deleteForm" action="" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit"
@@ -120,7 +131,9 @@ function filterAkun() {
     });
 }
 
-function showDeleteModal() {
+function showDeleteModal(id) {
+    const form = document.getElementById('deleteForm');
+    form.action = "{{ route('admin.detail-akun.destroy') }}?id=" + id;
     document.getElementById('deleteModal').classList.remove('hidden');
     document.getElementById('deleteModal').classList.add('flex');
 }

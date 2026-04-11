@@ -176,9 +176,9 @@ class DashboardController extends Controller
     }
 
     /** Form Konseling Offline - pencatatan hasil sesi offline */
-    public function formKonselingOffline(Request $request)
+    public function formKonselingOffline($id)
     {
-        $konseling = Konseling::with('user')->findOrFail($request->id);
+        $konseling = Konseling::with('user')->findOrFail($id);
         return view('bk.form-konseling-offline', compact('konseling'));
     }
 
@@ -207,6 +207,8 @@ class DashboardController extends Controller
         Laporan::create([
             'nama_laporan' => 'Laporan Konseling: ' . $konseling->user->name,
             'author_id'    => auth()->id(),
+            'user_id'      => $konseling->user_id,
+            'konseling_id' => $konseling->id,
             'tanggal'      => now()->format('Y-m-d'),
             'search_key'   => now()->format('l, d F Y'),
         ]);
@@ -214,16 +216,94 @@ class DashboardController extends Controller
         return redirect()->route('bk.laporan-konseling')->with('sukses', 'Sesi selesai, laporan berhasil dibuat!');
     }
 
+    /** Form Konseling Online - pencatatan hasil sesi online */
+    public function formKonselingOnline($id)
+    {
+        $konseling = Konseling::with('user')->findOrFail($id);
+        return view('bk.form-konseling-online', compact('konseling'));
+    }
+
+    /** Store form konseling online – simpan catatan & buat laporan */
+    public function storeFormKonselingOnline(Request $request)
+    {
+        $request->validate([
+            'konseling_id' => 'required|exists:konselings,id',
+            'problem'      => 'required|string',
+            'solution'     => 'required|string',
+            'note'         => 'nullable|string',
+        ]);
+
+        $catatanFormatted = "Problem:\n" . $request->problem . "\n\nSolution:\n" . $request->solution;
+        if ($request->note) {
+            $catatanFormatted .= "\n\nNote:\n" . $request->note;
+        }
+
+        $konseling = Konseling::findOrFail($request->konseling_id);
+        $konseling->update([
+            'catatan_bk' => $catatanFormatted,
+        ]);
+
+        // Buat laporan otomatis
+        Laporan::create([
+            'nama_laporan' => 'Laporan Konseling: ' . $konseling->user->name,
+            'author_id'    => auth()->id(),
+            'user_id'      => $konseling->user_id,
+            'konseling_id' => $konseling->id,
+            'tanggal'      => now()->format('Y-m-d'),
+            'search_key'   => now()->format('l, d F Y'),
+        ]);
+
+        return redirect()->route('bk.laporan-konseling')->with('sukses', 'Hasil konseling online berhasil dicatat dan laporan dibuat!');
+    }
+
     /** Laporan Konseling - list laporan dari sesi selesai */
     public function laporanKonseling()
     {
-        $laporans  = Laporan::with('author')->where('author_id', auth()->id())->latest()->paginate(10);
-        $selesSesi = Konseling::with('user')
-            ->where('status', 'selesai')
-            ->where('bk_id', auth()->id())
-            ->latest()
-            ->paginate(10);
+        $laporans  = Laporan::with(['author', 'user', 'konseling'])->where('author_id', auth()->id())->latest()->paginate(10);
 
-        return view('bk.laporan-konseling', compact('laporans', 'selesSesi'));
+        return view('bk.laporan-konseling', compact('laporans'));
+    }
+
+    /** Detail Laporan (BK) */
+    public function detailLaporan(Request $request)
+    {
+        $id = $request->query('id');
+        $laporan = Laporan::with('author')->findOrFail($id);
+        
+        $items = collect(); // Default empty
+        
+        // Pemetaan 1-to-1 untuk Laporan yang di-generate otomatis (Laporan Konseling: Nama Siswa)
+        if (str_starts_with($laporan->nama_laporan, 'Laporan Konseling: ')) {
+            $namaSiswa = trim(str_replace('Laporan Konseling:', '', $laporan->nama_laporan));
+            
+            // Cari tahu ini Laporan ke-berapa untuk siswa tersebut (berdasarkan created_at)
+            $userLaporans = Laporan::where('nama_laporan', $laporan->nama_laporan)
+                ->orderBy('id', 'asc')->get();
+            
+            // Cari index dari laporan yang sedang dibuka (0, 1, 2, dll)
+            $index = $userLaporans->search(function ($item) use ($laporan) {
+                return $item->id == $laporan->id;
+            });
+            
+            if ($index !== false) {
+                // Ambil sesi Konseling ke-{index} dari siswa tersebut
+                $konseling = Konseling::with('user')
+                    ->where('status', 'selesai')
+                    ->whereHas('user', function($q) use ($namaSiswa) {
+                        $q->where('name', 'like', '%' . $namaSiswa . '%');
+                    })
+                    ->orderBy('id', 'asc') // Urutkan terlama pertama
+                    ->skip($index)->first();
+                    
+                if ($konseling) {
+                    $items = collect([$konseling]); // Masukkan 1 sesi secara spesifik
+                }
+            }
+        } else {
+            // Untuk laporan manual ("Semester Ganjil", dll)
+            $items = Konseling::with('user')->where('status', 'selesai')->latest()->get();
+        }
+        
+        return view('bk.detail-laporan', compact('laporan', 'items'));
     }
 }

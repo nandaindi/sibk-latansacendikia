@@ -46,8 +46,7 @@ class ProfileController extends Controller
             'nomor_induk' => ['nullable', 'string', 'max:50'],
             'telepon' => ['nullable', 'string', 'max:20'],
             'kelas' => ['nullable', 'string', 'max:50'],
-            'jurusan_select' => ['nullable', 'string', 'max:100'],
-            'jurusan_custom' => ['nullable', 'string', 'max:100'],
+            'jurusan_select' => ['nullable', 'string', Rule::in(['IPA', 'IPS'])],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
@@ -72,11 +71,7 @@ class ProfileController extends Controller
 
         // Simpan jurusan jika ada di validasi (khusus siswa)
         if (isset($validated['jurusan_select'])) {
-            if ($validated['jurusan_select'] === 'Lainnya') {
-                $user->jurusan = $validated['jurusan_custom'] ?? null;
-            } else {
-                $user->jurusan = $validated['jurusan_select'];
-            }
+            $user->jurusan = $validated['jurusan_select'];
         }
 
         // Handle Avatar Upload

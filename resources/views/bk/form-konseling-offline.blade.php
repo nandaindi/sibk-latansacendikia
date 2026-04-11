@@ -14,7 +14,7 @@
     <p class="text-[1.05rem] font-extrabold text-[#1a9488] mb-5">Form Pencatatan</p>
 
     <!-- Form -->
-    <form id="formKonselingOffline" method="POST" action="{{ route('bk.form-konseling-offline.store') }}" class="flex flex-col gap-5">
+    <form id="formKonselingOffline" method="POST" action="{{ route('bk.store-form-konseling-offline') }}" class="flex flex-col gap-5">
         @csrf
         <!-- ID Sesi -->
         <input type="hidden" name="konseling_id" value="{{ $konseling->id }}">

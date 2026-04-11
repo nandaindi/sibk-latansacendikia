@@ -4,6 +4,17 @@
 
 @section('content')
 
+{{-- Notifications --}}
+@if(session('sukses_tambah'))
+    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl">Data berhasil ditambahkan.</div>
+@endif
+@if(session('sukses_edit'))
+    <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded-xl">Data berhasil diperbarui.</div>
+@endif
+@if(session('sukses_hapus'))
+    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">Data berhasil dihapus.</div>
+@endif
+
 <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
     <div>
         <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Daftar Konseling</h2>
@@ -59,10 +70,10 @@
             <a href="{{ route('admin.kelola-data.detail', ['id' => $item->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </a>
-            <a href="{{ route('admin.kelola-data.edit-akun', ['id' => $item->id]) }}" title="Edit" class="w-8 h-8 rounded-full bg-[#fff4e5] text-[#f59e0b] flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
+            <a href="{{ route('admin.kelola-data.edit-akun', ['id' => $item->user_id]) }}" title="Edit Siswa" class="w-8 h-8 rounded-full bg-[#fff4e5] text-[#f59e0b] flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </a>
-            <button type="button" onclick="showDeleteDataModal()" title="Hapus" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
+            <button type="button" onclick="showDeleteDataModal({{ $item->id }})" title="Hapus Konseling" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
         </div>
@@ -93,8 +104,9 @@
 
         <div class="flex gap-5 w-full justify-center mt-2">
             {{-- Button OK (Hapus) --}}
-            <form action="#" method="POST">
+            <form id="deleteDataForm" action="" method="POST">
                 @csrf
+                @method('DELETE')
                 <button type="submit"
                         class="h-[48px] w-[90px] bg-[#1a9488] text-white rounded-full flex items-center justify-center hover:brightness-105 transition-all shadow-[0_4px_12px_rgba(26,148,136,0.3)] border-none cursor-pointer">
                     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -126,7 +138,9 @@ function filterData() {
     });
 }
 
-function showDeleteDataModal() {
+function showDeleteDataModal(id) {
+    const form = document.getElementById('deleteDataForm');
+    form.action = "{{ route('admin.kelola-data.destroy') }}?id=" + id;
     document.getElementById('deleteDataModal').classList.remove('hidden');
     document.getElementById('deleteDataModal').classList.add('flex');
 }

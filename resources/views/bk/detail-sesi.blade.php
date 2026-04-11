@@ -58,6 +58,23 @@
                             <span class="text-[0.97rem] text-[#333] leading-relaxed">{{ $konseling->catatan_bk }}</span>
                         </div>
                         @endif
+
+                        @if($konseling->kesimpulan_siswa)
+                        <div class="mt-4 pt-4 border-t border-[#eee]">
+                            <div class="flex flex-col gap-3">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-[0.9rem] font-bold text-[#1a9488] w-[140px] shrink-0">Kesimpulan Siswa</span>
+                                    <span class="text-[0.9rem] font-bold text-[#1a9488]">:</span>
+                                    <span class="text-[0.9rem] text-[#555] italic">{{ $konseling->kesimpulan_siswa }}</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-[0.9rem] font-bold text-[#1a9488] w-[140px] shrink-0">Saran Siswa</span>
+                                    <span class="text-[0.9rem] font-bold text-[#1a9488]">:</span>
+                                    <span class="text-[0.9rem] text-[#555] italic">{{ $konseling->saran_siswa }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

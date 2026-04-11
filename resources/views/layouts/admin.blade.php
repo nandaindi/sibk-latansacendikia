@@ -116,6 +116,25 @@
 
         {{-- Page Content --}}
         <main class="flex-1 p-6 md:p-8">
+            {{-- Global Validation Errors --}}
+            @if($errors->any())
+            <div class="mb-6 animate-[fadeInDown_0.4s_ease-out]">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm flex items-start gap-3">
+                    <div class="shrink-0 text-red-500 mt-0.5">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-[0.9rem] font-black text-red-800 uppercase tracking-wider mb-1">Terjadi Kesalahan Pengisian:</h4>
+                        <ul class="list-disc list-inside text-[0.85rem] text-red-700 font-medium space-y-0.5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             @yield('content')
         </main>
     </div>

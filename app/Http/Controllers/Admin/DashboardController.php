@@ -41,32 +41,83 @@ class DashboardController extends Controller
     /** Store tambah akun */
     public function storeTambahAkun(Request $request)
     {
-        // TODO: simpan ke database
-        return redirect()->route('admin.kelola-akun')->with('sukses', true);
+        $request->validate([
+            'nama'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email',
+            'telepon'  => 'nullable|string|max:20',
+            'role'     => 'required|in:admin,bk,siswa',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $username = explode('@', $request->email)[0] . rand(10, 99);
+        
+        // Ensure username is unique
+        while (\App\Models\User::where('username', $username)->exists()) {
+            $username = explode('@', $request->email)[0] . rand(10, 99);
+        }
+
+        \App\Models\User::create([
+            'name'     => $request->nama,
+            'email'    => $request->email,
+            'telepon'  => $request->telepon,
+            'role'     => $request->role,
+            'password' => $request->password, 
+            'username' => $username,
+        ]);
+
+        return redirect()->route('admin.kelola-akun')->with('sukses_tambah', true);
     }
 
     /** Detail Akun */
-    public function detailAkun()
+    public function detailAkun(Request $request)
     {
-        return view('admin.detail-akun');
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        return view('admin.detail-akun', compact('user'));
     }
 
     /** Edit Akun - form */
-    public function editAkun()
+    public function editAkun(Request $request)
     {
-        return view('admin.edit-akun');
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        return view('admin.edit-akun', compact('user'));
     }
 
     /** Update Akun */
     public function updateEditAkun(Request $request)
     {
-        return redirect()->route('admin.detail-akun')->with('sukses', true);
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        
+        $request->validate([
+            'nama'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'telepon'  => 'nullable|string|max:15',
+            'role'     => 'required|in:admin,bk,siswa',
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $data = [
+            'name'    => $request->nama,
+            'email'   => $request->email,
+            'telepon' => $request->telepon,
+            'role'    => $request->role,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = $request->password;
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.kelola-akun')->with('sukses_edit', true);
     }
 
     /** Hapus Akun */
-    public function destroyAkun()
+    public function destroyAkun(Request $request)
     {
-        return redirect()->route('admin.kelola-akun')->with('sukses', true);
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        $user->delete();
+
+        return redirect()->route('admin.kelola-akun')->with('sukses_hapus', true);
     }
 
     /** Kelola Data - list daftar konseling */
@@ -77,33 +128,81 @@ class DashboardController extends Controller
     }
 
     /** Kelola Data - Detail Konseling */
-    public function detailKonseling()
+    public function detailKonseling(Request $request)
     {
-        return view('admin.detail-konseling');
+        $konseling = \App\Models\Konseling::with(['user', 'bk'])->findOrFail($request->query('id'));
+        return view('admin.detail-konseling', compact('konseling'));
     }
 
-    /** Kelola Data - Tambah Data Konseling */
+    /** Kelola Data - Tambah Data Konseling (Siswa actually) */
     public function tambahData()
     {
         return view('admin.tambah-data');
     }
 
-    /** Kelola Data - Store Tambah Data Konseling */
+    /** Kelola Data - Store Tambah Data (Siswa) */
     public function storeTambahData(Request $request)
     {
-        return redirect()->route('admin.kelola-data')->with('sukses', true);
+        $request->validate([
+            'nama'     => 'required|string|max:100',
+            'email'    => 'required|email|unique:users,email',
+            'nis'      => 'required|string|unique:users,nis|unique:users,username',
+            'password' => 'required|string|min:6',
+        ]);
+
+        \App\Models\User::create([
+            'name'     => $request->nama,
+            'email'    => $request->email,
+            'nis'      => $request->nis,
+            'role'     => 'siswa',
+            'password' => $request->password,
+            'username' => $request->nis,
+        ]);
+
+        return redirect()->route('admin.kelola-data')->with('sukses_tambah', true);
     }
 
-    /** Kelola Data - Edit Akun (Konseling) */
-    public function editAkunData()
+    /** Kelola Data - Edit Akun (Siswa) */
+    public function editAkunData(Request $request)
     {
-        return view('admin.edit-akun-data');
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        return view('admin.edit-akun-data', compact('user'));
     }
 
-    /** Kelola Data - Update Edit Akun (Konseling) */
+    /** Kelola Data - Update Edit Akun (Siswa) */
     public function updateEditAkunData(Request $request)
     {
-        return redirect()->route('admin.kelola-data.detail')->with('sukses', true);
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        
+        $request->validate([
+            'nama'  => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'nis'   => 'required|string|unique:users,nis,' . $user->id,
+            'password' => 'nullable|string|min:6',
+        ]);
+
+        $data = [
+            'name'  => $request->nama,
+            'email' => $request->email,
+            'nis'   => $request->nis,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = $request->password;
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.kelola-data')->with('sukses_edit', true);
+    }
+
+    /** Kelola Data - Hapus Konseling */
+    public function destroyData(Request $request)
+    {
+        $konseling = \App\Models\Konseling::findOrFail($request->query('id'));
+        $konseling->delete();
+
+        return redirect()->route('admin.kelola-data')->with('sukses_hapus', true);
     }
 
     /** Kelola Laporan - list daftar laporan */
@@ -168,24 +267,57 @@ class DashboardController extends Controller
     /** Kelola Laporan - Store Tambah Data Laporan */
     public function storeTambahLaporan(Request $request)
     {
-        return redirect()->route('admin.kelola-laporan')->with('sukses', true);
+        $request->validate([
+            'nama_laporan' => 'required|string|max:200',
+            'tanggal'      => 'required|date',
+        ]);
+
+        $namaSiswa = trim(str_replace('Laporan Konseling:', '', $request->nama_laporan));
+        $student = \App\Models\User::where('name', 'like', '%' . $namaSiswa . '%')->first();
+
+        \App\Models\Laporan::create([
+            'nama_laporan' => $request->nama_laporan,
+            'tanggal'      => $request->tanggal,
+            'author_id'    => auth()->id(),
+            'user_id'      => $student->id ?? null,
+            'search_key'   => \Carbon\Carbon::parse($request->tanggal)->format('l, d F Y'),
+        ]);
+
+        return redirect()->route('admin.kelola-laporan')->with('sukses_tambah', true);
     }
 
     /** Kelola Laporan - Edit Data Laporan */
-    public function editLaporan()
+    public function editLaporan(Request $request)
     {
-        return view('admin.edit-laporan');
+        $laporan = \App\Models\Laporan::findOrFail($request->query('id'));
+        return view('admin.edit-laporan', compact('laporan'));
     }
 
     /** Kelola Laporan - Update Edit Data Laporan */
     public function updateEditLaporan(Request $request)
     {
-        return redirect()->route('admin.kelola-laporan.detail')->with('sukses', true);
+        $laporan = \App\Models\Laporan::findOrFail($request->query('id'));
+
+        $request->validate([
+            'nama_laporan' => 'required|string|max:200',
+            'tanggal'      => 'required|date',
+        ]);
+
+        $laporan->update([
+            'nama_laporan' => $request->nama_laporan,
+            'tanggal'      => $request->tanggal,
+            'search_key'   => \Carbon\Carbon::parse($request->tanggal)->format('l, d F Y'),
+        ]);
+
+        return redirect()->route('admin.kelola-laporan')->with('sukses_edit', true);
     }
 
     /** Kelola Laporan - Hapus Data Laporan */
-    public function destroyLaporan()
+    public function destroyLaporan(Request $request)
     {
-        return redirect()->route('admin.kelola-laporan')->with('sukses', true);
+        $laporan = \App\Models\Laporan::findOrFail($request->query('id'));
+        $laporan->delete();
+
+        return redirect()->route('admin.kelola-laporan')->with('sukses_hapus', true);
     }
 }

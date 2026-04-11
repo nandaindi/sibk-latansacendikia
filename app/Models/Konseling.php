@@ -16,6 +16,8 @@ class Konseling extends Model
         'status',
         'alasan_tolak',
         'catatan_bk',
+        'kesimpulan_siswa',
+        'saran_siswa',
         'is_read',
     ];
 

@@ -14,39 +14,43 @@
         </div>
     </div>
 
-    <form id="editKonselingForm" method="POST" action="{{ route('admin.kelola-data.edit-akun.update') }}" class="flex flex-col gap-4">
+    <form id="editKonselingForm" method="POST" action="{{ route('admin.kelola-data.edit-akun.update', ['id' => $user->id]) }}" class="flex flex-col gap-4">
         @csrf
         @method('PUT')
 
         {{-- Nama --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nama" placeholder="Nama" value="" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap Siswa</label>
+            <input type="text" name="nama" placeholder="Nama" value="{{ old('nama', $user->name) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- NIS --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nis" placeholder="NIS" value="" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">NIS (Nomor Induk Siswa)</label>
+            <input type="text" name="nis" placeholder="NIS" value="{{ old('nis', $user->nis) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="email" name="email" placeholder="Email" value="" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Alamat Email</label>
+            <input type="email" name="email" placeholder="Email" value="{{ old('email', $user->email) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="password" name="password" placeholder="Password"
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
+            <input type="password" name="password" placeholder="Password Baru"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Save Button (Triggers Edit Modal) --}}
         <div class="mt-4">
             <button type="button" onclick="showConfirmEditDataModal()"
-                    class="w-full py-4 bg-[#1a7a70] text-white rounded-full text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,122,112,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95">
-                Tambah Akun {{-- Note: Mockup text says 'Tambah Akun' here --}}
+                    class="w-full py-4 bg-[#1a7a70] text-white rounded-full text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,122,112,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
+                Simpan Perubahan
             </button>
         </div>
     </form>

@@ -193,14 +193,44 @@ class DashboardController extends Controller
         return view('siswa.konseling-offline', compact('konseling'));
     }
 
-    /** Chat Konseling - saat konseling berlangsung */
+    /** Chat Konseling - saat konseling berlangsung atau baru selesai meminta feedback */
     public function chatKonseling()
     {
-        $konseling = \App\Models\Konseling::where('user_id', auth()->id())
-            ->where('status', 'disetujui')
+        $userId = auth()->id();
+        
+        // Cari konseling aktif (disetujui) OR konseling selesai tapi belum ada feedback (kesimpulan_siswa)
+        $konseling = \App\Models\Konseling::where('user_id', $userId)
+            ->where(function($q) {
+                $q->where('status', 'disetujui')
+                  ->orWhere(function($sq) {
+                      $sq->where('status', 'selesai')
+                         ->whereNull('kesimpulan_siswa');
+                  });
+            })
             ->where('jenis', 'online')
             ->latest()->first();
+            
         return view('siswa.chat-konseling', compact('konseling'));
+    }
+
+    /** Simpan feedback siswa (kesimpulan & saran) */
+    public function storeFeedback(Request $request)
+    {
+        $request->validate([
+            'konseling_id' => 'required|exists:konselings,id',
+            'kesimpulan_siswa' => 'required|string',
+            'saran_siswa'      => 'required|string',
+        ]);
+
+        $konseling = \App\Models\Konseling::where('user_id', auth()->id())
+            ->findOrFail($request->konseling_id);
+
+        $konseling->update([
+            'kesimpulan_siswa' => $request->kesimpulan_siswa,
+            'saran_siswa'      => $request->saran_siswa,
+        ]);
+
+        return redirect()->route('siswa.dashboard')->with('sukses', 'Terima kasih atas kesimpulan dan saran yang telah kamu berikan.');
     }
 
     /** Riwayat Konseling - semua historis laporan (selesai) */

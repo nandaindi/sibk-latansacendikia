@@ -146,13 +146,24 @@ document.addEventListener('click', function(e) {
 });
 
 function showConfirmModal() {
-    // Basic validation before showing modal
+    const roleInput = document.getElementById('roleInput');
+    const roleButton = document.getElementById('roleButton');
+    
+    // Check role manually since it's a hidden input
+    if (!roleInput.value) {
+        roleButton.classList.add('border-red-400', 'bg-red-50');
+        if (!isRoleOpen) toggleRoleDropdown();
+        return;
+    }
+    
+    roleButton.classList.remove('border-red-400', 'bg-red-50');
+
+    // Basic validation for other fields
     const form = document.getElementById('tambahAkunForm');
     if (form.checkValidity()) {
         document.getElementById('confirmModal').classList.remove('hidden');
         document.getElementById('confirmModal').classList.add('flex');
     } else {
-        // Trigger browser's native validation popup
         form.reportValidity();
     }
 }

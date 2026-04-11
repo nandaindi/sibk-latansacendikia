@@ -127,6 +127,9 @@
 
 @push('scripts')
 <script>
+    // Hapus marker toast login agar bisa muncul lagi saat login berikutnya
+    sessionStorage.removeItem('login_toast_shown');
+
     function togglePassword() {
         const input   = document.getElementById('password');
         const eyeOff  = document.getElementById('icon-eye-off');

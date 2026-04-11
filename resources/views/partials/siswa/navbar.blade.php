@@ -66,6 +66,10 @@
                class="{{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
                Riwayat Panggilan
             </a>
+            <a href="{{ route('siswa.riwayat-konseling') }}"
+               class="{{ request()->routeIs('siswa.riwayat-konseling*', 'siswa.detail-laporan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
+               Riwayat Laporan
+            </a>
             @else
             <a href="{{ route('bk.artikel.index') }}"
                class="{{ request()->routeIs('bk.artikel*') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">

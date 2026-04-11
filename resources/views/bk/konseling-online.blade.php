@@ -215,7 +215,7 @@ async function konfirmasiSelesai(){
             body: JSON.stringify({ konseling_id: KONSELING_ID }),
         });
         const data = await res.json();
-        if(data.ok) window.location.href = '{{ route("bk.laporan-konseling") }}';
+        if(data.ok) window.location.href = '{{ url("bk/form-konseling-online") }}/' + data.id;
         else { tutupModalSelesai(); if(btn){btn.disabled=false;btn.textContent='Ya, Selesaikan';} }
     } catch(e){
         tutupModalSelesai();

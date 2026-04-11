@@ -4,6 +4,17 @@
 
 @section('content')
 
+{{-- Notifications --}}
+@if(session('sukses_tambah'))
+    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl">Laporan berhasil ditambahkan.</div>
+@endif
+@if(session('sukses_edit'))
+    <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded-xl">Laporan berhasil diperbarui.</div>
+@endif
+@if(session('sukses_hapus'))
+    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">Laporan berhasil dihapus.</div>
+@endif
+
 <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
     <div>
         <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Daftar Laporan</h2>
@@ -12,7 +23,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
-                Data
+                Laporan
             </a>
         </div>
     </div>
@@ -54,7 +65,7 @@
         <span class="w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($laporans->currentPage() - 1) * $laporans->perPage() }}</span>
         <span class="text-[0.95rem] font-semibold text-[#1a1a1a] flex-1 min-w-[150px]">{{ $item->nama_laporan }}</span>
         <span class="text-[0.9rem] text-[#555] flex-1 text-center hidden md:block">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }}</span>
-        <span class="text-[0.9rem] text-[#555] flex-1 text-center capitalize">Oleh: {{ $item->author->name ?? 'Unknown' }}</span>
+        <span class="text-[0.9rem] text-[#555] flex-1 text-center capitalize">By: {{ $item->author->name ?? 'Unknown' }}</span>
         <div class="flex items-center justify-center gap-2 shrink-0 w-[112px]">
             <a href="{{ route('admin.kelola-laporan.detail', ['id' => $item->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -62,7 +73,7 @@
             <a href="{{ route('admin.kelola-laporan.edit', ['id' => $item->id]) }}" title="Edit" class="w-8 h-8 rounded-full bg-[#fff4e5] text-[#f59e0b] flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </a>
-            <button type="button" onclick="showDeleteLaporanModal()" title="Hapus" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
+            <button type="button" onclick="showDeleteLaporanModal({{ $item->id }})" title="Hapus" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
         </div>
@@ -93,7 +104,7 @@
 
         <div class="flex gap-5 w-full justify-center mt-2">
             {{-- Button OK (Hapus) --}}
-            <form action="{{ route('admin.kelola-laporan.destroy') }}" method="POST">
+            <form id="deleteLaporanForm" action="" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit"
@@ -126,7 +137,9 @@ function filterLaporan() {
         el.style.display = text.includes(q) ? '' : 'none';
     });
 }
-function showDeleteLaporanModal() {
+function showDeleteLaporanModal(id) {
+    const form = document.getElementById('deleteLaporanForm');
+    form.action = "{{ route('admin.kelola-laporan.destroy') }}?id=" + id;
     document.getElementById('deleteLaporanModal').classList.remove('hidden');
     document.getElementById('deleteLaporanModal').classList.add('flex');
 }
