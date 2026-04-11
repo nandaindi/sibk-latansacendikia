@@ -1,13 +1,4 @@
-<!-- Toast Notifikasi (khusus login success dll) -->
-@if(session('login_success'))
-<div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 -translate-y-[80px] bg-[#1a9488] text-white px-5 py-3 rounded-full text-sm font-semibold shadow-[0_6px_24px_rgba(26,148,136,0.35)] z-[999] flex items-center gap-2 whitespace-nowrap transition-transform duration-500 min-[0px]:duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
-    </svg>
-    <span>Login Berhasil</span>
-</div>
-@endif
+<!-- Panggilan Aktif Modal Logic -->
 
 @php
     $panggilanAktifModal = \App\Models\Konseling::where('user_id', auth()->id())

@@ -36,43 +36,78 @@
         <img src="{{ asset('img/gpt robot with speech bubble.svg') }}" alt="Robot" class="static transform-none w-[220px] mx-auto block mb-8 md:absolute md:right-[120px] lg:right-[200px] md:top-1/2 md:-translate-y-1/2 md:w-[380px] md:mb-0 md:opacity-95 z-10 drop-shadow-sm pointer-events-none">
 
         <!-- Ensure form uses left side space in desktop view -->
-        <div class="w-full md:w-[55%] lg:w-[45%] z-20 flex flex-col space-y-6 md:pt-4">
-            <form id="formPengajuan" class="flex flex-col gap-5" method="POST"
+        <div class="w-full md:w-[55%] lg:w-[48%] z-20 flex flex-col space-y-6 md:pt-4">
+            <form id="formPengajuan" class="flex flex-col gap-6" method="POST"
                   action="{{ route('siswa.pengajuan-offline.store') }}">
                 @csrf
 
                 <!-- Date Time -->
-                <div class="border-[2.5px] border-[#1a9488] rounded-sm p-4 cursor-pointer transition-all duration-150 bg-white hover:bg-[#f8fdfc] focus-within:bg-[#f8fdfc]">
-                    <div class="text-[#888] font-bold text-[1.1rem] mb-1">Date Time</div>
-                    <input type="datetime-local" name="jadwal"
-                           value="{{ old('jadwal') }}"
-                           required
-                           class="w-full border-none outline-none font-sans text-[1rem] font-bold text-[#1a1a1a] bg-transparent cursor-pointer">
+                <div class="group">
+                    <div class="border-[2px] border-[#1a9488]/40 rounded-2xl p-5 md:p-6 transition-all duration-300 bg-white hover:border-[#1a9488] focus-within:border-[#1a9488] focus-within:shadow-[0_8px_30px_rgba(26,148,136,0.15)]">
+                        <label class="text-[#888] font-extrabold text-[0.85rem] uppercase tracking-widest mb-2 block">Jadwal Konseling</label>
+                        <div class="relative flex items-center">
+                            <input type="datetime-local" name="jadwal" id="jadwalInput"
+                                   value="{{ old('jadwal') }}"
+                                   required
+                                   class="w-full border-none outline-none font-sans text-[1.1rem] font-bold text-[#1a1a1a] bg-transparent cursor-pointer appearance-none">
+                            <div class="absolute right-0 pointer-events-none text-[#1a9488]">
+                                <!-- <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Problem Type -->
-                <div class="border-[2.5px] border-[#1a9488] rounded-sm p-4 cursor-pointer transition-all duration-150 bg-white hover:bg-[#f8fdfc] focus-within:bg-[#f8fdfc]">
-                    <div class="text-[#888] font-bold text-[1.1rem] mb-1">Problem Type</div>
-                    <select name="problem_type" required class="w-full border-none outline-none font-sans text-[1rem] font-bold text-[#1a1a1a] bg-transparent cursor-pointer appearance-none">
-                        <option value="" disabled selected hidden>Pilih masalah...</option>
-                        <option value="akademik">Masalah Akademik</option>
-                        <option value="sosial">Masalah Sosial</option>
-                        <option value="keluarga">Masalah Keluarga</option>
-                        <option value="karir">Perencanaan Karir</option>
-                        <option value="lainnya">Lainnya</option>
-                    </select>
+                <!-- Premium Problem Type Select -->
+                <div class="relative group">
+                    <div class="border-[2px] border-[#1a9488]/40 rounded-2xl p-5 md:p-6 transition-all duration-300 bg-white hover:border-[#1a9488] focus-within:border-[#1a9488] focus-within:shadow-[0_8px_30px_rgba(26,148,136,0.15)] cursor-pointer" onclick="toggleCustomSelect()">
+                        <label class="text-[#888] font-extrabold text-[0.85rem] uppercase tracking-widest mb-2 block pointer-events-none">Tipe Masalah</label>
+                        <div class="flex items-center justify-between">
+                            <div id="selectedLabel" class="text-[1.1rem] font-bold text-[#aaa]">Pilih masalah...</div>
+                            <div class="text-[#1a9488] transition-transform duration-300" id="selectArrow">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                        <input type="hidden" name="problem_type" id="problemTypeInput" required>
+                    </div>
+
+                    <!-- Dropdown Options -->
+                    <div id="customOptions" class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.12)] border-[1px] border-[#eee] overflow-hidden opacity-0 invisible translate-y-4 transition-all duration-300 z-[100]">
+                        <div class="py-2">
+                            <div class="px-5 py-3.5 hover:bg-[#f0f9f8] cursor-pointer transition-colors flex items-center gap-3" onclick="selectOption('akademik', 'Masalah Akademik')">
+                                <div class="w-2 h-2 rounded-full bg-[#1a9488]"></div>
+                                <span class="font-bold text-[#1a1a1a]">Masalah Akademik</span>
+                            </div>
+                            <div class="px-5 py-3.5 hover:bg-[#f0f9f8] cursor-pointer transition-colors flex items-center gap-3" onclick="selectOption('sosial', 'Masalah Sosial')">
+                                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                <span class="font-bold text-[#1a1a1a]">Masalah Sosial</span>
+                            </div>
+                            <div class="px-5 py-3.5 hover:bg-[#f0f9f8] cursor-pointer transition-colors flex items-center gap-3" onclick="selectOption('keluarga', 'Masalah Keluarga')">
+                                <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                                <span class="font-bold text-[#1a1a1a]">Masalah Keluarga</span>
+                            </div>
+                            <div class="px-5 py-3.5 hover:bg-[#f0f9f8] cursor-pointer transition-colors flex items-center gap-3" onclick="selectOption('karir', 'Perencanaan Karir')">
+                                <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                                <span class="font-bold text-[#1a1a1a]">Perencanaan Karir</span>
+                            </div>
+                            <div class="px-5 py-3.5 hover:bg-[#f0f9f8] cursor-pointer transition-colors flex items-center gap-3" onclick="selectOption('lainnya', 'Lainnya')">
+                                <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+                                <span class="font-bold text-[#1a1a1a]">Lainnya</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Note -->
-                <div class="border-[2.5px] border-[#1a9488] rounded-sm p-4 cursor-pointer transition-all duration-150 bg-white hover:bg-[#f8fdfc] focus-within:bg-[#f8fdfc]">
-                    <div class="text-[#888] font-bold text-[1.1rem] mb-1">Note</div>
-                    <textarea name="note" required class="w-full border-none outline-none font-sans text-[1rem] font-bold text-[#1a1a1a] bg-transparent resize-none min-h-[90px] placeholder-[#ccc]">{{ old('note') }}</textarea>
+                <div class="border-[2px] border-[#1a9488]/40 rounded-2xl p-5 md:p-6 transition-all duration-300 bg-white hover:border-[#1a9488] focus-within:border-[#1a9488] focus-within:shadow-[0_8px_30px_rgba(26,148,136,0.1)]">
+                    <label class="text-[#888] font-extrabold text-[0.85rem] uppercase tracking-widest mb-2 block">Catatan Pendukung</label>
+                    <textarea name="note" required placeholder="Tuliskan sedikit gambaran masalah Anda..."
+                              class="w-full border-none outline-none font-sans text-[1.1rem] font-bold text-[#1a1a1a] bg-transparent resize-none min-h-[110px] placeholder-[#ccc] transition-all">{{ old('note') }}</textarea>
                 </div>
             </form>
             
             <div class="mt-4 flex justify-end">
-                <button class="px-8 py-3.5 bg-[#1a9488] text-white border-none rounded-full text-[1.05rem] font-bold font-sans cursor-pointer transition-all duration-150 hover:bg-[#157a70] active:scale-95 shadow-md flex-shrink-0" onclick="submitForm()">
-                    Pengajuan Offline
+                <button class="px-10 py-4 bg-[#1a9488] text-white border-none rounded-full text-[1.1rem] font-extrabold shadow-[0_10px_25px_rgba(26,148,136,0.35)] cursor-pointer transition-all duration-300 hover:brightness-105 hover:-translate-y-1 active:scale-95 flex-shrink-0" onclick="submitForm()">
+                    Kirim Pengajuan
                 </button>
             </div>
         </div>
@@ -83,13 +118,52 @@
 
 @push('scripts')
 <script>
+    function toggleCustomSelect() {
+        const options = document.getElementById('customOptions');
+        const arrow = document.getElementById('selectArrow');
+        const isHidden = options.classList.contains('invisible');
+        
+        if (isHidden) {
+            options.classList.remove('invisible', 'opacity-0', 'translate-y-4');
+            options.classList.add('visible', 'opacity-100', 'translate-y-0');
+            arrow.classList.add('rotate-180');
+        } else {
+            options.classList.add('invisible', 'opacity-0', 'translate-y-4');
+            options.classList.remove('visible', 'opacity-100', 'translate-y-0');
+            arrow.classList.remove('rotate-180');
+        }
+    }
+
+    function selectOption(val, label) {
+        document.getElementById('problemTypeInput').value = val;
+        const labelEl = document.getElementById('selectedLabel');
+        labelEl.innerText = label;
+        labelEl.classList.remove('text-[#aaa]');
+        labelEl.classList.add('text-[#1a1a1a]');
+        toggleCustomSelect();
+    }
+
+    // Close on outside click
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.group')) {
+            const options = document.getElementById('customOptions');
+            const arrow = document.getElementById('selectArrow');
+            options.classList.add('invisible', 'opacity-0', 'translate-y-4');
+            arrow.classList.remove('rotate-180');
+        }
+    });
+
     function submitForm() {
         const jadwal = document.querySelector('[name="jadwal"]').value;
-        const problem = document.querySelector('[name="problem_type"]').value;
+        const problem = document.getElementById('problemTypeInput').value;
         const note = document.querySelector('[name="note"]').value;
 
         if (!jadwal || !problem || !note.trim()) {
-            alert('Mohon isi semua data terlebih dahulu.');
+            if (window.showToast) {
+                window.showToast('Mohon isi semua data dengan lengkap.', 'error');
+            } else {
+                alert('Mohon isi semua data terlebih dahulu.');
+            }
             return;
         }
 
@@ -98,7 +172,7 @@
 
         setTimeout(() => {
             document.getElementById('formPengajuan').submit();
-        }, 2000);
+        }, 1800);
     }
 
     @if(session('pengajuan_sukses'))

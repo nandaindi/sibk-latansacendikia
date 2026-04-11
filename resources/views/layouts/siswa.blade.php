@@ -20,6 +20,8 @@
 </head>
 <body class="bg-[#f4f6f9] min-h-screen text-[#1a1a1a]">
 
+<div id="toast-container" class="fixed top-0 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full max-w-sm flex flex-col items-center"></div>
+
 @include('partials.siswa.modals')
 
 <div class="w-full mx-auto bg-transparent min-h-screen relative flex flex-col">
@@ -33,23 +35,67 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
 
 <script>
+    // Global Toast Function
+    window.showToast = function(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const id = 'toast-' + Date.now();
+        const colors = {
+            success: 'bg-[#1a9488]',
+            error: 'bg-[#b94040]',
+            warning: 'bg-amber-500'
+        };
+        const bgColor = colors[type] || colors.success;
+        
+        const icons = {
+            success: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+            error: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+            warning: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+        };
+        const icon = icons[type] || icons.success;
+
+        const toastHtml = `
+            <div id="${id}" class="mt-5 translate-y-[-100px] opacity-0 ${bgColor} text-white px-6 py-3.5 rounded-full text-[0.95rem] font-bold shadow-[0_10px_30px_rgba(0,0,0,0.15)] flex items-center gap-3 whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+                ${icon}
+                <span>${message}</span>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', toastHtml);
+        const toastEl = document.getElementById(id);
+
+        // Show
+        setTimeout(() => {
+            toastEl.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toastEl.classList.add('translate-y-0', 'opacity-100');
+        }, 10);
+
+        // Hide and Remove
+        setTimeout(() => {
+            toastEl.classList.add('translate-y-[-100px]', 'opacity-0');
+            setTimeout(() => toastEl.remove(), 600);
+        }, 4000);
+    };
+
     // Toast masuk (Animasi dengan Tailwind classes)
     window.addEventListener('load', () => {
         @if(session('login_success'))
         const loginToastShown = sessionStorage.getItem('login_toast_shown');
-        const toast = document.getElementById('toast');
-        
-        if (toast && !loginToastShown) {
-            toast.classList.replace('-translate-y-[80px]', 'translate-y-0');
+        if (!loginToastShown) {
+            showToast('Login Berhasil', 'success');
             sessionStorage.setItem('login_toast_shown', 'true');
-            
-            setTimeout(() => {
-                toast.classList.replace('translate-y-0', '-translate-y-[80px]');
-                setTimeout(() => toast.remove(), 600); // Hapus elemen dari DOM agar tidak tersimpan di cache history (BFCache)
-            }, 3500);
-        } else if (toast) {
-            toast.remove(); // Jika sudah pernah tampil (misal via back button), hapus langsung
         }
+        @endif
+
+        @if(session('success'))
+            showToast('{{ session('success') }}', 'success');
+        @endif
+        @if(session('error'))
+            showToast('{{ session('error') }}', 'error');
+        @endif
+        @if(session('warning'))
+            showToast('{{ session('warning') }}', 'warning');
         @endif
     });
 
