@@ -187,7 +187,15 @@ async function sendMessage(){
 
 /* ───────────── BAGIKAN LINK ───────────── */
 function bagikanLink(){
-    if(!LINK_MEET){ alert('Link meeting belum diatur.'); return; }
+    if(!LINK_MEET){ 
+        Swal.fire({
+            icon: 'warning',
+            title: 'Link Meet Belum Ada',
+            text: 'Link meeting belum diatur oleh Anda.',
+            confirmButtonColor: '#1a9488'
+        });
+        return; 
+    }
     const inp = document.getElementById('chatInput');
     if(inp){ inp.value = `🎥 Link Meeting: ${LINK_MEET}`; inp.focus(); }
 }

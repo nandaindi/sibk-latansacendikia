@@ -171,6 +171,21 @@
                 </div>
                 @endif
 
+                {{-- 4. RTL (Rencana Tindak Lanjut) --}}
+                @if($item->rtl)
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-[#111] px-1">
+                        <h3 class="text-[0.9rem] font-black uppercase tracking-[0.2em] text-[#1a9488]">Rencana Tindak Lanjut (RTL)</h3>
+                    </div>
+                    <div class="bg-[#e0f5f3]/30 border-[2px] border-[#1a9488]/20 rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.7s_ease-out]">
+                        <div class="text-[1.05rem] text-[#1a7a70] leading-[1.8] font-bold">
+                            {!! nl2br(e($item->rtl)) !!}
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+
                 @if(!$solution && !$additional)
                     <div class="bg-white border-[1px] border-[#eee] rounded-[32px] p-10 text-center animate-[fadeInUp_0.5s_ease-out]">
                         <p class="text-[#bbb] font-bold italic">Tidak ada catatan solusi atau tambahan yang direkam untuk sesi ini.</p>
@@ -213,6 +228,13 @@
                 <div class="pr-log-content" style="line-height: 1.6; color: #444;">
                     {!! nl2br(e($item->catatan_bk)) !!}
                 </div>
+                @if($item->rtl)
+                <div class="pr-log-rtl" style="margin-top: 15px; padding: 10px; background: #f0f9f8; border-left: 4px solid #1a9488;">
+                    <div style="font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Rencana Tindak Lanjut:</div>
+                    <div style="font-size: 0.95rem; color: #1a7a70;">{{ $item->rtl }}</div>
+                </div>
+                @endif
+
             </div>
             @empty
             <div class="pr-field" style="font-style: italic;">Belum ada sesi pada laporan ini.</div>

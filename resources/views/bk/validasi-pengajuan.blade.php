@@ -77,8 +77,12 @@
 function submitTolak() {
     const alasan = document.getElementById('alasanTolak').value.trim();
     if (!alasan) {
-        alert('Harap isi alasan penolakan terlebih dahulu.');
-        document.getElementById('alasanTolak').focus();
+        Swal.fire({
+            icon: 'error',
+            title: 'Alasan Kosong',
+            text: 'Harap isi alasan penolakan terlebih dahulu.',
+            confirmButtonColor: '#1a9488'
+        });
         return;
     }
     document.getElementById('hiddenAlasan').value = alasan;

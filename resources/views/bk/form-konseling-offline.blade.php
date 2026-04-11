@@ -57,6 +57,13 @@
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium" />
         </div>
 
+        <!-- RTL -->
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+            <label class="text-[0.8rem] font-bold text-[#1a9488] block mb-1">Rencana Tindak Lanjut (RTL)</label>
+            <textarea name="rtl" placeholder="Apa langkah selanjutnya untuk siswa ini?" rows="2"
+                      class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium resize-none"></textarea>
+        </div>
+
         <!-- Note -->
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="text-[0.8rem] font-bold text-[#1a9488] block mb-1">Catatan Tambahan (Note)</label>

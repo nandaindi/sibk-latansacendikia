@@ -159,11 +159,12 @@
         const note = document.querySelector('[name="note"]').value;
 
         if (!jadwal || !problem || !note.trim()) {
-            if (window.showToast) {
-                window.showToast('Mohon isi semua data dengan lengkap.', 'error');
-            } else {
-                alert('Mohon isi semua data terlebih dahulu.');
-            }
+            Swal.fire({
+                icon: 'error',
+                title: 'Data Tidak Lengkap',
+                text: 'Mohon isi semua data dengan lengkap.',
+                confirmButtonColor: '#1a9488'
+            });
             return;
         }
 

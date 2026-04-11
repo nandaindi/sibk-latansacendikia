@@ -73,9 +73,20 @@
                         <div class="font-semibold text-[0.95rem] text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</div>
                         <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }} <span class="text-[#1a9488] font-medium ml-2 uppercase text-xs px-2 py-0.5 bg-[#e0f5f3] rounded-full">{{ $item->jenis }}</span></div>
                     </div>
-                    <a href="{{ route('bk.detail-sesi', ['id' => $item->id]) }}" class="text-[#1a9488] text-[0.9rem] font-semibold shrink-0 no-underline hover:text-[#12635a] transition-colors">
-                        Detail
-                    </a>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <form action="{{ route('bk.konseling-offline.mulai', $item->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="bg-[#1a9488] text-white text-[0.8rem] font-bold px-4 py-2 rounded-xl hover:brightness-110 transition-all">
+                                Mulai
+                            </button>
+                        </form>
+                        <form id="form-tidak-hadir-{{ $item->id }}" action="{{ route('bk.konseling-offline.tidak-hadir', $item->id) }}" method="POST">
+                            @csrf
+                            <button type="button" onclick="confirmTidakHadir({{ $item->id }})" class="bg-white border-2 border-[#ff4d4d] text-[#ff4d4d] text-[0.8rem] font-bold px-3 py-2 rounded-xl hover:bg-[#ff4d4d] hover:text-white transition-all">
+                                Tidak Hadir
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 @endif
             @endforeach
@@ -118,5 +129,24 @@ function switchTab(tab) {
         btnOn.classList.remove('border-white','text-white');
     }
 }
+
+function confirmTidakHadir(id) {
+    Swal.fire({
+        title: 'Apakah Anda Yakin?',
+        text: "Siswa ini benar-benar tidak hadir?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#1a9488',
+        cancelButtonColor: '#ff4d4d',
+        confirmButtonText: 'Ya, Tidak Hadir',
+        cancelButtonText: 'Batal',
+        borderRadius: '24px'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-tidak-hadir-' + id).submit();
+        }
+    })
+}
+
 </script>
 @endpush

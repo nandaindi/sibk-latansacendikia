@@ -145,8 +145,14 @@
         }
         
         const konten = quill.root.innerHTML;
-        if (quill.getText().trim().length === 0) {
-            alert('Isi artikel tidak boleh kosong.');
+        const content = quill.getText().trim();
+        if (content === '' || konten === '<p><br></p>') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Artikel Kosong',
+                text: 'Isi artikel tidak boleh kosong.',
+                confirmButtonColor: '#1a9488'
+            });
             return;
         }
         document.getElementById('konten-hidden').value = konten;

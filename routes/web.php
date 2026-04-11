@@ -90,6 +90,10 @@ Route::middleware(['auth', 'role:bk'])->prefix('bk')->name('bk.')->group(functio
     Route::get('/form-konseling-online/{id}',    [BKController::class, 'formKonselingOnline'])->name('form-konseling-online');
     Route::post('/store-form-konseling-online',  [BKController::class, 'storeFormKonselingOnline'])->name('store-form-konseling-online');
 
+    // Flow Konseling Offline (Mulai & Tidak Hadir)
+    Route::post('/konseling-offline/{id}/mulai', [BKController::class, 'mulaiSesiOffline'])->name('konseling-offline.mulai');
+    Route::post('/konseling-offline/{id}/tidak-hadir', [BKController::class, 'tidakHadirOffline'])->name('konseling-offline.tidak-hadir');
+
     // Artikel Management (BK)
     Route::resource('artikel', \App\Http\Controllers\BK\ArtikelController::class);
 
