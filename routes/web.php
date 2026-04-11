@@ -121,20 +121,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/edit-akun',          [\App\Http\Controllers\Admin\DashboardController::class, 'editAkun'])->name('edit-akun');
     Route::put('/edit-akun',          [\App\Http\Controllers\Admin\DashboardController::class, 'updateEditAkun'])->name('edit-akun.update');
     Route::get('/kelola-data',        [\App\Http\Controllers\Admin\DashboardController::class, 'kelolaData'])->name('kelola-data');
-    Route::get('/kelola-data/tambah', [\App\Http\Controllers\Admin\DashboardController::class, 'tambahData'])->name('kelola-data.tambah');
-    Route::post('/kelola-data/tambah', [\App\Http\Controllers\Admin\DashboardController::class, 'storeTambahData'])->name('kelola-data.tambah.store');
     Route::get('/kelola-data/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailKonseling'])->name('kelola-data.detail');
-    Route::get('/kelola-data/edit-akun', [\App\Http\Controllers\Admin\DashboardController::class, 'editAkunData'])->name('kelola-data.edit-akun');
-    Route::put('/kelola-data/edit-akun', [\App\Http\Controllers\Admin\DashboardController::class, 'updateEditAkunData'])->name('kelola-data.edit-akun.update');
     Route::delete('/kelola-data', [\App\Http\Controllers\Admin\DashboardController::class, 'destroyData'])->name('kelola-data.destroy');
     
     Route::get('/kelola-laporan',     [\App\Http\Controllers\Admin\DashboardController::class, 'kelolaLaporan'])->name('kelola-laporan');
     Route::get('/kelola-laporan/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailLaporan'])->name('kelola-laporan.detail');
     Route::delete('/kelola-laporan/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'destroyLaporan'])->name('kelola-laporan.destroy');
-    Route::get('/kelola-laporan/tambah', [\App\Http\Controllers\Admin\DashboardController::class, 'tambahLaporan'])->name('kelola-laporan.tambah');
-    Route::post('/kelola-laporan/tambah', [\App\Http\Controllers\Admin\DashboardController::class, 'storeTambahLaporan'])->name('kelola-laporan.store');
-    Route::get('/kelola-laporan/edit', [\App\Http\Controllers\Admin\DashboardController::class, 'editLaporan'])->name('kelola-laporan.edit');
-    Route::put('/kelola-laporan/edit', [\App\Http\Controllers\Admin\DashboardController::class, 'updateEditLaporan'])->name('kelola-laporan.edit.update');
+
 
     // Artikel Edukasi (Manajemen)
 
