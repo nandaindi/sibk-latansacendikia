@@ -45,7 +45,7 @@
 
             <!-- Username -->
             <div class="relative mb-[22px]">
-                <label class="block text-[0.82rem] font-semibold text-[#555] mb-2 tracking-[0.3px]" for="username">Username</label>
+                <label class="block text-[0.82rem] font-semibold text-[#555] mb-2 tracking-[0.3px]" for="username">Username atau Email</label>
                 <div class="relative">
                     <span class="absolute left-[14px] top-1/2 -translate-y-1/2 text-[#aaa] pointer-events-none">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -59,7 +59,7 @@
                         name="username"
                         class="w-full py-[13px] pr-[14px] pl-[42px] border-[1.5px] border-[#e0e0e0] rounded-[10px] text-[0.9rem] font-sans text-[#333] bg-[#fafafa] transition-all duration-250 outline-none focus:border-[#1a9488] focus:shadow-[0_0_0_3px_rgba(26,148,136,0.12)] focus:bg-white @error('username') border-[#e74c3c] @enderror"
                         value="{{ old('username') }}"
-                        placeholder="Masukkan username"
+                        placeholder="Masukkan username atau email"
                         required
                         autofocus
                         autocomplete="username"
