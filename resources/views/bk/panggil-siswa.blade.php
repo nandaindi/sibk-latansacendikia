@@ -83,7 +83,7 @@
             <h3 class="text-[1.1rem] font-bold text-[#1a9488] mb-1">Riwayat Panggilan Kamu</h3>
 
             @forelse($riwayatPanggilan as $item)
-            <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3 flex items-center gap-4 shadow-sm hover:translate-x-1 transition-transform">
+            <a href="{{ route('bk.panggil-siswa.detail', $item->id) }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3 flex items-center gap-4 shadow-sm hover:translate-x-1 transition-transform no-underline">
                 <!-- Avatar inisial -->
                 <div class="w-12 h-12 shrink-0 rounded-full bg-[#e0f5f3] text-[#1a9488] flex items-center justify-center font-bold text-lg border border-[#c7ece8]">
                     {{ substr($item->user->name, 0, 1) }}
@@ -95,13 +95,13 @@
                     </div>
                     @if($item->status == 'selesai')
                         <div class="text-[0.78rem] font-bold text-[#1a9488] mt-0.5">Selesai</div>
-                    @elseif($item->status == 'dipanggil')
+                    @elseif($item->status == 'menunggu')
                         <div class="text-[0.78rem] font-bold text-[#e17055] mt-0.5 animate-pulse">Menunggu Siswa</div>
                     @else
                         <div class="text-[0.78rem] font-bold text-[#aaa] mt-0.5 capitalize">{{ str_replace('_', ' ', $item->status) }}</div>
                     @endif
                 </div>
-            </div>
+            </a>
             @empty
             <div class="text-center py-10 text-[#aaa] border-2 border-dashed border-[#c5dbd9] rounded-2xl">
                 <svg width="40" height="40" class="mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>

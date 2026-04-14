@@ -6,14 +6,25 @@
         </svg>
         <span class="text-[0.75rem] font-semibold currentColor">Beranda</span>
     </a>
-    <a href="{{ route('siswa.panggilan') }}" class="bg-transparent border-none flex flex-col items-center gap-1 p-2 {{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#888]' }} hover:text-[#1a9488] transition-colors no-underline">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/>
-            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 19H5a10.94 10.94 0 0 1 6-9.95"/>
-            <path d="M2 4.27l6.91 6.91"/>
-            <path d="m22 2-7 7"/>
-        </svg>
-        <span class="text-[0.75rem] font-semibold currentColor">Panggilan</span>
+    <a href="{{ route('siswa.panggilan') }}" class="bg-transparent border-none flex flex-col items-center gap-1 p-2 {{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#888]' }} hover:text-[#1a9488] transition-colors no-underline relative">
+        <div class="relative">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/>
+                <path d="M16.72 11.06A10.94 10.94 0 0 1 19 19H5a10.94 10.94 0 0 1 6-9.95"/>
+                <path d="M2 4.27l6.91 6.91"/>
+                <path d="m22 2-7 7"/>
+            </svg>
+            @php
+                $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
+                    ->where('status', 'menunggu')
+                    ->where('is_read', false)
+                    ->count();
+            @endphp
+            @if($unreadPanggilanCount > 0)
+                <span class="absolute -top-1 -right-2 bg-[#ef4444] text-white text-[0.6rem] font-bold px-1 rounded-full min-w-[16px] h-4 flex items-center justify-center">{{ $unreadPanggilanCount }}</span>
+            @endif
+        </div>
+        <span class="text-[0.75rem] font-semibold currentColor">Pelanggaran</span>
     </a>
     <a href="{{ route('siswa.riwayat-konseling') }}" class="bg-transparent border-none flex flex-col items-center gap-1 p-2 {{ request()->routeIs('siswa.riwayat-konseling*', 'siswa.detail-laporan') ? 'text-[#1a9488]' : 'text-[#888]' }} hover:text-[#1a9488] transition-colors no-underline">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

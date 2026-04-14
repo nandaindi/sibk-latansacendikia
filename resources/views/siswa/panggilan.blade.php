@@ -1,6 +1,6 @@
 @extends('layouts.siswa')
 
-@section('title', 'Panggilan Konseling – BK')
+@section('title', 'Panggilan Pelanggaran – BK')
 
 @section('content')
     <!-- Content -->
@@ -11,7 +11,7 @@
                 Panggilan Masuk
             </div>
 
-            @php $panggilanAktif = $panggilan->where('status', 'dipanggil'); @endphp
+            @php $panggilanAktif = $panggilan->where('status', 'menunggu'); @endphp
 
             @forelse($panggilanAktif as $item)
             @php $sudahDibaca = $item->is_read; @endphp
@@ -27,8 +27,8 @@
                 <div class="flex-1 w-full md:mr-0 mb-3 md:mb-0">
                     <div class="text-[1.1rem] font-bold {{ $sudahDibaca ? 'text-[#888]' : 'text-[#1a1a1a]' }} mb-1">Guru BK</div>
                     <div class="text-[0.9rem] text-[#777]">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }} · {{ $item->waktu ?? '-' }}</div>
-                    @if($item->catatan_bk)
-                    <div class="text-[0.82rem] text-[#555] mt-1 line-clamp-2">{{ $item->catatan_bk }}</div>
+                    @if($item->catatan_pemanggilan)
+                    <div class="text-[0.82rem] text-[#555] mt-1 line-clamp-2">{{ $item->catatan_pemanggilan }}</div>
                     @endif
                 </div>
                 @if($sudahDibaca)
@@ -47,11 +47,10 @@
                 Riwayat
             </div>
 
-            {{-- Riwayat: selesai/ditolak yang awalnya dipanggil --}}
+            {{-- Riwayat: selesai/tidak hadir dari tabel pelanggarans --}}
             @php
-                $riwayatPanggilan = \App\Models\Konseling::where('user_id', auth()->id())
-                    ->whereIn('status', ['selesai', 'ditolak'])
-                    ->where('jenis', 'offline')
+                $riwayatPanggilan = \App\Models\Pelanggaran::where('user_id', auth()->id())
+                    ->whereIn('status', ['selesai', 'tidak_hadir'])
                     ->latest()->take(5)->get();
             @endphp
 
@@ -69,7 +68,8 @@
                 </div>
                 <div class="flex items-center gap-2 self-start md:self-center">
                     @if($item->status == 'selesai')
-                        <a href="{{ route('siswa.detail-laporan', $item->id) }}" class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#1a9488] text-white hover:brightness-105 hover:shadow-md transition-all no-underline">Lihat Laporan</a>
+                        {{-- Untuk pelanggaran, mungkin belum ada file laporan khusus, tampilkan badge saja atau detail --}}
+                        <a href="{{ route('siswa.detail-panggilan', $item->id) }}" class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#1a9488] text-white hover:brightness-105 hover:shadow-md transition-all no-underline">Lihat Detail</a>
                     @endif
                     <span class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#e0f5f3] text-[#1a9488] border border-[#c7ece8] capitalize">{{ $item->status }}</span>
                 </div>

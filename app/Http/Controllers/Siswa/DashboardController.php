@@ -29,7 +29,7 @@ class DashboardController extends Controller
 
         // Cari konseling aktif / pending (exclude tidak_hadir & selesai & ditolak)
         $activeKonseling = \App\Models\Konseling::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->latest()
             ->first();
 
@@ -38,51 +38,38 @@ class DashboardController extends Controller
         return view('siswa.dashboard', compact('activeKonseling', 'articles'));
     }
 
-    /** List panggilan konseling (dipanggil oleh BK) */
+    /** List panggilan/pelanggaran (dipanggil oleh BK) */
     public function panggilan()
     {
-        $panggilan = \App\Models\Konseling::where('user_id', auth()->id())
-            ->where('status', 'dipanggil')
+        $panggilan = \App\Models\Pelanggaran::where('user_id', auth()->id())
+            ->where('status', 'menunggu')
             ->latest()
             ->get();
         return view('siswa.panggilan', compact('panggilan'));
     }
 
-    /** Detail panggilan */
+    /** Detail panggilan pelanggaran */
     public function detailPanggilan($id)
     {
-        $panggilan = \App\Models\Konseling::where('user_id', auth()->id())
+        $panggilan = \App\Models\Pelanggaran::where('user_id', auth()->id())
             ->where('id', $id)
-            ->where('status', 'dipanggil')
             ->firstOrFail();
-
-        // Tandai sudah dibaca begitu siswa membuka halaman ini
-        if (!$panggilan->is_read) {
-            $panggilan->is_read = true;
-            $panggilan->save();
-        }
 
         return view('siswa.detail-panggilan', compact('panggilan'));
     }
 
-    /** Terima panggilan dari BK */
+    /** Terima panggilan dari BK (sekarang hanyalah konfirmasi hadir / membaca) */
     public function terimaPanggilan(Request $request)
     {
         $request->validate([
-            'konseling_id' => 'required|exists:konselings,id',
+            'pelanggaran_id' => 'required|exists:pelanggarans,id',
         ]);
 
-        $konseling = \App\Models\Konseling::where('user_id', auth()->id())
-            ->where('id', $request->konseling_id)
-            ->where('status', 'dipanggil')
-            ->firstOrFail();
-
-        // Ubah status jadi disetujui, artinya siswa menyetujui panggilan tersebut
-        $konseling->update([
-            'status' => 'disetujui'
-        ]);
-
-        return redirect()->route('siswa.dashboard')->with('sukses', 'Panggilan berhasil diterima. Silakan temui Guru BK sesuai jadwal.');
+        // Dalam flow baru, siswa cuma melihat detail atau tombol "Mengerti"
+        // Jika perlu status dibaca, bisa ditambahkan di migration nanti.
+        // Untuk sekarang redirect ke dashboard.
+        
+        return redirect()->route('siswa.dashboard')->with('sukses', 'Silakan temui Guru BK sesuai jadwal panggilan.');
     }
 
     /** Pengajuan Online */

@@ -75,8 +75,12 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
 // BK (Guru Konseling) routes
 Route::middleware(['auth', 'role:bk'])->prefix('bk')->name('bk.')->group(function () {
     Route::get('/dashboard',              [BKController::class, 'index'])->name('dashboard');
-    Route::get('/panggil-siswa',          [BKController::class, 'panggilSiswa'])->name('panggil-siswa');
-    Route::post('/panggil-siswa/store',   [BKController::class, 'storePanggilSiswa'])->name('panggil-siswa.store');
+    // Pelanggaran / Panggilan Siswa
+    Route::get('/panggil-siswa',          [\App\Http\Controllers\BK\PemanggilanController::class, 'index'])->name('panggil-siswa.index');
+    Route::post('/panggil-siswa/store',   [\App\Http\Controllers\BK\PemanggilanController::class, 'store'])->name('panggil-siswa.store');
+    Route::get('/panggil-siswa/detail/{id}', [\App\Http\Controllers\BK\PemanggilanController::class, 'detail'])->name('panggil-siswa.detail');
+    Route::post('/panggil-siswa/update/{id}', [\App\Http\Controllers\BK\PemanggilanController::class, 'update'])->name('panggil-siswa.update');
+
     Route::get('/daftar-pengajuan',              [BKController::class, 'daftarPengajuan'])->name('daftar-pengajuan');
     Route::get('/validasi-pengajuan',            [BKController::class, 'validasiPengajuan'])->name('validasi-pengajuan');
     Route::get('/setujui-pengajuan',             [BKController::class, 'setujuiPengajuan'])->name('setujui-pengajuan');

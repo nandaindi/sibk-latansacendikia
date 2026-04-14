@@ -20,14 +20,28 @@
             ->get();
         $hasNotification = $notifications->count() > 0;
     } else {
-        $notifications = \App\Models\Konseling::with('bk')
+        // Gabungkan notifikasi Konseling & Pelanggaran (Siswa)
+        $konselingNotifs = \App\Models\Konseling::with('bk')
             ->where('user_id', auth()->id())
-            ->whereIn('status', ['dipanggil', 'selesai'])
+            ->where('status', 'selesai')
             ->latest()
             ->take(3)
             ->get();
-        // Dot merah hanya jika ada yang belum dibaca
+
+        $pelanggaranNotifs = \App\Models\Pelanggaran::with('bk')
+            ->where('user_id', auth()->id())
+            ->where('status', 'menunggu')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $notifications = $konselingNotifs->concat($pelanggaranNotifs)->sortByDesc('updated_at')->take(5);
         $hasNotification = $notifications->where('is_read', false)->count() > 0;
+
+        $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
+            ->where('status', 'menunggu')
+            ->where('is_read', false)
+            ->count();
     }
 @endphp
 
@@ -63,8 +77,11 @@
             </a>
             @if(!$isBK)
             <a href="{{ route('siswa.panggilan') }}"
-               class="{{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
+               class="flex items-center gap-1.5 {{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
                Riwayat Panggilan
+               @if(isset($unreadPanggilanCount) && $unreadPanggilanCount > 0)
+                   <span class="bg-[#ef4444] text-white text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $unreadPanggilanCount }}</span>
+               @endif
             </a>
             <a href="{{ route('siswa.riwayat-konseling') }}"
                class="{{ request()->routeIs('siswa.riwayat-konseling*', 'siswa.detail-laporan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
@@ -127,13 +144,15 @@
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
                                     @else
-                                    @php $isUnread = !$notif->is_read && $notif->status === 'dipanggil'; @endphp
+                                    @php 
+                                        $isUnread = !$notif->is_read && ($notif->status === 'menunggu' || $notif->status === 'dipanggil'); 
+                                    @endphp
                                     <a href="{{ route('siswa.detail-panggilan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnread ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
                                         <div class="flex items-center gap-2 mb-0.5">
                                             @if($isUnread)
                                             <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
                                             @endif
-                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Konseling</div>
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Pelanggaran</div>
                                         </div>
                                         <div class="text-xs text-[#555] mb-1 {{ $isUnread ? '' : 'text-[#999]' }}">Jadwal: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ \Carbon\Carbon::parse($notif->waktu)->format('H:i') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
@@ -250,13 +269,15 @@
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
                                     @else
-                                    @php $isUnread = !$notif->is_read && $notif->status === 'dipanggil'; @endphp
+                                    @php 
+                                        $isUnread = !$notif->is_read && ($notif->status === 'menunggu' || $notif->status === 'dipanggil'); 
+                                    @endphp
                                     <a href="{{ route('siswa.detail-panggilan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnread ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
                                         <div class="flex items-center gap-2 mb-0.5">
                                             @if($isUnread)
                                             <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
                                             @endif
-                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Konseling</div>
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Pelanggaran</div>
                                         </div>
                                         <div class="text-xs text-[#555] mb-1 {{ $isUnread ? '' : 'text-[#999]' }}">Jadwal: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ \Carbon\Carbon::parse($notif->waktu)->format('H:i') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>

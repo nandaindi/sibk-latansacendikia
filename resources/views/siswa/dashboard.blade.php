@@ -103,10 +103,10 @@
             @endif
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
-                <!-- Card 1: Panggilan -->
+                <!-- Card 1: Panggilan Pelanggaran -->
                 <div class="bg-white rounded-[16px] pt-6 md:pt-8 flex flex-col items-center overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.08)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full">
-                    <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Konseling" class="h-[100px] md:h-[140px] w-auto object-contain mb-6 transition-transform duration-300 hover:scale-105">
-                    <a href="{{ route('siswa.panggilan') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-base font-bold py-3.5 md:py-4 px-4 tracking-wide mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer">Panggilan Konseling</a>
+                    <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Pelanggaran" class="h-[100px] md:h-[140px] w-auto object-contain mb-6 transition-transform duration-300 hover:scale-105">
+                    <a href="{{ route('siswa.panggilan') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-base font-bold py-3.5 md:py-4 px-4 tracking-wide mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer">Panggilan Pelanggaran</a>
                 </div>
                 <!-- Card 2: Pengajuan Online -->
                 <div class="bg-white rounded-[16px] pt-6 md:pt-8 flex flex-col items-center overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.08)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full">
