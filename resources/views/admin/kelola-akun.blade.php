@@ -47,7 +47,7 @@
     <span class="w-[40px] shrink-0 text-center">No</span>
     <span class="flex-1 min-w-[160px]">Nama</span>
     <span class="flex-1 hidden sm:block">Email</span>
-    <span class="flex-1 hidden md:block">No. Telepon</span>
+    <span class="w-[90px] shrink-0 text-center hidden md:block">Role</span>
     <span class="w-[112px] shrink-0 text-center">Aksi</span>
 </div>
 
@@ -56,9 +56,9 @@
     @forelse($akuns as $akun)
     <div class="akun-item bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
         <span class="w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($akuns->currentPage() - 1) * $akuns->perPage() }}</span>
-        <span class="flex-1 text-[0.93rem] font-semibold text-[#1a1a1a] min-w-[160px]">{{ $akun->name }} ({{ strtoupper($akun->role) }})</span>
+        <span class="flex-1 text-[0.93rem] font-semibold text-[#1a1a1a] min-w-[160px]">{{ $akun->name }}</span>
         <span class="flex-1 text-[0.9rem] text-[#555] hidden sm:block">{{ $akun->email }}</span>
-        <span class="flex-1 text-[0.9rem] text-[#555] hidden md:block">{{ $akun->telepon ?? '-' }}</span>
+        <span class="w-[90px] shrink-0 text-center hidden md:block"><span class="inline-block px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold uppercase {{ $akun->role == 'admin' ? 'bg-purple-100 text-purple-700' : ($akun->role == 'bk' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">{{ $akun->role }}</span></span>
         <div class="flex items-center justify-center gap-2 shrink-0 w-[112px]">
             <a href="{{ route('admin.detail-akun', ['id' => $akun->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>

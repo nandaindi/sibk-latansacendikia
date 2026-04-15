@@ -28,6 +28,14 @@ class User extends Authenticatable
         'jurusan',
         'telepon',
         'avatar',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'alamat',
+        'nama_ortu',
+        'telepon_ortu',
+        'nip',
+        'jabatan',
     ];
 
     public function konselings()

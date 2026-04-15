@@ -127,6 +127,24 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/kelola-data',        [\App\Http\Controllers\Admin\DashboardController::class, 'kelolaData'])->name('kelola-data');
     Route::get('/kelola-data/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailKonseling'])->name('kelola-data.detail');
     Route::delete('/kelola-data', [\App\Http\Controllers\Admin\DashboardController::class, 'destroyData'])->name('kelola-data.destroy');
+
+    // Data Siswa CRUD
+    Route::get('/data-siswa',              [\App\Http\Controllers\Admin\DashboardController::class, 'dataSiswa'])->name('data-siswa');
+    Route::get('/data-siswa/tambah',       [\App\Http\Controllers\Admin\DashboardController::class, 'tambahDataSiswa'])->name('data-siswa.tambah');
+    Route::post('/data-siswa/store',       [\App\Http\Controllers\Admin\DashboardController::class, 'storeDataSiswa'])->name('data-siswa.store');
+    Route::get('/data-siswa/detail',       [\App\Http\Controllers\Admin\DashboardController::class, 'detailDataSiswa'])->name('data-siswa.detail');
+    Route::get('/data-siswa/edit',         [\App\Http\Controllers\Admin\DashboardController::class, 'editDataSiswa'])->name('data-siswa.edit');
+    Route::put('/data-siswa/edit',         [\App\Http\Controllers\Admin\DashboardController::class, 'updateDataSiswa'])->name('data-siswa.update');
+    Route::delete('/data-siswa/detail',    [\App\Http\Controllers\Admin\DashboardController::class, 'destroyDataSiswa'])->name('data-siswa.destroy');
+
+    // Data BK CRUD
+    Route::get('/data-bk',                [\App\Http\Controllers\Admin\DashboardController::class, 'dataBk'])->name('data-bk');
+    Route::get('/data-bk/tambah',         [\App\Http\Controllers\Admin\DashboardController::class, 'tambahDataBk'])->name('data-bk.tambah');
+    Route::post('/data-bk/store',         [\App\Http\Controllers\Admin\DashboardController::class, 'storeDataBk'])->name('data-bk.store');
+    Route::get('/data-bk/detail',         [\App\Http\Controllers\Admin\DashboardController::class, 'detailDataBk'])->name('data-bk.detail');
+    Route::get('/data-bk/edit',           [\App\Http\Controllers\Admin\DashboardController::class, 'editDataBk'])->name('data-bk.edit');
+    Route::put('/data-bk/edit',           [\App\Http\Controllers\Admin\DashboardController::class, 'updateDataBk'])->name('data-bk.update');
+    Route::delete('/data-bk/detail',      [\App\Http\Controllers\Admin\DashboardController::class, 'destroyDataBk'])->name('data-bk.destroy');
     
     Route::get('/kelola-laporan',     [\App\Http\Controllers\Admin\DashboardController::class, 'kelolaLaporan'])->name('kelola-laporan');
     Route::get('/kelola-laporan/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailLaporan'])->name('kelola-laporan.detail');

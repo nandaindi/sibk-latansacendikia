@@ -28,8 +28,7 @@
         <div class="flex flex-col gap-1.5 md:gap-2">
             <p class="text-[0.95rem] md:text-[1.1rem] font-bold text-[#1a1a1a]">Nama : {{ $user->name }}</p>
             <p class="text-[0.95rem] md:text-[1.1rem] font-bold text-[#1a1a1a]">Email &nbsp;: {{ $user->email }}</p>
-            <p class="text-[0.95rem] md:text-[1.1rem] font-bold text-[#1a1a1a]">Status: <span class="capitalize">{{ $user->role }}</span></p>
-            <p class="text-[0.95rem] md:text-[1.1rem] font-bold text-[#1a1a1a]">No. Telp: {{ $user->telepon ?? '-' }}</p>
+            <p class="text-[0.95rem] md:text-[1.1rem] font-bold text-[#1a1a1a]">Role &nbsp;&nbsp;: <span class="capitalize">{{ $user->role }}</span></p>
             
             <div class="flex gap-3 mt-4">
                 <a href="{{ route('admin.edit-akun', ['id' => $user->id]) }}" class="px-6 py-2 bg-[#f59e0b] text-white rounded-full text-[0.85rem] font-bold hover:brightness-105 transition-all no-underline shadow-md">Edit Akun</a>

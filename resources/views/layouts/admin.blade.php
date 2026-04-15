@@ -48,13 +48,35 @@
                 <span>Kelola Akun</span>
             </a>
 
-            <a href="{{ route('admin.kelola-data') }}"
-               class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.kelola-data*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-                <span>Kelola Data</span>
-            </a>
+            {{-- Kelola Data (Parent with Submenu) --}}
+            <div class="flex flex-col">
+                <button type="button" onclick="toggleKelolaData()" id="kelolaDataBtn"
+                   class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors w-full border-none cursor-pointer {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }} bg-transparent">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span class="flex-1 text-left">Kelola Data</span>
+                    <svg id="kelolaDataChevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 transition-transform duration-200 {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'rotate-180' : '' }}">
+                        <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                </button>
+                <div id="kelolaDataSubmenu" class="flex-col gap-1 pl-8 mt-1 {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'flex' : 'hidden' }}">
+                    <a href="{{ route('admin.data-siswa') }}"
+                       class="flex items-center gap-2.5 rounded-lg py-2 px-3 font-semibold text-[0.88rem] transition-colors {{ request()->routeIs('admin.data-siswa*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/70 hover:bg-[#157167] hover:text-white' }}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                        </svg>
+                        Data Siswa
+                    </a>
+                    <a href="{{ route('admin.data-bk') }}"
+                       class="flex items-center gap-2.5 rounded-lg py-2 px-3 font-semibold text-[0.88rem] transition-colors {{ request()->routeIs('admin.data-bk*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/70 hover:bg-[#157167] hover:text-white' }}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        Data BK
+                    </a>
+                </div>
+            </div>
 
             <a href="{{ route('admin.kelola-laporan') }}"
                class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.kelola-laporan*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
@@ -179,6 +201,19 @@ function showLogoutModal() {
 function hideLogoutModal() {
     document.getElementById('logoutModal').classList.add('hidden');
     document.getElementById('logoutModal').classList.remove('flex');
+}
+function toggleKelolaData() {
+    const submenu = document.getElementById('kelolaDataSubmenu');
+    const chevron = document.getElementById('kelolaDataChevron');
+    if (submenu.classList.contains('hidden')) {
+        submenu.classList.remove('hidden');
+        submenu.classList.add('flex');
+        chevron.classList.add('rotate-180');
+    } else {
+        submenu.classList.add('hidden');
+        submenu.classList.remove('flex');
+        chevron.classList.remove('rotate-180');
+    }
 }
 </script>
 </body>

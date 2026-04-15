@@ -18,31 +18,16 @@
         @csrf
         @method('PUT')
 
-        {{-- Nama --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap</label>
-            <input type="text" name="nama" placeholder="Nama" value="{{ old('nama', $user->name) }}" required
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-        </div>
-
-        {{-- NIS / NIP --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nomor Induk (Optional)</label>
-            <input type="text" name="nomor_induk" placeholder="NIS/NIP" value="{{ old('nomor_induk', $user->nis ?? '') }}"
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+        {{-- Info pengguna (read-only) --}}
+        <div class="bg-[#f8fffe] border-[2px] border-[#e0f5f3] rounded-2xl px-5 py-3.5">
+            <label class="text-[0.75rem] font-bold text-[#888] block mb-1 uppercase tracking-wide">Nama Pengguna</label>
+            <p class="text-[1rem] font-semibold text-[#1a1a1a]">{{ $user->name }}</p>
         </div>
 
         {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Alamat Email</label>
             <input type="email" name="email" placeholder="Email" value="{{ old('email', $user->email) }}" required
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-        </div>
-
-        {{-- No. Telepon --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">No. Telepon</label>
-            <input type="text" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon', $user->telepon) }}"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 

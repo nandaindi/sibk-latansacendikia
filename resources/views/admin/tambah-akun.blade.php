@@ -31,11 +31,6 @@
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
-        {{-- No. Telepon --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="telepon" placeholder="No. Telepon" required
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-        </div>
 
         <div class="border-[2px] border-[#1a9488] rounded-2xl bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all relative" id="roleDropdownWrapper">
             <input type="hidden" name="role" id="roleInput" required>
