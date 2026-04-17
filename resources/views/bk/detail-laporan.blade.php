@@ -171,6 +171,35 @@
                 </div>
                 @endif
 
+                {{-- 4. Student Feedback (Refleksi) --}}
+                @if($item->kesimpulan_siswa)
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-[#111] px-1">
+                        <div class="w-2 h-6 bg-[#1a9488] rounded-full"></div>
+                        <h3 class="text-[0.9rem] font-black uppercase tracking-[0.2em]">Refleksi & Feedback Siswa</h3>
+                    </div>
+                    <div class="bg-white border-[2px] border-[#1a9488]/30 rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.7s_ease-out]">
+                        <div class="flex flex-col gap-6">
+                            <div>
+                                <label class="text-[0.7rem] font-black text-[#1a9488] uppercase tracking-widest block mb-2">Kesimpulan Siswa</label>
+                                <div class="text-[1.05rem] text-[#333] leading-[1.8] font-medium italic">
+                                    "{!! nl2br(e($item->kesimpulan_siswa)) !!}"
+                                </div>
+                            </div>
+                            
+                            @if($item->saran_siswa)
+                            <div class="pt-6 border-t border-[#edf2f1]">
+                                <label class="text-[0.7rem] font-black text-[#1a9488] uppercase tracking-widest block mb-2">Saran Untuk Layanan BK</label>
+                                <div class="text-[0.95rem] text-[#555] leading-relaxed">
+                                    {!! nl2br(e($item->saran_siswa)) !!}
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+
 
 
                 @if(!$solution && !$additional)

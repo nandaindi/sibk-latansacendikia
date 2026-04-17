@@ -1,4 +1,3 @@
-{{-- Shared Navbar – digunakan oleh layouts/siswa.blade.php dan layouts/bk.blade.php --}}
 @php
     $isBK      = request()->routeIs('bk.*');
     $homeRoute = $isBK ? route('bk.dashboard') : route('siswa.dashboard');
@@ -8,9 +7,13 @@
     $kelasText = $kelas ? ($jurusan ? $kelas . ' ' . $jurusan : $kelas) : 'XII Inovatif';
     $subtitle  = $isBK ? 'Halo Selamat Datang!' : $kelasText;
 
-    // Cek ada notifikasi gantung dan ambil data untuk dropdown
     $hasNotification = false;
     $notifications = [];
+    $dbNotifications = auth()->check() ? auth()->user()->unreadNotifications()->take(5)->get() : collect();
+    
+    if ($dbNotifications->count() > 0) {
+        $hasNotification = true;
+    }
     
     if ($isBK) {
         $notifications = \App\Models\Konseling::with('user')
@@ -20,7 +23,6 @@
             ->get();
         $hasNotification = $notifications->count() > 0;
     } else {
-        // Gabungkan notifikasi Konseling & Pelanggaran (Siswa)
         $konselingNotifs = \App\Models\Konseling::with('bk')
             ->where('user_id', auth()->id())
             ->where('status', 'selesai')
@@ -45,11 +47,9 @@
     }
 @endphp
 
-<!-- Header -->
 <header class="bg-white sticky top-0 z-50 border-b border-[#eaeaea] shadow-[0_2px_10px_rgba(0,0,0,0.03)] w-full">
     <div class="w-full px-5 md:px-6 py-4 flex items-center justify-between">
 
-        <!-- User Info -->
         <div class="flex items-center gap-3">
             @if(auth()->user()->avatar)
                 <div class="w-11 h-11 rounded-full border-2 border-[#1a9488] overflow-hidden shrink-0">
@@ -69,7 +69,6 @@
             </div>
         </div>
 
-        <!-- Web Navigation (Desktop) -->
         <nav class="hidden md:flex items-center gap-6 lg:gap-8">
             <a href="{{ $homeRoute }}"
                class="{{ $homeActive ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
@@ -98,10 +97,8 @@
             </a>
             @endif
 
-            <!-- Divider -->
             <div class="h-6 w-px bg-[#e5e7eb] mx-2"></div>
 
-            <!-- Notification Dropdown Container -->
             <div class="relative group cursor-pointer" tabindex="0">
                 <button class="p-2 text-[#555] group-hover:text-[#1a9488] relative focus:outline-none transition-colors border-none bg-transparent">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -113,24 +110,36 @@
                     </svg>
                 </button>
 
-                <!-- Dropdown Menu -->
                 <div class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 focus-within:opacity-100 focus-within:visible focus-within:scale-100 z-50 overflow-hidden">
                     <div class="px-4 py-3 border-b border-[#eaeaea] flex items-center justify-between bg-[#fafafa]">
                         <span class="text-sm font-bold text-[#333]">Notifikasi</span>
                     </div>
                     
                     <div class="max-h-[300px] overflow-y-auto">
+                        @if($dbNotifications->count() > 0)
+                            @foreach($dbNotifications as $dbNotif)
+                                <a href="{{ $dbNotif->data['link'] ?? '#' }}" class="block p-3 border-b border-[#f5f5f5] bg-[#f0fdf9] hover:bg-[#e6f9f5] transition-colors no-underline">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
+                                        <div class="text-[0.85rem] font-semibold text-[#1a1a1a]">{{ $dbNotif->data['title'] ?? 'Pemberitahuan Baru' }}</div>
+                                    </div>
+                                    <div class="text-xs text-[#555] mb-1">{{ $dbNotif->data['message'] ?? '' }}</div>
+                                    <div class="text-[0.7rem] text-[#888]">{{ $dbNotif->created_at->diffForHumans() }}</div>
+                                </a>
+                            @endforeach
+                        @endif
+
                         @if($notifications->count() > 0)
                             @foreach($notifications as $notif)
                                 @if($isBK)
-                                    <!-- BK Notification Item -->
+
                                     <a href="{{ route('bk.daftar-pengajuan') }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline">
                                         <div class="text-[0.85rem] font-semibold text-[#1a1a1a] mb-0.5">Pengajuan {{ $notif->jenis_layanan }} baru</div>
                                         <div class="text-xs text-[#555] mb-1">Dari: {{ $notif->user->name ?? 'Siswa' }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
                                     </a>
                                 @else
-                                    <!-- Siswa Notification Item -->
+
                                     @if($notif->status === 'selesai')
                                     @php $isUnreadSelesai = !$notif->is_read; @endphp
                                     <a href="{{ route('siswa.detail-laporan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnreadSelesai ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
@@ -160,7 +169,7 @@
                                     @endif
                                 @endif
                             @endforeach
-                        @else
+                        @elseif($dbNotifications->count() == 0)
                             <div class="p-6 text-center text-[#888] text-sm flex flex-col items-center gap-2">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
                                 Belum ada notifikasi
@@ -178,7 +187,6 @@
                 </div>
             </div>
 
-            <!-- Profile Dropdown Container -->
             <div class="relative group cursor-pointer" tabindex="0">
                 <div class="flex items-center gap-2 hover:bg-[#f8f9fa] py-2 px-3 rounded-xl transition-colors">
                     @if(auth()->user()->avatar)
@@ -193,7 +201,6 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-[#1a9488] transition-colors"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
 
-                <!-- Dropdown Menu -->
                 <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 focus-within:opacity-100 focus-within:visible focus-within:scale-100 z-50">
                     <div class="p-1.5 flex flex-col">
                         <div class="px-3 py-2 text-xs font-semibold text-[#888] uppercase tracking-wider mb-1">Akun Saya</div>
@@ -214,9 +221,7 @@
             </div>
         </nav>
 
-        <!-- Mobile Icons -->
         <div class="flex md:hidden items-center gap-2">
-            <!-- Home -->
             <a href="{{ $homeRoute }}" class="p-2 {{ $homeActive ? 'text-[#1a9488]' : 'text-[#333]' }}">
                 <svg width="22" height="22" viewBox="0 0 24 24"
                      fill="{{ $homeActive ? '#1a9488' : 'none' }}"
@@ -226,7 +231,6 @@
                     <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
                 </svg>
             </a>
-            <!-- Bell Notification Dropdown (Mobile) -->
             <div class="relative group" tabindex="0">
                 <button class="p-2 text-[#333] relative focus:outline-none cursor-pointer border-none bg-transparent">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -238,13 +242,25 @@
                     </svg>
                 </button>
 
-                <!-- Dropdown Menu -->
                 <div class="absolute right-[-40px] mt-2 w-72 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 group-focus-within:scale-100 z-50 overflow-hidden">
                     <div class="px-4 py-3 border-b border-[#eaeaea] flex items-center justify-between bg-[#fafafa]">
                         <span class="text-sm font-bold text-[#333]">Notifikasi</span>
                     </div>
                     
                     <div class="max-h-[300px] overflow-y-auto">
+                        @if($dbNotifications->count() > 0)
+                            @foreach($dbNotifications as $dbNotif)
+                                <a href="{{ $dbNotif->data['link'] ?? '#' }}" class="block p-3 border-b border-[#f5f5f5] bg-[#f0fdf9] hover:bg-[#e6f9f5] transition-colors no-underline">
+                                    <div class="flex items-center gap-2 mb-0.5">
+                                        <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
+                                        <div class="text-[0.85rem] font-semibold text-[#1a1a1a]">{{ $dbNotif->data['title'] ?? 'Pemberitahuan Baru' }}</div>
+                                    </div>
+                                    <div class="text-xs text-[#555] mb-1">{{ $dbNotif->data['message'] ?? '' }}</div>
+                                    <div class="text-[0.7rem] text-[#888]">{{ $dbNotif->created_at->diffForHumans() }}</div>
+                                </a>
+                            @endforeach
+                        @endif
+
                         @if($notifications->count() > 0)
                             @foreach($notifications as $notif)
                                 @if($isBK)
@@ -285,7 +301,7 @@
                                     @endif
                                 @endif
                             @endforeach
-                        @else
+                        @elseif($dbNotifications->count() == 0)
                             <div class="p-6 text-center text-[#888] text-sm flex flex-col items-center gap-2">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
                                 Belum ada notifikasi
@@ -302,7 +318,6 @@
                     @endif
                 </div>
             </div>
-            <!-- Logout -->
             <button onclick="document.getElementById('logout-form').submit()" class="p-2 text-[#333] focus:outline-none cursor-pointer">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -314,3 +329,23 @@
 
     </div>
 </header>
+@if(auth()->check())
+<script>
+    window.addEventListener('load', () => {
+        if (window.Echo) {
+            window.Echo.private('App.Models.User.' + {{ auth()->id() }})
+                .notification((notification) => {
+                    if (window.showToast) {
+                        window.showToast(notification.title || 'Notifikasi Baru', 'success', true);
+                    }
+                    
+                    document.querySelectorAll('button > svg').forEach(svg => {
+\                        if (!svg.querySelector('circle[fill="#ef4444"]')) {
+                            svg.innerHTML += '<circle cx="19" cy="5" r="3.5" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>';
+                        }
+                    });
+                });
+        }
+    });
+</script>
+@endif

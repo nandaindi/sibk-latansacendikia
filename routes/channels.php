@@ -29,3 +29,7 @@ Broadcast::channel('chat.{konselingId}', function ($user, $konselingId) {
 
     return false;
 });
+
+Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});

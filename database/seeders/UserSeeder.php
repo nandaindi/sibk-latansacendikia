@@ -14,9 +14,9 @@ class UserSeeder extends Seeder
     {
         // ── Admin ──────────────────────────────────────────────
         User::create([
-            'name'     => 'Admin Utama',
-            'username' => 'admin',
-            'email'    => 'admin@example.com',
+            'name'     => 'Admin Latansa',
+            'username' => 'adminlatansa',
+            'email'    => 'admin@latansa.com',
             'password' => bcrypt('password'),
             'role'     => 'admin',
             'telepon'  => '081234567890',
@@ -25,8 +25,8 @@ class UserSeeder extends Seeder
         // ── Guru BK ────────────────────────────────────────────
         User::create([
             'name'     => 'Eni Kustiyorini, S.Psi',
-            'username' => 'eni.bk',
-            'email'    => 'eni@example.com',
+            'username' => 'enilatansa',
+            'email'    => 'eni@latansa.com',
             'password' => bcrypt('password'),
             'role'     => 'bk',
             'telepon'  => '089876543210',
@@ -34,8 +34,8 @@ class UserSeeder extends Seeder
 
         User::create([
             'name'     => 'Devina Rayining Tias, S.Psi',
-            'username' => 'devina.bk',
-            'email'    => 'devina@example.com',
+            'username' => 'devinalatansa',
+            'email'    => 'devina@latansa.com',
             'password' => bcrypt('password'),
             'role'     => 'bk',
             'telepon'  => '082233445566',
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'     => 'Nanda Indi Lestari',
             'username' => 'nanda',
-            'email'    => 'nanda@example.com',
+            'email'    => 'nanda@latansa.com',
             'password' => bcrypt('password'),
             'role'     => 'siswa',
             'nis'      => '123456',
@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'     => 'Siswa Lain',
             'username' => 'siswa',
-            'email'    => 'siswa@example.com',
+            'email'    => 'siswa@latansa.com',
             'password' => bcrypt('password'),
             'role'     => 'siswa',
             'nis'      => '654321',

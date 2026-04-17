@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Konseling;
 use App\Models\Laporan;
 use App\Models\User;
+use App\Notifications\KonselingStatusNotification;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -128,6 +129,11 @@ class DashboardController extends Controller
             'link_meet'=> $request->link_meet,
         ]);
 
+        // Send Instant Notification to Students
+        if ($konseling->user) {
+            $konseling->user->notify(new KonselingStatusNotification($konseling, 'disetujui'));
+        }
+
         return redirect()->route('bk.sesi-konseling')->with('sukses', 'Pengajuan berhasil disetujui!');
     }
 
@@ -145,6 +151,11 @@ class DashboardController extends Controller
             'bk_id'        => auth()->id(),
             'alasan_tolak' => $request->alasan_tolak,
         ]);
+
+        // Send Instant Notification to Students
+        if ($konseling->user) {
+            $konseling->user->notify(new KonselingStatusNotification($konseling, 'ditolak'));
+        }
 
         return redirect()->route('bk.daftar-pengajuan')->with('sukses', 'Pengajuan berhasil ditolak.');
     }
