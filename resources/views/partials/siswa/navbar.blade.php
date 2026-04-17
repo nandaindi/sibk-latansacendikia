@@ -79,7 +79,12 @@
                class="flex items-center gap-1.5 {{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
                Riwayat Panggilan
                @if(isset($unreadPanggilanCount) && $unreadPanggilanCount > 0)
-                   <span class="bg-[#ef4444] text-white text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full leading-none">{{ $unreadPanggilanCount }}</span>
+                   <span class="relative flex h-5 w-5 ml-1">
+                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                       <span class="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-white text-[0.65rem] font-black items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                           {{ $unreadPanggilanCount }}
+                       </span>
+                   </span>
                @endif
             </a>
             <a href="{{ route('siswa.riwayat-konseling') }}"
