@@ -15,10 +15,19 @@
             </svg>
         </div>
         {{-- Info --}}
-        <div class="flex flex-col gap-1 text-center sm:text-left">
-            <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Nama : {{ auth()->user()->name }}</p>
-            <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Email &nbsp;: {{ auth()->user()->email }}</p>
-            <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Status: Admin</p>
+        <div class="flex flex-col gap-1.5">
+            <div class="flex items-baseline gap-2">
+                <span class="w-14 text-[0.7rem] font-extrabold text-[#888] uppercase tracking-wider">Nama</span>
+                <span class="text-[0.97rem] font-bold text-[#1a1a1a]">: {{ auth()->user()->name }}</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span class="w-14 text-[0.7rem] font-extrabold text-[#888] uppercase tracking-wider">Email</span>
+                <span class="text-[0.97rem] font-bold text-[#1a1a1a]">: {{ auth()->user()->email }}</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <span class="w-14 text-[0.7rem] font-extrabold text-[#888] uppercase tracking-wider">Status</span>
+                <span class="text-[0.97rem] font-bold text-[#1a1a1a]">: {{ auth()->user()->role ?? 'Admin' }}</span>
+            </div>
         </div>
     </div>
 </section>
