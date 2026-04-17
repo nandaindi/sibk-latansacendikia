@@ -14,6 +14,59 @@
         body { font-family: 'Inter', sans-serif; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ===== SIDEBAR RESPONSIVE ===== */
+        /* Mobile: sidebar hidden off-screen by default */
+        #sidebar {
+            /* Use top+bottom instead of min-height:100vh to fix iOS Safari bug */
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;          /* Always reaches bottom of viewport on ALL devices */
+            width: 220px;
+            overflow-y: auto;   /* Scroll sidebar if content overflows */
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 50;
+        }
+        /* Mobile: slide in when .sidebar-open is added */
+        #sidebar.sidebar-open {
+            transform: translateX(0);
+        }
+        /* Desktop: sidebar always visible */
+        @media (min-width: 768px) {
+            #sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+
+        /* ===== CONTENT MARGIN ===== */
+        #adminMainContent { margin-left: 0; }
+        @media (min-width: 768px) {
+            #adminMainContent { margin-left: 220px; }
+        }
+
+        /* ===== BACKDROP ===== */
+        #sidebarOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 35;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            cursor: pointer;
+        }
+        #sidebarOverlay.overlay-visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* Never show on desktop */
+        @media (min-width: 768px) {
+            #sidebarOverlay {
+                display: none !important;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -22,7 +75,7 @@
 <div class="flex min-h-screen">
 
     {{-- ===== SIDEBAR ===== --}}
-    <aside class="w-[220px] shrink-0 bg-[#1a7a70] flex flex-col items-center py-6 gap-5 min-h-screen fixed left-0 top-0 z-30">
+    <aside id="sidebar" class="bg-[#1a7a70] flex flex-col items-center py-6 gap-5 shrink-0">
 
         {{-- Logo --}}
         <div class="w-28 h-28 mb-2 rounded-full overflow-hidden bg-white flex items-center justify-center border-4 border-white shadow-lg">
@@ -90,12 +143,23 @@
         </nav>      
     </aside>
 
+    {{-- ===== BACKDROP (placed at root level for correct z-index stacking) ===== --}}
+    <div id="sidebarOverlay" onclick="closeSidebar()"></div>
+
     {{-- ===== MAIN CONTENT ===== --}}
-    <div class="flex-1 ml-[220px] flex flex-col min-h-screen">
+    <div id="adminMainContent" class="flex-1 flex flex-col min-h-screen">
 
         {{-- Top bar --}}
-        <header class="bg-white px-6 py-3 flex items-center justify-between border-b border-[#e5e7eb] sticky top-0 z-20 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+        <header class="bg-white px-4 md:px-6 py-3 flex items-center justify-between border-b border-[#e5e7eb] sticky top-0 z-20 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
             <div class="flex items-center gap-3">
+                {{-- Hamburger Menu for Mobile --}}
+                <button type="button" onclick="openSidebar()" class="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors border-none bg-transparent cursor-pointer">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
                 <span class="text-[1.1rem] font-bold text-[#1a1a1a]">@yield('title', 'Admin Dashboard')</span>
             </div>
             
@@ -214,6 +278,16 @@ function toggleKelolaData() {
         submenu.classList.remove('flex');
         chevron.classList.remove('rotate-180');
     }
+}
+
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('sidebar-open');
+    document.getElementById('sidebarOverlay').classList.add('overlay-visible');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('sidebar-open');
+    document.getElementById('sidebarOverlay').classList.remove('overlay-visible');
 }
 </script>
 </body>

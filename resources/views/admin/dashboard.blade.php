@@ -7,7 +7,7 @@
 {{-- Profile Section --}}
 <section class="mb-8">
     <h2 class="text-[1.2rem] flex flex-col font-extrabold text-[#1a1a1a] mb-4">Profile</h2>
-    <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-6 py-5 flex items-center gap-5 shadow-sm w-full">
+    <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center gap-5 shadow-sm w-full">
         {{-- Avatar --}}
         <div class="w-16 h-16 shrink-0 rounded-full bg-[#1a9488] flex items-center justify-center text-white">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
@@ -15,7 +15,7 @@
             </svg>
         </div>
         {{-- Info --}}
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 text-center sm:text-left">
             <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Nama : {{ auth()->user()->name }}</p>
             <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Email &nbsp;: {{ auth()->user()->email }}</p>
             <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Status: Admin</p>

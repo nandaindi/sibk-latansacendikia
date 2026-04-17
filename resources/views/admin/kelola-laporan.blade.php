@@ -24,10 +24,10 @@
     </div>
 
     {{-- Search --}}
-    <div class="flex flex-col items-end gap-1">
-        <span class="text-[0.78rem] text-[#888] mr-9">kelola laporan</span>
-        <div class="flex items-center gap-3">
-            <div class="flex items-center border-[2px] border-[#1a9488] rounded-full px-4 py-2 bg-white gap-2 w-52 focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+    <div class="flex flex-col items-end gap-1 w-full sm:w-auto">
+        <span class="text-[0.78rem] text-[#888] mr-9 hidden sm:block">kelola laporan</span>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="flex items-center border-[2px] border-[#1a9488] rounded-full px-4 py-2 bg-white gap-2 w-full sm:w-52 focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
@@ -35,7 +35,7 @@
                        class="border-none outline-none text-[0.9rem] text-[#1a1a1a] placeholder-[#bbb] bg-transparent font-medium w-full"/>
             </div>
             {{-- Filter Icon (Funnels) --}}
-            <button class="text-[#1a9488] hover:text-[#12635a] transition-colors">
+            <button class="text-[#1a9488] hover:text-[#12635a] transition-colors shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
                 </svg>
@@ -47,7 +47,7 @@
 {{-- Table Header --}}
 <div class="hidden sm:flex items-center justify-between gap-4 bg-[#1a9488] text-white rounded-2xl px-5 py-3 mb-1 font-bold text-[0.85rem] tracking-wide uppercase">
     <span class="w-[40px] shrink-0 text-center">No</span>
-    <span class="flex-1 min-w-[150px]">Nama Laporan</span>
+    <span class="flex-1 min-w-[120px]">Nama Laporan</span>
     <span class="flex-1 text-center hidden md:block">Tanggal</span>
     <span class="flex-1 text-center">Penulis</span>
     <span class="w-[112px] shrink-0 text-center">Aksi</span>
@@ -56,12 +56,12 @@
 {{-- Laporan List --}}
 <div id="laporanList" class="flex flex-col gap-3 w-full">
     @forelse($laporans as $item)
-    <div class="laporan-item bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
-        <span class="w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($laporans->currentPage() - 1) * $laporans->perPage() }}</span>
-        <span class="text-[0.95rem] font-semibold text-[#1a1a1a] flex-1 min-w-[150px]">{{ $item->nama_laporan }}</span>
+    <div class="laporan-item bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 sm:gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <span class="w-[30px] sm:w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($laporans->currentPage() - 1) * $laporans->perPage() }}</span>
+        <span class="text-[0.95rem] font-semibold text-[#1a1a1a] flex-1 min-w-[100px] truncate">{{ $item->nama_laporan }}</span>
         <span class="text-[0.9rem] text-[#555] flex-1 text-center hidden md:block">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }}</span>
         <span class="text-[0.9rem] text-[#555] flex-1 text-center capitalize">By: {{ $item->author->name ?? 'Unknown' }}</span>
-        <div class="flex items-center justify-center gap-2 shrink-0 w-[112px]">
+        <div class="flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 w-[100px] sm:w-[112px]">
             <a href="{{ route('admin.kelola-laporan.detail', ['id' => $item->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </a>
