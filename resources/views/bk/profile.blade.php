@@ -20,6 +20,7 @@
         @csrf
         @method('PUT')
 
+        {{-- Profile Avatar Section --}}
         <div class="flex flex-col items-center justify-center mb-4 gap-3 relative w-max mx-auto group">
             <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-[#1a9488] shadow-lg relative bg-[#e0f5f3] flex items-center justify-center">
                 @if($user->avatar)
@@ -37,6 +38,7 @@
             @error('avatar')<span class="text-red-500 text-xs text-center">{{ $message }}</span>@enderror
         </div>
 
+        {{-- Nama Lengkap (Editable) --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Nama Lengkap</label>
             <input type="text" name="name" value="{{ old('name', $user->name) }}" required
@@ -44,6 +46,35 @@
         </div>
         @error('name')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
+        {{-- NIP (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">NIP / NUPTK</label>
+            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->nip ?? '-' }}</div>
+        </div>
+
+        {{-- Jenis Kelamin (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Jenis Kelamin</label>
+            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->jenis_kelamin == 'L' ? 'Laki-laki' : ($user->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</div>
+        </div>
+
+        {{-- Jabatan (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Jabatan</label>
+            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->jabatan ?? '-' }}</div>
+        </div>
+
+        {{-- Alamat (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Alamat Lengkap</label>
+            <div class="text-[1rem] text-[#555] font-semibold leading-relaxed">{{ $user->alamat ?? '-' }}</div>
+        </div>
+
+        <div class="my-3">
+            <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] border-b-[2px] border-[#eee] pb-2">Pengaturan Akun</h3>
+        </div>
+
+        {{-- Email (Editable) --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Email</label>
             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
@@ -51,26 +82,15 @@
         </div>
         @error('email')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Nomor Telepon</label>
-            <input type="text" name="telepon" value="{{ old('telepon', $user->telepon) }}"
-                   placeholder="0812xxxx (Opsional)"
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+        {{-- Nomor Telepon (Read Only - Admin Managed) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Nomor Telepon</label>
+            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->telepon ?? '-' }}</div>
         </div>
 
+        {{-- Change Password Section --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">NIP / NUPTK</label>
-            <input type="text" name="nomor_induk" value="{{ old('nomor_induk', $user->nomor_induk) }}"
-                   placeholder="NIP (Opsional)"
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-        </div>
-
-        <div class="my-3">
-            <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] border-b-[2px] border-[#eee] pb-2">Ganti Password <span class="text-sm text-gray-400 font-normal">(Kosongkan jika tidak ingin mengubah)</span></h3>
-        </div>
-
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Password Baru</label>
+            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Ganti Password <span class="text-[0.7rem] font-normal lowercase">(Kosongkan jika tidak ingin mengubah)</span></label>
             <input type="password" name="password" placeholder="Min. 8 Karakter"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
@@ -82,10 +102,11 @@
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
+        {{-- Save Button --}}
         <div class="mt-4 flex justify-end">
             <button type="submit"
                     class="px-10 py-3.5 bg-[#1a9488] text-white rounded-full text-[1.05rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
-                Simpan Profil
+                Simpan Perubahan
             </button>
         </div>
     </form>

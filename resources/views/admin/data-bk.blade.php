@@ -19,13 +19,6 @@
     <div>
         <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Data Guru BK</h2>
         <div class="mt-3">
-            <a href="{{ route('admin.data-bk.tambah') }}"
-               class="inline-flex items-center gap-1.5 px-5 py-2 bg-[#1a9488] text-white rounded-full text-[0.9rem] font-bold hover:brightness-105 transition-all no-underline shadow-[0_4px_12px_rgba(26,148,136,0.3)]">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                Guru BK
-            </a>
         </div>
     </div>
 

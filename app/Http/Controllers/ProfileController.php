@@ -43,36 +43,12 @@ class ProfileController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'nomor_induk' => ['nullable', 'string', 'max:50'],
-            'telepon' => ['nullable', 'string', 'max:20'],
-            'kelas' => ['nullable', 'string', 'max:50'],
-            'jurusan_select' => ['nullable', 'string', Rule::in(['IPA', 'IPS'])],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'avatar'   => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        
-        // Simpan nomor induk / nip jika ada di validasi
-        if (isset($validated['nomor_induk'])) {
-            $user->nomor_induk = $validated['nomor_induk'];
-        }
-        
-        // Simpan nomor telepon jika ada di validasi
-        if (isset($validated['telepon'])) {
-            $user->telepon = $validated['telepon'];
-        }
-
-        // Simpan kelas jika ada di validasi (khusus siswa)
-        if (isset($validated['kelas'])) {
-            $user->kelas = $validated['kelas'];
-        }
-
-        // Simpan jurusan jika ada di validasi (khusus siswa)
-        if (isset($validated['jurusan_select'])) {
-            $user->jurusan = $validated['jurusan_select'];
-        }
 
         // Handle Avatar Upload
         if ($request->hasFile('avatar')) {

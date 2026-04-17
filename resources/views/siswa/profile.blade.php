@@ -47,35 +47,60 @@
         </div>
         @error('name')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
-        {{-- Kelas --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Kelas</label>
-            <select name="kelas" class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium appearance-none cursor-pointer">
-                <option value="" disabled {{ !$user->kelas ? 'selected' : '' }}>Pilih Kelas</option>
-                <option value="X" {{ $user->kelas == 'X' ? 'selected' : '' }}>Kelas X</option>
-                <option value="XI" {{ $user->kelas == 'XI' ? 'selected' : '' }}>Kelas XI</option>
-                <option value="XII" {{ $user->kelas == 'XII' ? 'selected' : '' }}>Kelas XII</option>
-            </select>
+        {{-- NIS (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">NIS</label>
+            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->nis ?? '-' }}</div>
         </div>
 
-        {{-- Jurusan --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-3 uppercase tracking-wider">Jurusan</label>
-            <div class="flex gap-8">
-                <label class="flex items-center gap-2.5 cursor-pointer group">
-                    <input type="radio" name="jurusan_select" value="IPA" {{ $user->jurusan == 'IPA' ? 'checked' : '' }}
-                           class="w-5 h-5 accent-[#1a9488] cursor-pointer"/>
-                    <span class="text-[1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors">IPA</span>
-                </label>
-                <label class="flex items-center gap-2.5 cursor-pointer group">
-                    <input type="radio" name="jurusan_select" value="IPS" {{ $user->jurusan == 'IPS' ? 'checked' : '' }}
-                           class="w-5 h-5 accent-[#1a9488] cursor-pointer"/>
-                    <span class="text-[1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors">IPS</span>
-                </label>
+        {{-- Kelas & Jurusan (Read Only) --}}
+        <div class="grid grid-cols-2 gap-4">
+            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+                <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Kelas</label>
+                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->kelas ?? '-' }}</div>
+            </div>
+            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+                <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Jurusan</label>
+                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->jurusan ?? '-' }}</div>
             </div>
         </div>
 
-        {{-- Email --}}
+        {{-- Jenis Kelamin & TTL (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Jenis Kelamin</label>
+            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->jenis_kelamin == 'L' ? 'Laki-laki' : ($user->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</div>
+        </div>
+
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Tempat, Tanggal Lahir</label>
+            <div class="text-[1rem] text-[#555] font-semibold">
+                {{ $user->tempat_lahir ?? '-' }}, {{ $user->tanggal_lahir ? \Carbon\Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
+            </div>
+        </div>
+
+        {{-- Alamat (Read Only) --}}
+        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+            <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Alamat Lengkap</label>
+            <div class="text-[1rem] text-[#555] font-semibold leading-relaxed">{{ $user->alamat ?? '-' }}</div>
+        </div>
+
+        {{-- Data Orang Tua (Read Only) --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+                <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">Nama Orang Tua / Wali</label>
+                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->nama_ortu ?? '-' }}</div>
+            </div>
+            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
+                <label class="block text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider">No. HP Orang Tua</label>
+                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->telepon_ortu ?? '-' }}</div>
+            </div>
+        </div>
+
+        <div class="my-3">
+            <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] border-b-[2px] border-[#eee] pb-2">Pengaturan Akun</h3>
+        </div>
+
+        {{-- Email & Telepon (Editable) --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Email</label>
             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
@@ -83,29 +108,9 @@
         </div>
         @error('email')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
-        {{-- Nomor Telp --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Nomor HP / WhatsApp</label>
-            <input type="text" name="telepon" value="{{ old('telepon', $user->telepon) }}"
-                   placeholder="0812xxxx (Opsional)"
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-        </div>
-
-        {{-- Nomor Induk Siswa --}}
-        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">NIS</label>
-            <input type="text" name="nomor_induk" value="{{ old('nomor_induk', $user->nomor_induk) }}"
-                   placeholder="Nomor Induk Siswa (Opsional)"
-                   class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-        </div>
-
-        <div class="my-3">
-            <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] border-b-[2px] border-[#eee] pb-2">Ganti Password <span class="text-sm text-gray-400 font-normal">(Kosongkan jika tidak ingin mengubah)</span></h3>
-        </div>
-
         {{-- New Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Password Baru</label>
+            <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Ganti Password <span class="text-[0.7rem] font-normal lowercase">(Kosongkan jika tidak ingin mengubah)</span></label>
             <input type="password" name="password" placeholder="Min. 8 Karakter"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
@@ -122,7 +127,7 @@
         <div class="mt-4 flex justify-end">
             <button type="submit"
                     class="px-10 py-3.5 bg-[#1a9488] text-white rounded-full text-[1.05rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">
-                Simpan Profil
+                Simpan Perubahan
             </button>
         </div>
     </form>

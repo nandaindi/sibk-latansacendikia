@@ -32,6 +32,7 @@
     </div>
 </section>
 
+
 {{-- Information Cards --}}
 <section>
     <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a] mb-4">Information</h2>
@@ -54,8 +55,6 @@
             <svg width="56" height="56" viewBox="0 0 24 24" fill="none" class="group-hover:scale-105 transition-transform">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="9" cy="7" r="4" stroke="#1a9488" stroke-width="2" fill="#1a9488" opacity="0.2"/>
-                <circle cx="19" cy="19" r="4" fill="#1a9488"/>
-                <path d="M19 17v4M17 19h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             <p class="text-[0.95rem] font-extrabold text-[#1a9488] text-center leading-tight">Data Siswa<br><span class="text-[1.1rem]">{{ $siswaCount }}</span></p>
         </a>
@@ -67,8 +66,6 @@
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="12" cy="7" r="4" stroke="#1a9488" stroke-width="2" fill="#1a9488" opacity="0.2"/>
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="19" cy="19" r="4" fill="#1a9488"/>
-                <path d="M19 17v4M17 19h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             <p class="text-[0.95rem] font-extrabold text-[#1a9488] text-center leading-tight">Data BK<br><span class="text-[1.1rem]">{{ $bkCount }}</span></p>
         </a>
