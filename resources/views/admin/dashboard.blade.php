@@ -6,151 +6,86 @@
 
 {{-- Profile Section --}}
 <section class="mb-8">
-    <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a] mb-4">Profil Saya</h2>
-    <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-6 py-6 flex flex-col sm:flex-row items-center gap-6 shadow-sm w-full">
-        <div class="w-20 h-20 shrink-0 rounded-full bg-[#e0f5f3] border-4 border-[#1a9488] flex items-center justify-center text-[#1a9488] shadow-sm">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+    <h2 class="text-[1.2rem] flex flex-col font-extrabold text-[#1a1a1a] mb-4">Profile</h2>
+    <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center gap-5 shadow-sm w-full">
+        {{-- Avatar --}}
+        <div class="w-16 h-16 shrink-0 rounded-full bg-[#1a9488] flex items-center justify-center text-white">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
             </svg>
         </div>
-        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 w-full">
-            <div class="flex items-center justify-between border-b border-gray-50 pb-2">
-                <span class="text-[0.85rem] font-bold text-gray-400 uppercase tracking-wider">Nama</span>
-                <span class="text-[0.95rem] font-bold text-[#1a1a1a]">{{ auth()->user()->name }}</span>
-            </div>
-            <div class="flex items-center justify-between border-b border-gray-50 pb-2">
-                <span class="text-[0.85rem] font-bold text-gray-400 uppercase tracking-wider">Email</span>
-                <span class="text-[0.95rem] font-bold text-[#1a1a1a]">{{ auth()->user()->email }}</span>
-            </div>
-            <div class="flex items-center justify-between border-b border-gray-50 pb-2">
-                <span class="text-[0.85rem] font-bold text-gray-400 uppercase tracking-wider">Status</span>
-                <span class="text-[0.95rem] font-bold text-[#1a9488] uppercase tracking-tighter">{{ auth()->user()->role }}</span>
-            </div>
-            <div class="flex items-center justify-between border-b border-gray-50 pb-2 md:border-none">
-                <span class="text-[0.85rem] font-bold text-gray-400 uppercase tracking-wider">Login Sejak</span>
-                <span class="text-[0.95rem] font-bold text-[#1a1a1a]">{{ auth()->user()->created_at->format('d M Y') }}</span>
-            </div>
+        {{-- Info --}}
+        <div class="flex flex-col gap-1 text-center sm:text-left">
+            <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Nama : {{ auth()->user()->name }}</p>
+            <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Email &nbsp;: {{ auth()->user()->email }}</p>
+            <p class="text-[0.97rem] font-bold text-[#1a1a1a]">Status: Admin</p>
         </div>
     </div>
 </section>
 
 {{-- Information Cards --}}
-<section class="mb-10">
-    <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a] mb-4">Statistik Sistem</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
-        <!-- Kelola Akun -->
-        <a href="{{ route('admin.kelola-akun') }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
-            <div class="w-14 h-14 rounded-xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] group-hover:scale-110 transition-transform">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <div class="text-center">
-                <p class="text-[0.85rem] font-bold text-gray-500 uppercase tracking-wide">Total Akun</p>
-                <p class="text-[1.5rem] font-black text-[#1a9488]">{{ $akunsCount }}</p>
-            </div>
-        </a>
-
-        <!-- Data Siswa -->
-        <a href="{{ route('admin.data-siswa') }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
-            <div class="w-14 h-14 rounded-xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] group-hover:scale-110 transition-transform">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            </div>
-            <div class="text-center">
-                <p class="text-[0.85rem] font-bold text-gray-500 uppercase tracking-wide">Siswa</p>
-                <p class="text-[1.5rem] font-black text-[#1a9488]">{{ $siswaCount }}</p>
-            </div>
-        </a>
-
-        <!-- Data BK -->
-        <a href="{{ route('admin.data-bk') }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
-            <div class="w-14 h-14 rounded-xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] group-hover:scale-110 transition-transform">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
-            </div>
-            <div class="text-center">
-                <p class="text-[0.85rem] font-bold text-gray-500 uppercase tracking-wide">Guru BK</p>
-                <p class="text-[1.5rem] font-black text-[#1a9488]">{{ $bkCount }}</p>
-            </div>
-        </a>
-
-        <!-- Kelola Laporan -->
-        <a href="{{ route('admin.kelola-laporan') }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
-            <div class="w-14 h-14 rounded-xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] group-hover:scale-110 transition-transform">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            </div>
-            <div class="text-center">
-                <p class="text-[0.85rem] font-bold text-gray-500 uppercase tracking-wide">Laporan</p>
-                <p class="text-[1.5rem] font-black text-[#1a9488]">{{ $laporansCount }}</p>
-            </div>
-        </a>
-    </div>
-</section>
-
-{{-- Daftar Laporan Section --}}
 <section>
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">Laporan Konseling Terbaru</h2>
-        <button onclick="printAllReport()" class="flex items-center gap-2 px-4 py-2 bg-[#1a9488] text-white rounded-xl font-bold text-sm shadow-sm hover:brightness-110 transition-all border-none cursor-pointer">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            Cetak Semua
-        </button>
-    </div>
+    <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a] mb-4">Information</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
 
-    <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl overflow-hidden shadow-sm">
-        <div class="overflow-x-auto min-w-full">
-            <table class="w-full border-collapse">
-                <thead>
-                    <tr class="bg-[#f8fdfc] border-b border-[#e0f5f3]">
-                        <th class="px-6 py-4 text-left text-[0.8rem] font-black text-[#1a9488] uppercase tracking-wider">Nama Laporan</th>
-                        <th class="px-6 py-4 text-left text-[0.8rem] font-black text-[#1a9488] uppercase tracking-wider">Tanggal</th>
-                        <th class="px-6 py-4 text-left text-[0.8rem] font-black text-[#1a9488] uppercase tracking-wider">Ditulis Oleh</th>
-                        <th class="px-6 py-4 text-center text-[0.8rem] font-black text-[#1a9488] uppercase tracking-wider">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50">
-                    @forelse($laporans as $laporan)
-                    <tr class="laporan-cetak-item hover:bg-gray-50/50 transition-colors" 
-                        data-nama="{{ $laporan->nama_laporan }}" 
-                        data-tanggal="{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}" 
-                        data-penulis="{{ $laporan->author->name ?? '-' }}">
-                        <td class="px-6 py-4">
-                            <span class="text-[0.95rem] font-bold text-[#1a1a1a]">{{ $laporan->nama_laporan }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-[0.9rem] text-gray-500 font-medium">
-                            {{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-full bg-[#e0f5f3] flex items-center justify-center text-[0.7rem] font-bold text-[#1a9488]">
-                                    {{ substr($laporan->author->name ?? '?', 0, 1) }}
-                                </div>
-                                <span class="text-[0.9rem] font-semibold text-gray-700">{{ $laporan->author->name ?? '-' }}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="printSingleReport(this)" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors border-none bg-transparent cursor-pointer" title="Cetak Laporan">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="px-6 py-10 text-center text-gray-400 italic">
-                            Belum ada laporan yang tersedia.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @if($laporans->hasPages())
-        <div class="px-6 py-4 bg-[#f8fdfc] border-t border-[#e0f5f3]">
-            {{ $laporans->links() }}
-        </div>
-        @endif
+        {{-- Kelola Akun Card --}}
+        <a href="{{ route('admin.kelola-akun') }}"
+           class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="#1a9488" class="group-hover:scale-105 transition-transform">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                <circle cx="19" cy="19" r="4" fill="#1a9488" stroke="white" stroke-width="0.5"/>
+                <path d="M19 17v4M17 19h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[0.95rem] font-extrabold text-[#1a9488] text-center leading-tight">Kelola Akun<br><span class="text-[1.1rem]">{{ $akunsCount }}</span></p>
+        </a>
+
+        {{-- Data Siswa Card --}}
+        <a href="{{ route('admin.data-siswa') }}"
+           class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" class="group-hover:scale-105 transition-transform">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="9" cy="7" r="4" stroke="#1a9488" stroke-width="2" fill="#1a9488" opacity="0.2"/>
+                <circle cx="19" cy="19" r="4" fill="#1a9488"/>
+                <path d="M19 17v4M17 19h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[0.95rem] font-extrabold text-[#1a9488] text-center leading-tight">Data Siswa<br><span class="text-[1.1rem]">{{ $siswaCount }}</span></p>
+        </a>
+
+        {{-- Data BK Card --}}
+        <a href="{{ route('admin.data-bk') }}"
+           class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" class="group-hover:scale-105 transition-transform">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="7" r="4" stroke="#1a9488" stroke-width="2" fill="#1a9488" opacity="0.2"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="19" cy="19" r="4" fill="#1a9488"/>
+                <path d="M19 17v4M17 19h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[0.95rem] font-extrabold text-[#1a9488] text-center leading-tight">Data BK<br><span class="text-[1.1rem]">{{ $bkCount }}</span></p>
+        </a>
+
+        {{-- Kelola Laporan Card --}}
+        <a href="{{ route('admin.kelola-laporan') }}"
+           class="bg-white border-[2px] border-[#1a9488] rounded-2xl p-6 flex flex-col items-center gap-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all no-underline group">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" class="group-hover:scale-105 transition-transform">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="#1a9488" opacity="0.2" stroke="#1a9488" stroke-width="1.5"/>
+                <polyline points="14 2 14 8 20 8" stroke="#1a9488" stroke-width="1.5" fill="none"/>
+                <line x1="8" y1="13" x2="16" y2="13" stroke="#1a9488" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="8" y1="17" x2="12" y2="17" stroke="#1a9488" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="19" cy="19" r="4" fill="#1a9488"/>
+                <path d="M19 17v4M17 19h4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-[0.95rem] font-extrabold text-[#1a9488] text-center leading-tight">Kelola Laporan<br><span class="text-[1.1rem]">{{ $laporansCount }}</span></p>
+        </a>
+
     </div>
 </section>
 
-<div id="adminPrintArea"></div>
+{{-- Cetak Laporan Section --}}
 
+
+{{-- Area print tersembunyi --}}
+<div id="adminPrintArea"></div>
 
 @endsection
 
