@@ -4,7 +4,6 @@
 
 @push('styles')
 <style>
-    /* Rich article typography */
     .artikel-body h1, .artikel-body h2, .artikel-body h3,
     .artikel-body h4, .artikel-body h5, .artikel-body h6 {
         font-weight: 800;
@@ -100,10 +99,8 @@
 @section('content')
 <div class="w-full max-w-7xl mx-auto px-4 pb-16 pt-2">
 
-    {{-- Article Container --}}
     <article class="bg-white rounded-[24px] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.06)] border border-[#edf2f1]">
 
-        {{-- Cover Image --}}
         @if($artikel->gambar)
             <div class="w-full h-[220px] md:h-[420px] overflow-hidden bg-[#e0f5f3]">
                 <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-full object-cover">
@@ -114,25 +111,19 @@
             </div>
         @endif
 
-        {{-- Article Content --}}
         <div class="px-6 py-8 md:px-12 md:py-10">
 
-            {{-- Title --}}
             <h1 class="text-[1.65rem] md:text-[2.25rem] font-extrabold text-[#1a1a1a] leading-[1.25] mb-8 tracking-tight">
                 {{ $artikel->judul }}
             </h1>
 
-            {{-- Divider --}}
             <div class="w-16 h-1 bg-gradient-to-r from-[#1a9488] to-[#c7ece8] rounded-full mb-8"></div>
 
-            {{-- Content Body (HTML from TinyMCE) --}}
             <div class="artikel-body">
                 {!! $artikel->konten !!}
             </div>
 
         </div>
-
-       
 
     </article>
 </div>

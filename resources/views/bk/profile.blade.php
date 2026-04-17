@@ -6,7 +6,6 @@
 
 <div class="w-full max-w-2xl mx-auto py-4">
 
-    {{-- Title --}}
     <div class="flex items-center gap-3 mb-6">
         <h2 class="text-[1.3rem] md:text-[1.5rem] font-extrabold text-[#1a1a1a]">Profil Saya</h2>
     </div>
@@ -21,7 +20,6 @@
         @csrf
         @method('PUT')
 
-        {{-- Avatar Upload Ui --}}
         <div class="flex flex-col items-center justify-center mb-4 gap-3 relative w-max mx-auto group">
             <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-[#1a9488] shadow-lg relative bg-[#e0f5f3] flex items-center justify-center">
                 @if($user->avatar)
@@ -39,7 +37,6 @@
             @error('avatar')<span class="text-red-500 text-xs text-center">{{ $message }}</span>@enderror
         </div>
 
-        {{-- Nama --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Nama Lengkap</label>
             <input type="text" name="name" value="{{ old('name', $user->name) }}" required
@@ -47,7 +44,6 @@
         </div>
         @error('name')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
-        {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Email</label>
             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
@@ -55,7 +51,6 @@
         </div>
         @error('email')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
-        {{-- Nomor Telp --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Nomor Telepon</label>
             <input type="text" name="telepon" value="{{ old('telepon', $user->telepon) }}"
@@ -63,7 +58,6 @@
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
-        {{-- Nomor Induk Pendidik --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">NIP / NUPTK</label>
             <input type="text" name="nomor_induk" value="{{ old('nomor_induk', $user->nomor_induk) }}"
@@ -75,7 +69,6 @@
             <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] border-b-[2px] border-[#eee] pb-2">Ganti Password <span class="text-sm text-gray-400 font-normal">(Kosongkan jika tidak ingin mengubah)</span></h3>
         </div>
 
-        {{-- New Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Password Baru</label>
             <input type="password" name="password" placeholder="Min. 8 Karakter"
@@ -83,14 +76,12 @@
         </div>
         @error('password')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
-        {{-- Confirm Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Konfirmasi Password Baru</label>
             <input type="password" name="password_confirmation" placeholder="Ulangi Password"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
-        {{-- Save Button --}}
         <div class="mt-4 flex justify-end">
             <button type="submit"
                     class="px-10 py-3.5 bg-[#1a9488] text-white rounded-full text-[1.05rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer">

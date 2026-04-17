@@ -15,38 +15,31 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ===== SIDEBAR RESPONSIVE ===== */
-        /* Mobile: sidebar hidden off-screen by default */
         #sidebar {
-            /* Use top+bottom instead of min-height:100vh to fix iOS Safari bug */
             position: fixed;
             top: 0;
             left: 0;
-            bottom: 0;          /* Always reaches bottom of viewport on ALL devices */
+            bottom: 0;
             width: 220px;
-            overflow-y: auto;   /* Scroll sidebar if content overflows */
+            overflow-y: auto;
             transform: translateX(-100%);
             transition: transform 0.3s ease-in-out;
             z-index: 50;
         }
-        /* Mobile: slide in when .sidebar-open is added */
         #sidebar.sidebar-open {
             transform: translateX(0);
         }
-        /* Desktop: sidebar always visible */
         @media (min-width: 768px) {
             #sidebar {
                 transform: translateX(0) !important;
             }
         }
 
-        /* ===== CONTENT MARGIN ===== */
         #adminMainContent { margin-left: 0; }
         @media (min-width: 768px) {
             #adminMainContent { margin-left: 220px; }
         }
 
-        /* ===== BACKDROP ===== */
         #sidebarOverlay {
             position: fixed;
             inset: 0;
@@ -61,7 +54,6 @@
             visibility: visible;
             opacity: 1;
         }
-        /* Never show on desktop */
         @media (min-width: 768px) {
             #sidebarOverlay {
                 display: none !important;
@@ -74,15 +66,12 @@
 
 <div class="flex min-h-screen">
 
-    {{-- ===== SIDEBAR ===== --}}
     <aside id="sidebar" class="bg-[#1a7a70] flex flex-col items-center py-6 gap-5 shrink-0">
 
-        {{-- Logo --}}
         <div class="w-28 h-28 mb-2 rounded-full overflow-hidden bg-white flex items-center justify-center border-4 border-white shadow-lg">
             <img src="{{ asset('img/logo latansa 1.png') }}" alt="Logo Latansa Cendekia" class="w-full h-full object-contain">
         </div>
 
-        {{-- Nav Items --}}
         <nav class="flex flex-col gap-2 w-full px-4">
             <a href="{{ route('admin.dashboard') }}"
                class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
@@ -101,7 +90,6 @@
                 <span>Kelola Akun</span>
             </a>
 
-            {{-- Kelola Data (Parent with Submenu) --}}
             <div class="flex flex-col">
                 <button type="button" onclick="toggleKelolaData()" id="kelolaDataBtn"
                    class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors w-full border-none cursor-pointer {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }} bg-transparent">
@@ -139,20 +127,15 @@
                 <span>Kelola Laporan</span>
             </a>
 
-
-        </nav>      
+        </nav>
     </aside>
 
-    {{-- ===== BACKDROP (placed at root level for correct z-index stacking) ===== --}}
     <div id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    {{-- ===== MAIN CONTENT ===== --}}
     <div id="adminMainContent" class="flex-1 flex flex-col min-h-screen">
 
-        {{-- Top bar --}}
         <header class="bg-white px-4 md:px-6 py-3 flex items-center justify-between border-b border-[#e5e7eb] sticky top-0 z-20 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
             <div class="flex items-center gap-3">
-                {{-- Hamburger Menu for Mobile --}}
                 <button type="button" onclick="openSidebar()" class="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors border-none bg-transparent cursor-pointer">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -162,9 +145,8 @@
                 </button>
                 <span class="text-[1.1rem] font-bold text-[#1a1a1a]">@yield('title', 'Admin Dashboard')</span>
             </div>
-            
+
             <div class="flex items-center gap-4">
-                <!-- Profile Dropdown Container -->
                 <div class="relative group cursor-pointer" tabindex="0">
                     <div class="flex items-center gap-3 hover:bg-[#f8f9fa] py-2 px-3 rounded-xl transition-colors">
                         <div class="text-right hidden md:block">
@@ -183,7 +165,6 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-[#1a9488] transition-colors"><path d="m6 9 6 6 6-6"/></svg>
                     </div>
 
-                    <!-- Dropdown Menu -->
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 focus-within:opacity-100 focus-within:visible focus-within:scale-100 z-50">
                         <div class="p-1.5 flex flex-col">
                             <div class="px-3 py-2 text-xs font-semibold text-[#888] uppercase tracking-wider mb-1">Akun Saya</div>
@@ -202,9 +183,7 @@
             </div>
         </header>
 
-        {{-- Page Content --}}
         <main class="flex-1 p-6 md:p-8">
-            {{-- Global Validation Errors --}}
             @if($errors->any())
             <div class="mb-6 animate-[fadeInDown_0.4s_ease-out]">
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm flex items-start gap-3">
@@ -229,13 +208,9 @@
 
 </div>
 
-{{-- ===== LOGOUT MODAL ===== --}}
 <div id="logoutModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-    {{-- Backdrop --}}
     <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="hideLogoutModal()"></div>
-    {{-- Modal Box --}}
     <div class="relative bg-white rounded-2xl shadow-2xl w-[340px] md:w-[420px] p-10 flex flex-col items-center gap-6 z-10">
-        {{-- Illustration --}}
         <div class="h-40 w-full mb-2">
             <img src="{{ asset('img/Man running up the stairs to the open door.svg') }}" alt="Logout Illustration" class="w-full h-full object-contain">
         </div>

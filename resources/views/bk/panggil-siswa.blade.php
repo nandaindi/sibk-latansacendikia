@@ -5,24 +5,19 @@
 @section('content')
 <main class="w-full px-4 md:px-6 py-6 flex-1 pb-[100px] md:pb-10">
 
-    <!-- Title with underline -->
     <div class="mb-8 border-b border-[#1a9488] pb-3">
         <h2 class="text-[1.3rem] md:text-[1.5rem] font-extrabold text-[#1a1a1a]">Panggil Siswa</h2>
     </div>
 
     <div class="flex flex-col lg:flex-row gap-8">
 
-        <!-- LEFT: Form -->
         <div class="flex-1 w-full">
             <form id="formPanggil" class="flex flex-col gap-5" method="POST" action="{{ route('bk.panggil-siswa.store') }}">
                 @csrf
 
-                <!-- Nama Siswa (Custom Select) -->
                 <div class="relative w-full" id="custom-select-container">
-                    <!-- Hidden input for form submission -->
                     <input type="text" name="user_id" id="selected-user-id" required class="absolute bottom-0 left-1/2 w-0 h-0 opacity-0 pointer-events-none" tabindex="-1">
                     
-                    <!-- Select Trigger -->
                     <div id="custom-select-trigger" class="border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white hover:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all flex items-center justify-between cursor-pointer group">
                         <span id="custom-select-text" class="text-[1rem] font-medium text-[#aaa]">-- Pilih Siswa --</span>
                         <div id="custom-select-arrow" class="pointer-events-none text-[#1a9488] shrink-0 ml-2 transition-transform duration-200">
@@ -30,7 +25,6 @@
                         </div>
                     </div>
 
-                    <!-- Dropdown Menu -->
                     <div id="custom-select-dropdown" class="absolute z-50 w-full mt-2 left-0 bg-white border border-[#1a9488] rounded-2xl shadow-[0_8px_30px_rgba(26,148,136,0.15)] overflow-hidden hidden transform origin-top transition-all duration-200 opacity-0 scale-95" style="max-height: 250px; overflow-y: auto;">
                         <ul class="flex flex-col py-2" id="custom-select-list">
                             @foreach($siswas as $siswa)
@@ -42,13 +36,11 @@
                     </div>
                 </div>
 
-                <!-- Topik / Problem Type -->
                 <div class="border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                     <input type="text" name="topik" placeholder="Topik Panggilan (cth: Evaluasi Nilai)" required
                            class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium">
                 </div>
 
-                <!-- Date & Time -->
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1 border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                         <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-0.5 block uppercase tracking-wide">Tanggal Panggilan</label>
@@ -62,14 +54,12 @@
                     </div>
                 </div>
 
-                <!-- Note / Catatan -->
                 <div class="border-[2px] border-[#1a9488] rounded-[20px] px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                     <textarea name="catatan" placeholder="Catatan Pemanggilan (Opsional)" rows="4"
                               class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium resize-none"></textarea>
                 </div>
             </form>
 
-            <!-- Send button -->
             <div class="flex justify-end mt-4">
                 <button onclick="document.getElementById('formPanggil').submit()"
                         class="px-10 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:bg-[#157a70] hover:-translate-y-0.5 transition-all active:scale-95">
@@ -78,13 +68,11 @@
             </div>
         </div>
 
-        <!-- RIGHT: List riwayat panggilan -->
         <div class="hidden lg:flex flex-col gap-3 flex-1 mt-2">
             <h3 class="text-[1.1rem] font-bold text-[#1a9488] mb-1">Riwayat Panggilan Kamu</h3>
 
             @forelse($riwayatPanggilan as $item)
             <a href="{{ route('bk.panggil-siswa.detail', $item->id) }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3 flex items-center gap-4 shadow-sm hover:translate-x-1 transition-transform no-underline">
-                <!-- Avatar inisial -->
                 <div class="w-12 h-12 shrink-0 rounded-full bg-[#e0f5f3] text-[#1a9488] flex items-center justify-center font-bold text-lg border border-[#c7ece8]">
                     {{ substr($item->user->name, 0, 1) }}
                 </div>
@@ -114,7 +102,6 @@
 
 </main>
 
-<!-- Mobile: Full-page list mode shown via FAB -->
 @endsection
 
 @push('scripts')
@@ -129,7 +116,6 @@
 
         function openDropdown() {
             dropdown.classList.remove('hidden');
-            // Give browser time to remove hidden before transition
             setTimeout(() => {
                 dropdown.classList.remove('opacity-0', 'scale-95');
                 dropdown.classList.add('opacity-100', 'scale-100');
@@ -148,7 +134,6 @@
             }, 200);
         }
 
-        // Toggle dropdown on click
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
             if (dropdown.classList.contains('hidden')) {
@@ -158,17 +143,13 @@
             }
         });
 
-        // Select an item
         listItems.forEach(item => {
             item.addEventListener('click', () => {
-                // Update hidden input
                 hiddenInput.value = item.getAttribute('data-value');
-                // Update text display
                 text.textContent = item.getAttribute('data-text');
                 text.classList.remove('text-[#aaa]');
                 text.classList.add('text-[#1a1a1a]');
                 
-                // Manage active states styling
                 listItems.forEach(li => {
                     li.classList.remove('bg-[#e0f5f3]', 'text-[#1a9488]');
                 });
@@ -178,7 +159,6 @@
             });
         });
 
-        // Close when clicking outside
         document.addEventListener('click', (e) => {
             if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
                 if (!dropdown.classList.contains('hidden')) {
