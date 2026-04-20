@@ -97,14 +97,28 @@
 
             {{-- Show result if status is already finished --}}
             @if($pelanggaran->status != 'menunggu')
-            <div class="pt-8 border-t border-[#edf2f1]">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-1.5 h-6 bg-[#1a9488] rounded-full"></div>
-                    <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Hasil & Tindak Lanjut</h3>
+            <div class="pt-8 border-t border-[#edf2f1] flex flex-col gap-6">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-1.5 h-6 bg-[#1a9488] rounded-full"></div>
+                        <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Hasil Pertemuan</h3>
+                    </div>
+                    <div class="text-[1.05rem] text-[#333] leading-relaxed font-normal bg-gray-50/50 p-6 rounded-[24px] border border-gray-100/50">
+                        {!! nl2br(e($pelanggaran->catatan_hasil)) !!}
+                    </div>
                 </div>
-                <div class="text-[1.05rem] text-[#333] leading-relaxed font-normal bg-blue-50/50 p-6 rounded-[24px] border border-blue-100/50">
-                    {!! nl2br(e($pelanggaran->catatan_hasil)) !!}
+                
+                @if($pelanggaran->catatan_tindak_lanjut)
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-1.5 h-6 bg-amber-500 rounded-full"></div>
+                        <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Tindak Lanjut</h3>
+                    </div>
+                    <div class="text-[1.05rem] text-[#333] leading-relaxed font-normal bg-amber-50/30 p-6 rounded-[24px] border border-amber-100/50 italic">
+                        "{!! nl2br(e($pelanggaran->catatan_tindak_lanjut)) !!}"
+                    </div>
                 </div>
+                @endif
             </div>
             @endif
         </div>
@@ -139,9 +153,15 @@
                         </div>
 
                         <div>
-                            <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest block mb-3 ml-1">Catatan Hasil & Tindakan</label>
-                            <textarea name="catatan_hasil" placeholder="Contoh: Siswa sudah diberikan peringatan tertulis dan diminta membuat surat pernyataan..." required rows="8"
+                            <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest block mb-3 ml-1">Hasil Pertemuan</label>
+                            <textarea name="catatan_hasil" placeholder="Jelaskan poin-poin hasil pertemuan dengan siswa..." required rows="5"
                                       class="w-full border-[2px] border-[#edf2f1] rounded-[24px] px-6 py-5 bg-[#fcfdfd] outline-none font-normal text-[0.95rem] resize-none focus:border-[#1a9488]/40 transition-colors placeholder:text-[#ccc]"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-[0.7rem] font-bold text-amber-600 uppercase tracking-widest block mb-3 ml-1">Rencana Tindak Lanjut</label>
+                            <textarea name="catatan_tindak_lanjut" placeholder="Apa langkah selanjutnya? (Cth: Pemantauan nilai, surat perjanjian...)" required rows="4"
+                                      class="w-full border-[2px] border-amber-100 rounded-[24px] px-6 py-5 bg-amber-50/10 outline-none font-normal text-[0.95rem] resize-none focus:border-amber-400/40 transition-colors placeholder:text-[#ccc]"></textarea>
                         </div>
 
                         <button type="submit" class="w-full py-5 bg-[#1a9488] text-white rounded-full font-black text-[0.95rem] tracking-wider uppercase shadow-[0_10px_25px_rgba(26,148,136,0.3)] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(26,148,136,0.4)] active:scale-95 transition-all mt-2">

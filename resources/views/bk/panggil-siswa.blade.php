@@ -55,7 +55,8 @@
                 </div>
 
                 <div class="border-[2px] border-[#1a9488] rounded-[20px] px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                    <textarea name="catatan" placeholder="Catatan Pemanggilan (Opsional)" rows="4"
+                    <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-1 block uppercase tracking-wide">Detail Pemanggilan</label>
+                    <textarea name="catatan" placeholder="Jelaskan detail alasan pemanggilan siswa ini..." rows="4" required
                               class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium resize-none"></textarea>
                 </div>
             </form>

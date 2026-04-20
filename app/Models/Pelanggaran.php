@@ -18,6 +18,7 @@ class Pelanggaran extends Model
         'status',
         'catatan_pemanggilan',
         'catatan_hasil',
+        'catatan_tindak_lanjut',
         'is_read',
     ];
 

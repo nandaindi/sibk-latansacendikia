@@ -30,7 +30,7 @@ class PemanggilanController extends Controller
             'topik'   => 'required|string|max:200',
             'tanggal' => 'required|date',
             'waktu'   => 'required',
-            'catatan' => 'nullable|string|max:1000',
+            'catatan' => 'required|string|max:1000',
         ]);
 
         Pelanggaran::create([
@@ -57,14 +57,16 @@ class PemanggilanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'catatan_hasil' => 'required|string|max:2000',
-            'status'        => 'required|in:selesai,tidak_hadir',
+            'catatan_hasil'         => 'required|string|max:2000',
+            'catatan_tindak_lanjut' => 'required|string|max:2000',
+            'status'                => 'required|in:selesai,tidak_hadir',
         ]);
 
         $pelanggaran = Pelanggaran::findOrFail($id);
         $pelanggaran->update([
-            'status'        => $request->status,
-            'catatan_hasil' => $request->catatan_hasil,
+            'status'                => $request->status,
+            'catatan_hasil'         => $request->catatan_hasil,
+            'catatan_tindak_lanjut' => $request->catatan_tindak_lanjut,
         ]);
 
         return redirect()->route('bk.panggil-siswa.index')->with('sukses', 'Status pelanggaran berhasil diperbarui!');
