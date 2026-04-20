@@ -15,6 +15,29 @@
         body { font-family: 'Poppins', sans-serif; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Robot Animations Fail-safe */
+        @keyframes robot-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes robot-wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(8deg); }
+            75% { transform: rotate(-8deg); }
+        }
+        @keyframes robot-heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes antenna-blink {
+            0%, 100% { opacity: 1; filter: brightness(1.2); }
+            50% { opacity: 0.6; filter: brightness(0.8); }
+        }
+        .animate-robot-float { animation: robot-float 3s ease-in-out infinite; }
+        .animate-robot-wave { animation: robot-wave 2s ease-in-out infinite; transform-origin: bottom center; }
+        .animate-robot-pulse { animation: robot-heartbeat 1.5s ease-in-out infinite; }
+        .animate-antenna { animation: antenna-blink 2s infinite; }
     </style>
     @stack('styles')
 </head>

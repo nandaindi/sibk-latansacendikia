@@ -188,7 +188,7 @@
                     <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="h-[120px] w-full object-cover rounded-xl transition-transform group-hover:scale-105">
                 @else
                     <div class="h-[120px] w-full bg-[#e0f5f3] flex items-center justify-center rounded-xl transition-transform group-hover:scale-105">
-                        <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="Artikel" class="h-[80px] object-contain opacity-50">
+                        <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="Artikel" class="h-[80px] object-contain opacity-50 animate-robot-float">
                     </div>
                 @endif
                 <div>

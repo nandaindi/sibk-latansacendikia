@@ -33,7 +33,7 @@
         <p class="text-[0.95rem] md:text-[1.05rem] text-[#1a1a1a] mb-8 md:mb-10">Silahkan masukkan data yang diperlukan</p>
 
         <!-- Robot illustration -->
-        <img src="{{ asset('img/gpt robot with speech bubble.svg') }}" alt="Robot" class="static transform-none w-[220px] mx-auto block mb-8 md:absolute md:right-[120px] lg:right-[200px] md:top-1/2 md:-translate-y-1/2 md:w-[380px] md:mb-0 md:opacity-95 z-10 drop-shadow-sm pointer-events-none">
+        <img src="{{ asset('img/gpt robot with speech bubble.svg') }}" alt="Robot" class="static transform-none w-[220px] mx-auto block mb-8 md:absolute md:right-[120px] lg:right-[200px] md:top-1/2 md:-translate-y-1/2 md:w-[380px] md:mb-0 md:opacity-95 z-10 drop-shadow-sm pointer-events-none animate-robot-float animate-robot-wave">
 
         <!-- Ensure form uses left side space in desktop view -->
         <div class="w-full md:w-[55%] lg:w-[48%] z-20 flex flex-col space-y-6 md:pt-4">

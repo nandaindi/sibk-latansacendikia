@@ -120,7 +120,7 @@
                 <img 
                     src="{{ asset('img/flying delivery robot saluting.svg') }}"
                     alt="Robot BK"
-                    class="w-full h-full object-contain"
+                    class="w-full h-full object-contain animate-robot-float"
                     loading="eager"
                     fetchpriority="high"
                 >
@@ -169,7 +169,7 @@
                     @endif
 
                     <div class="px-6 mb-8">
-                        <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Pelanggaran" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110">
+                        <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Pelanggaran" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110 animate-robot-wave">
                     </div>
                     
                     <a href="{{ route('siswa.panggilan') }}" class="w-full @if($unreadPanggilanCount > 0) bg-[#ef4444] @else bg-[#1a9488] @endif text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:brightness-110 transition-all cursor-pointer flex items-center justify-center rounded-b-[32px]">
@@ -178,12 +178,12 @@
                 </div>
                 <!-- Card 2: Pengajuan Online -->
                 <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card2">
-                    <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card2:scale-110">
+                    <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card2:scale-110 animate-robot-float">
                     <a href="{{ route('siswa.pengajuan-online') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[32px]">PENGAJUAN ONLINE</a>
                 </div>
                 <!-- Card 3: Pengajuan Offline -->
                 <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card3">
-                    <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card3:scale-110">
+                    <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card3:scale-110 animate-robot-wave">
                     <a href="{{ route('siswa.pengajuan-offline') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[32px]">PENGAJUAN OFFLINE</a>
                 </div>
             </div>

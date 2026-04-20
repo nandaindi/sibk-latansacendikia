@@ -51,7 +51,7 @@
         <!-- RIGHT: Illustration + Buttons -->
         <div class="flex flex-col items-center gap-5 lg:mt-4">
             <div class="w-40 h-40 md:w-52 md:h-52">
-                <img src="{{ asset('img/Robot hand showing heart gesture.svg') }}" alt="Robot heart gesture" class="w-full h-full object-contain">
+                <img src="{{ asset('img/Robot hand showing heart gesture.svg') }}" alt="Robot heart gesture" class="w-full h-full object-contain animate-robot-pulse">
             </div>
 
             <!-- Tombol Setuju Langsung (Sekali Klik) -->
