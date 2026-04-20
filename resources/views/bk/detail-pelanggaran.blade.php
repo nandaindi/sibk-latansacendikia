@@ -171,12 +171,9 @@
                 </div>
             @else
                 {{-- Finished State Branding --}}
-                <div class="bg-gray-50 border-[2px] border-dashed border-gray-300 rounded-[32px] p-12 text-center flex flex-col items-center gap-4">
-                    <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-[#1a9488] shadow-sm">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <div class="text-[1.1rem] font-bold text-gray-500 uppercase tracking-[0.1em]">Kasus Ditutup</div>
-                    <p class="text-[0.9rem] text-gray-400 font-medium">Sesi ini sudah diproses dan tidak dapat diubah lagi.</p>
+                <div class="mt-10 bg-gray-50 border-[2px] border-dashed border-gray-300 rounded-[32px] py-20 px-12 text-center flex flex-col items-center gap-4">
+                    <div class="text-[1.1rem] font-bold text-gray-400 uppercase tracking-[0.2em]">Kasus Ditutup</div>
+                    <p class="text-[0.95rem] text-gray-400 font-medium">Sesi ini sudah diproses dan tidak dapat diubah lagi.</p>
                 </div>
             @endif
         </div>
