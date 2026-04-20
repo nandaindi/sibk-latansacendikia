@@ -31,6 +31,11 @@
                         <span class="text-[0.95rem] font-bold text-[#1a1a1a]">:</span>
                         <span class="text-[0.95rem] text-[#333]">{{ \Carbon\Carbon::parse($konseling->tanggal)->format('l, d F Y') }}</span>
                     </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-[0.95rem] font-bold text-[#1a1a1a] w-[80px] shrink-0">Waktu</span>
+                        <span class="text-[0.95rem] font-bold text-[#1a1a1a]">:</span>
+                        <span class="text-[0.95rem] text-[#333]">{{ $konseling->waktu ? \Carbon\Carbon::parse($konseling->waktu)->format('H:i') . ' WIB' : '-' }}</span>
+                    </div>
 
                     {{-- Form Tolak --}}
                     <div class="mt-2 border-t border-[#edf2f1] pt-4">
@@ -49,10 +54,19 @@
                 <img src="{{ asset('img/Robot hand showing heart gesture.svg') }}" alt="Robot heart gesture" class="w-full h-full object-contain">
             </div>
 
-            <!-- Setuju Button -->
+            <!-- Tombol Setuju Langsung (Sekali Klik) -->
+            <form method="POST" action="{{ route('bk.setujui-langsung', $konseling->id) }}" class="w-full flex justify-center">
+                @csrf
+                <button type="submit"
+                    class="w-44 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold text-center shadow-[0_8px_20px_rgba(26,148,136,0.3)] hover:brightness-105 hover:-translate-y-0.5 transition-all">
+                    SETUJU
+                </button>
+            </form>
+
+            <!-- Tombol Reschedule (Amber) -->
             <a href="{{ route('bk.setujui-pengajuan', ['id' => $konseling->id]) }}"
-               class="w-44 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold text-center shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:brightness-105 hover:-translate-y-0.5 transition-all no-underline inline-block">
-                Setuju
+               class="w-44 py-3.5 bg-[#f59e0b] text-white rounded-full text-[1rem] font-bold text-center shadow-[0_8px_20px_rgba(245,158,11,0.3)] hover:brightness-105 hover:-translate-y-0.5 transition-all no-underline inline-block">
+                RESCHEDULE
             </a>
 
             <!-- Tolak Button (submit form) -->
@@ -61,8 +75,8 @@
                 <input type="hidden" name="konseling_id" value="{{ $konseling->id }}">
                 <input type="hidden" name="alasan_tolak" id="hiddenAlasan">
                 <button type="button" onclick="submitTolak()"
-                    class="w-44 py-3.5 bg-[#b94040] text-white rounded-full text-[1rem] font-bold text-center shadow-[0_4px_12px_rgba(185,64,64,0.3)] hover:brightness-110 hover:-translate-y-0.5 transition-all">
-                    Tolak
+                    class="w-44 py-3.5 bg-[#b94040] text-white rounded-full text-[1rem] font-bold text-center shadow-[0_8px_20px_rgba(185,64,64,0.3)] hover:brightness-110 hover:-translate-y-0.5 transition-all">
+                    TOLAK
                 </button>
             </form>
         </div>

@@ -28,6 +28,10 @@ class DashboardController extends Controller
             });
 
         // Cari konseling aktif / pending (exclude tidak_hadir & selesai & ditolak)
+        $activeKonselingCount = \App\Models\Konseling::where('user_id', $userId)
+            ->whereIn('status', ['pending', 'disetujui'])
+            ->count();
+            
         $activeKonseling = \App\Models\Konseling::where('user_id', $userId)
             ->whereIn('status', ['pending', 'disetujui'])
             ->latest()
@@ -35,7 +39,7 @@ class DashboardController extends Controller
 
         $articles = \App\Models\Artikel::with('penulis')->latest()->take(4)->get();
 
-        return view('siswa.dashboard', compact('activeKonseling', 'articles'));
+        return view('siswa.dashboard', compact('activeKonseling', 'activeKonselingCount', 'articles'));
     }
 
     /** List panggilan/pelanggaran (dipanggil oleh BK) */
@@ -90,12 +94,23 @@ class DashboardController extends Controller
                 ->with('warning_pengajuan', 'Kamu sudah punya pengajuan konseling yang sedang aktif. Harap tunggu sampai selesai.');
         }
 
+        // Parse jadwal (datetime-local)
+        $tanggal = now()->format('Y-m-d');
+        $waktu = now()->format('H:i');
+        if ($request->jadwal) {
+            $dt = \Carbon\Carbon::parse($request->jadwal);
+            $tanggal = $dt->format('Y-m-d');
+            $waktu = $dt->format('H:i');
+        }
+
         \App\Models\Konseling::create([
             'user_id' => auth()->id(),
             'jenis' => 'online',
             'problem_type' => $request->problem_type,
-            'tanggal' => now()->format('Y-m-d'),
-            'status' => 'pending'
+            'tanggal' => $tanggal,
+            'waktu' => $waktu,
+            'status' => 'pending',
+            'catatan_siswa' => $request->note
         ]);
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
@@ -118,12 +133,23 @@ class DashboardController extends Controller
                 ->with('warning_pengajuan', 'Kamu sudah punya pengajuan konseling yang sedang aktif. Harap tunggu sampai selesai.');
         }
 
+        // Parse jadwal (datetime-local)
+        $tanggal = now()->format('Y-m-d');
+        $waktu = now()->format('H:i');
+        if ($request->jadwal) {
+            $dt = \Carbon\Carbon::parse($request->jadwal);
+            $tanggal = $dt->format('Y-m-d');
+            $waktu = $dt->format('H:i');
+        }
+
         \App\Models\Konseling::create([
             'user_id' => auth()->id(),
             'jenis' => 'offline',
             'problem_type' => $request->problem_type,
-            'tanggal' => now()->format('Y-m-d'),
-            'status' => 'pending'
+            'tanggal' => $tanggal,
+            'waktu' => $waktu,
+            'status' => 'pending',
+            'catatan_siswa' => $request->note
         ]);
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
@@ -244,5 +270,62 @@ class DashboardController extends Controller
     {
         $articles = \App\Models\Artikel::with('penulis')->latest()->paginate(12);
         return view('siswa.artikel-index', compact('articles'));
+    }
+
+    /** Tandai semua notifikasi sebagai sudah dibaca */
+    public function markNotificationsAsRead()
+    {
+        $user = auth()->user();
+        
+        // 1. Database Notifications (Laravel Standard)
+        $user->unreadNotifications->markAsRead();
+
+        // 2. Manual Model Notifications (Konseling & Pelanggaran)
+        \App\Models\Konseling::where('user_id', $user->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        \App\Models\Pelanggaran::where('user_id', $user->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return back()->with('sukses', 'Semua notifikasi telah ditandai sebagai dibaca.');
+    }
+
+    /** Halaman Pusat Notifikasi (Gabungan semua aktivitas) */
+    public function allNotifications()
+    {
+        $userId = auth()->id();
+
+        // 1. Ambil data Konseling
+        $konselingNotifs = \App\Models\Konseling::with('bk')
+            ->where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        // 2. Ambil data Pelanggaran/Panggilan
+        $pelanggaranNotifs = \App\Models\Pelanggaran::with('bk')
+            ->where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        // 3. Gabungkan dan Urutkan
+        $mergedNotifications = $konselingNotifs->concat($pelanggaranNotifs)
+            ->sortByDesc(function($item) {
+                return $item->updated_at ?? $item->created_at;
+            });
+
+        // 4. Manual Pagination (Simple version for a better UI)
+        $perPage = 15;
+        $page = request()->get('page', 1);
+        $notifications = new \Illuminate\Pagination\LengthAwarePaginator(
+            $mergedNotifications->forPage($page, $perPage),
+            $mergedNotifications->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('siswa.notifications-index', compact('notifications'));
     }
 }

@@ -10,9 +10,92 @@
 @endpush
 
 @section('content')
+    {{-- Notifikasi Status Pengajuan Aktif (Floating Pojok Kanan Atas - Dibawah Profile) --}}
+    @if($activeKonseling)
+    <div id="activeKonselingCard" class="fixed z-[9999] w-[calc(100%-32px)] md:w-[380px] animate-in fade-in slide-in-from-right-10 duration-700 ease-out" 
+         style="top: 100px; right: 24px; left: auto !important; display: none;">
+        <div class="bg-white border border-[#1a9488]/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(26,148,136,0.2)] flex items-start ring-1 ring-black/5 relative overflow-hidden">
+            
+            {{-- Close Button --}}
+            <button onclick="dismissActiveNotif()" class="absolute z-10 p-1 bg-white shadow-sm border border-red-100 text-red-500 hover:bg-red-500 hover:text-red rounded-full transition-all cursor-pointer flex items-center justify-center group" style="top: 8px; right: 8px; left: auto !important;" title="Tutup">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" class="group-hover:scale-90 transition-transform"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <div class="flex-1 min-w-0 pr-8">
+                <div class="font-black text-[1rem] text-[#1a1a1a] leading-tight tracking-tight capitalize">
+                    @if($activeKonseling->status == 'disetujui') Jadwal Konseling Aktif!
+                    @elseif($activeKonseling->status == 'dipanggil') Kamu Dipanggil Guru BK!
+                    @else Menunggu Persetujuan...
+                    @endif
+                </div>
+                <p class="text-[0.85rem] text-[#555] mt-1 font-medium leading-relaxed">
+                    @if($activeKonseling->status == 'disetujui')
+                        {{ ucfirst($activeKonseling->jenis) }} · <span class="font-bold text-[#1a9488]">{{ \Carbon\Carbon::parse($activeKonseling->tanggal)->format('d M') }} pkl {{ $activeKonseling->waktu ? \Carbon\Carbon::parse($activeKonseling->waktu)->format('H:i') : '--:--' }}</span>
+                    @else
+                        Pengajuan {{ $activeKonseling->jenis }} sedang diproses oleh Guru BK.
+                    @endif
+                </p>
+                
+                <div class="mt-4 flex items-center gap-2">
+                    @if($activeKonseling->status == 'disetujui')
+                    <a href="{{ $activeKonseling->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}"
+                       class="px-5 py-2 bg-[#1a9488] text-white text-[0.85rem] font-black rounded-xl hover:bg-[#157a70] transition-all shadow-md hover:shadow-lg active:scale-95 no-underline">
+                        Mulai Sesi
+                    </a>
+                    @elseif($activeKonseling->status == 'pending')
+                    <a href="{{ route('siswa.pengajuan-proses') }}"
+                       class="px-5 py-2 border-2 border-[#1a9488] text-[#1a9488] text-[0.85rem] font-black rounded-xl hover:bg-[#1a9488] hover:text-white transition-all no-underline">
+                        Lihat Status
+                    </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if($activeCounseling = $activeKonseling)
+    <script>
+        (function() {
+            const key = 'dismissed_active_notif_{{ $activeCounseling->id }}';
+            if (localStorage.getItem(key) !== 'true') {
+                document.getElementById('activeKonselingCard').style.display = 'block';
+            } else {
+                document.addEventListener('DOMContentLoaded', () => {
+                    const btn = document.getElementById('restoreNotifBtn');
+                    if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.classList.add('flex');
+                    }
+                });
+            }
+        })();
+    </script>
+    @endif
+
+    @push('styles')
+    <style>
+        @keyframes custom-ping {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+        @keyframes badge-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        .animate-badge-ping {
+            animation: custom-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        .animate-badge-pulse {
+            animation: badge-pulse 2s ease-in-out infinite;
+        }
+    </style>
+    @endpush
+
     <!-- Content -->
     <main class="w-full px-4 md:px-6 py-6 md:py-10 flex flex-col gap-6 md:gap-12 flex-1 pb-[100px] md:pb-10">
-
+        
         {{-- Warning Flash --}}
         @if(session('warning_pengajuan'))
         <div id="warningFlash" class="flex items-center gap-4 bg-amber-50 border border-amber-400 rounded-2xl px-5 py-4 shadow-sm">
@@ -43,80 +126,65 @@
                 >
             </div>
         </div>
-
-        <!-- Menu Konseling -->
         <div>
             <div class="flex items-center justify-between mb-6">
                 <span class="text-xl md:text-[1.3rem] font-extrabold text-[#1a1a1a]">Menu Konseling</span>
+                
+                @if($activeKonselingCount > 0)
+                <button id="restoreNotifBtn" title="Lihat jadwal aktif" onclick="restoreActiveNotif()" class="hidden items-center gap-3 px-5 py-2 bg-white text-[#1a9488] rounded-full hover:bg-[#f0f9f8] transition-all border border-[#1a9488]/20 cursor-pointer shadow-[0_6px_20px_rgba(26,148,136,0.12)] group">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a9488] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#1a9488]"></span>
+                    </span>
+                    <span class="text-[0.8rem] font-bold tracking-tight">Jadwal Aktif</span>
+                    
+                    {{-- Badge with Animation --}}
+                    <span class="relative flex items-center justify-center">
+                        <span class="animate-badge-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-50"></span>
+                        <span class="relative flex items-center justify-center w-5 h-5 bg-[#ef4444] text-white text-[0.7rem] font-black rounded-full shadow-sm group-hover:scale-110 transition-transform animate-badge-pulse">
+                            {{ $activeKonselingCount }}
+                        </span>
+                    </span>
+                </button>
+                @endif
             </div>
-
-            {{-- Notifikasi Status Pengajuan Aktif --}}
-            @if($activeKonseling)
-            <div class="mb-5 flex flex-col gap-3 bg-[#e0f5f3] border border-[#1a9488] rounded-2xl px-5 py-4 shadow-sm">
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 shrink-0 rounded-full bg-[#1a9488] flex items-center justify-center text-white mt-0.5">
-                        @if($activeKonseling->status == 'disetujui')
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        @elseif($activeKonseling->status == 'dipanggil')
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                        @else
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-bold text-[0.95rem] text-[#1a1a1a]">
-                            @if($activeKonseling->status == 'disetujui') Pengajuan Disetujui — Jadwal Konseling Kamu!
-                            @elseif($activeKonseling->status == 'dipanggil') Kamu Dipanggil oleh Guru BK!
-                            @else Pengajuan Sedang Menunggu Persetujuan
-                            @endif
-                        </div>
-                        <div class="text-[0.85rem] text-[#555] mt-1">
-                            Konseling <span class="font-semibold capitalize">{{ $activeKonseling->jenis }}</span>
-                            @if($activeKonseling->status == 'disetujui')
-                            · <span class="font-semibold">{{ \Carbon\Carbon::parse($activeKonseling->tanggal)->format('d M Y') }}</span>
-                            @if($activeKonseling->waktu) pukul <span class="font-semibold">{{ \Carbon\Carbon::parse($activeKonseling->waktu)->format('H:i') }} WIB</span>@endif
-                            @else
-                            · Diajukan {{ \Carbon\Carbon::parse($activeKonseling->tanggal)->format('d M Y') }}
-                            @endif
-                        </div>
-                        @if($activeKonseling->status == 'disetujui' && $activeKonseling->link_meet)
-                        <a href="{{ $activeKonseling->link_meet }}" target="_blank"
-                           class="mt-2 inline-flex items-center gap-1.5 text-[0.85rem] font-semibold text-[#1a9488] hover:underline">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.882v6.236a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                            Buka Google Meet
-                        </a>
-                        @endif
-                    </div>
-                    @if($activeKonseling->status == 'disetujui')
-                    <a href="{{ $activeKonseling->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}"
-                       class="shrink-0 px-4 py-2 bg-[#1a9488] text-white text-[0.85rem] font-bold rounded-xl no-underline hover:bg-[#157a70] transition-all whitespace-nowrap">
-                        Mulai
-                    </a>
-                    @elseif($activeKonseling->status == 'pending')
-                    <a href="{{ route('siswa.pengajuan-proses') }}"
-                       class="shrink-0 px-4 py-2 bg-[#1a9488] text-white text-[0.85rem] font-bold rounded-xl no-underline hover:bg-[#157a70] transition-all whitespace-nowrap">
-                        Lihat Status
-                    </a>
-                    @endif
-                </div>
-            </div>
-            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
+                @php
+                    $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
+                        ->where('status', 'menunggu')
+                        ->where('is_read', false)
+                        ->count();
+                @endphp
+                
                 <!-- Card 1: Panggilan Pelanggaran -->
-                <div class="bg-white rounded-[16px] pt-6 md:pt-8 flex flex-col items-center overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.08)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full">
-                    <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Pelanggaran" class="h-[100px] md:h-[140px] w-auto object-contain mb-6 transition-transform duration-300 hover:scale-105">
-                    <a href="{{ route('siswa.panggilan') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-base font-bold py-3.5 md:py-4 px-4 tracking-wide mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer">Panggilan Pelanggaran</a>
+                <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full relative group/card">
+                    {{-- Badge inside Card - Clean No Shadow --}}
+                    @if($unreadPanggilanCount > 0)
+                        <div class="absolute z-20 flex items-center justify-center animate-bounce-slow" style="top: 20px; right: 20px; background: transparent !important;">
+                            <span class="flex items-center justify-center min-w-[28px] h-[28px] px-2 bg-[#ef4444] text-white text-[0.75rem] font-black rounded-full border-2 border-white">
+                                {{ $unreadPanggilanCount }}
+                            </span>
+                        </div>
+                    @endif
+
+                    <div class="px-6 mb-8">
+                        <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Pelanggaran" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110">
+                    </div>
+                    
+                    <a href="{{ route('siswa.panggilan') }}" class="w-full @if($unreadPanggilanCount > 0) bg-[#ef4444] @else bg-[#1a9488] @endif text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:brightness-110 transition-all cursor-pointer flex items-center justify-center rounded-b-[32px]">
+                        PANGGILAN PELANGGARAN
+                    </a>
                 </div>
                 <!-- Card 2: Pengajuan Online -->
-                <div class="bg-white rounded-[16px] pt-6 md:pt-8 flex flex-col items-center overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.08)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full">
-                    <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-[100px] md:h-[140px] w-auto object-contain mb-6 transition-transform duration-300 hover:scale-105">
-                    <a href="{{ route('siswa.pengajuan-online') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-base font-bold py-3.5 md:py-4 px-4 tracking-wide mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer">Pengajuan Online</a>
+                <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card2">
+                    <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card2:scale-110">
+                    <a href="{{ route('siswa.pengajuan-online') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[32px]">PENGAJUAN ONLINE</a>
                 </div>
                 <!-- Card 3: Pengajuan Offline -->
-                <div class="bg-white rounded-[16px] pt-6 md:pt-8 flex flex-col items-center overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.08)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full">
-                    <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-[100px] md:h-[140px] w-auto object-contain mb-6 transition-transform duration-300 hover:scale-105">
-                    <a href="{{ route('siswa.pengajuan-offline') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-base font-bold py-3.5 md:py-4 px-4 tracking-wide mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer">Pengajuan Offline</a>
+                <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card3">
+                    <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card3:scale-110">
+                    <a href="{{ route('siswa.pengajuan-offline') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[32px]">PENGAJUAN OFFLINE</a>
                 </div>
             </div>
         </div>
@@ -160,3 +228,43 @@
 
     </main>
 @endsection
+
+@push('scripts')
+<script>
+    const STORAGE_KEY = 'dismissed_active_notif_{{ $activeKonseling->id ?? 0 }}';
+    const notifCard = document.getElementById('activeKonselingCard');
+    const restoreBtn = document.getElementById('restoreNotifBtn');
+
+    function dismissActiveNotif() {
+        if (notifCard) {
+            notifCard.style.display = 'none';
+            localStorage.setItem(STORAGE_KEY, 'true');
+            if (restoreBtn) {
+                restoreBtn.classList.remove('hidden');
+                restoreBtn.classList.add('flex');
+            }
+        }
+    }
+
+    function restoreActiveNotif() {
+        if (notifCard) {
+            notifCard.style.display = 'block';
+            localStorage.removeItem(STORAGE_KEY);
+            if (restoreBtn) {
+                restoreBtn.classList.add('hidden');
+                restoreBtn.classList.remove('flex');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem(STORAGE_KEY) === 'true') {
+            if (notifCard) notifCard.classList.add('hidden');
+            if (restoreBtn) {
+                restoreBtn.classList.remove('hidden');
+                restoreBtn.classList.add('flex');
+            }
+        }
+    });
+</script>
+@endpush

@@ -33,6 +33,7 @@
                 <label class="text-[0.85rem] font-bold text-[#555] mb-1 block">Tanggal Konseling</label>
                 <div class="flex items-center border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white">
                     <input type="date" name="tanggal" required
+                        value="{{ $konseling->tanggal }}"
                         class="flex-1 border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium appearance-none"/>
                 </div>
             </div>
@@ -41,6 +42,7 @@
                 <label class="text-[0.85rem] font-bold text-[#555] mb-1 block">Waktu</label>
                 <div class="flex items-center border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white">
                     <input type="time" name="waktu" required
+                        value="{{ $konseling->waktu ? \Carbon\Carbon::parse($konseling->waktu)->format('H:i') : '' }}"
                         class="flex-1 border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium appearance-none"/>
                 </div>
             </div>

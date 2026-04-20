@@ -39,6 +39,8 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/panggilan',        [DashboardController::class, 'panggilan'])->name('panggilan');
     Route::get('/detail-panggilan/{id}', [DashboardController::class, 'detailPanggilan'])->name('detail-panggilan');
     Route::post('/terima-panggilan',[DashboardController::class, 'terimaPanggilan'])->name('terima-panggilan');
+    Route::post('/notifications/mark-as-read', [DashboardController::class, 'markNotificationsAsRead'])->name('notifications.mark-as-read');
+    Route::get('/notifications', [DashboardController::class, 'allNotifications'])->name('notifications.index');
 
     Route::get('/pengajuan-online',        [DashboardController::class, 'pengajuanOnline'])->name('pengajuan-online');
     Route::post('/pengajuan-online/store', [DashboardController::class, 'storePengajuanOnline'])->name('pengajuan-online.store');
@@ -85,6 +87,7 @@ Route::middleware(['auth', 'role:bk'])->prefix('bk')->name('bk.')->group(functio
     Route::get('/validasi-pengajuan',            [BKController::class, 'validasiPengajuan'])->name('validasi-pengajuan');
     Route::get('/setujui-pengajuan',             [BKController::class, 'setujuiPengajuan'])->name('setujui-pengajuan');
     Route::post('/setujui-pengajuan/store',      [BKController::class, 'storeSetujuiPengajuan'])->name('setujui-pengajuan.store');
+    Route::post('/setujui-langsung/{id}',       [BKController::class, 'setujuiLangsung'])->name('setujui-langsung');
     Route::post('/tolak-pengajuan',              [BKController::class, 'tolakPengajuan'])->name('tolak-pengajuan');
     Route::get('/sesi-konseling',                [BKController::class, 'sesiKonseling'])->name('sesi-konseling');
     Route::get('/detail-sesi',                   [BKController::class, 'detailSesi'])->name('detail-sesi');

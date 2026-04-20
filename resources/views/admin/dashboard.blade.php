@@ -103,7 +103,7 @@
     body > * { display: none !important; }
     #adminPrintArea {
         display: block !important;
-        font-family: Arial, sans-serif;
+        font-family: 'Poppins', sans-serif;
         padding: 32px;
         color: #1a1a1a;
     }

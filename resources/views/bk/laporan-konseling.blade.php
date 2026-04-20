@@ -19,9 +19,33 @@
     </div>
     @endif
 
+    <!-- Filter Tabs (Online / Offline) - Pindah ke Kanan -->
+    <div class="mb-8 flex flex-wrap items-center justify-end gap-3">
+        <a href="{{ route('bk.laporan-konseling') }}" 
+           class="px-6 py-3 rounded-full text-[0.85rem] font-bold transition-all no-underline @if(!$jenis) bg-[#1a9488] text-white shadow-[0_8px_20px_rgba(26,148,136,0.3)] @else bg-white text-[#555] border border-gray-200 hover:bg-gray-50 @endif">
+            Semua Laporan
+        </a>
+        <a href="{{ route('bk.laporan-konseling', ['jenis' => 'online']) }}" 
+           class="px-6 py-3 rounded-full text-[0.85rem] font-bold transition-all no-underline flex items-center gap-2 @if($jenis == 'online') bg-[#1a9488] text-white shadow-[0_8px_20px_rgba(26,148,136,0.3)] @else bg-white text-[#555] border border-gray-200 hover:bg-gray-50 @endif">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Konseling Online
+        </a>
+        <a href="{{ route('bk.laporan-konseling', ['jenis' => 'offline']) }}" 
+           class="px-6 py-3 rounded-full text-[0.85rem] font-bold transition-all no-underline flex items-center gap-2 @if($jenis == 'offline') bg-[#1a9488] text-white shadow-[0_8px_20px_rgba(26,148,136,0.3)] @else bg-white text-[#555] border border-gray-200 hover:bg-gray-50 @endif">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Konseling Offline
+        </a>
+    </div>
+
     <!-- Laporan list dari DB -->
     <div class="flex flex-col gap-4 mb-8">
-        <h3 class="text-[1rem] font-extrabold text-[#1a9488] border-l-4 border-[#1a9488] pl-3 mb-1">Daftar Laporan</h3>
+        <h3 class="text-[0.9rem] font-black text-[#1a9488] uppercase tracking-wider mb-1 flex items-center gap-2">
+            <span class="w-8 h-[2px] bg-[#1a9488]"></span>
+            @if($jenis == 'online') Daftar Laporan Online
+            @elseif($jenis == 'offline') Daftar Laporan Offline
+            @else Daftar Semua Laporan
+            @endif
+        </h3>
         
         @forelse($laporans as $laporan)
         <div class="bg-white border-[2px] border-[#edf2f1] rounded-3xl p-6 shadow-sm hover:shadow-md hover:border-[#1a9488]/30 transition-all group">

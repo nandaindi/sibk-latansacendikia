@@ -5,7 +5,7 @@
 @push('styles')
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <style>
-    .ql-container { font-family: 'Inter', sans-serif; font-size: 1rem; min-height: 360px; border-radius: 0 0 16px 16px !important; border-color: transparent !important; }
+    .ql-container { font-family: 'Poppins', sans-serif; font-size: 1rem; min-height: 360px; border-radius: 0 0 16px 16px !important; border-color: transparent !important; }
     .ql-toolbar { border-radius: 16px 16px 0 0 !important; border-color: #e5e7eb !important; background: #fafafa; }
     .ql-editor { min-height: 340px; line-height: 1.8; color: #333; padding: 16px 20px; }
     .ql-editor.ql-blank::before { color: #bbb; font-style: normal; }

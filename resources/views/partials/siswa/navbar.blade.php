@@ -25,19 +25,19 @@
     } else {
         $konselingNotifs = \App\Models\Konseling::with('bk')
             ->where('user_id', auth()->id())
-            ->where('status', 'selesai')
+            ->whereIn('status', ['selesai', 'disetujui'])
             ->latest()
-            ->take(3)
+            ->take(15)
             ->get();
 
         $pelanggaranNotifs = \App\Models\Pelanggaran::with('bk')
             ->where('user_id', auth()->id())
             ->where('status', 'menunggu')
             ->latest()
-            ->take(3)
+            ->take(15)
             ->get();
 
-        $notifications = $konselingNotifs->concat($pelanggaranNotifs)->sortByDesc('updated_at')->take(5);
+        $notifications = $konselingNotifs->concat($pelanggaranNotifs)->sortByDesc('updated_at')->take(20);
         $hasNotification = $notifications->where('is_read', false)->count() > 0;
 
         $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
@@ -75,18 +75,6 @@
                Beranda
             </a>
             @if(!$isBK)
-            <a href="{{ route('siswa.panggilan') }}"
-               class="flex items-center gap-1.5 {{ request()->routeIs('siswa.panggilan*', 'siswa.detail-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
-               Riwayat Panggilan
-               @if(isset($unreadPanggilanCount) && $unreadPanggilanCount > 0)
-                   <span class="relative flex h-5 w-5 ml-1">
-                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                       <span class="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-white text-[0.65rem] font-black items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.5)]">
-                           {{ $unreadPanggilanCount }}
-                       </span>
-                   </span>
-               @endif
-            </a>
             <a href="{{ route('siswa.riwayat-konseling') }}"
                class="{{ request()->routeIs('siswa.riwayat-konseling*', 'siswa.detail-laporan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
                Riwayat Laporan
@@ -109,18 +97,40 @@
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="stroke-current" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                        @if($hasNotification)
-                        <circle cx="19" cy="5" r="3.5" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+                        @if($hasNotification || (isset($unreadPanggilanCount) && $unreadPanggilanCount > 0))
+                        <circle cx="19" cy="5" r="3.5" fill="#ef4444" stroke="#fff" stroke-width="1.5" class="{{ (isset($unreadPanggilanCount) && $unreadPanggilanCount > 0) ? 'animate-pulse' : '' }}"/>
                         @endif
                     </svg>
+                    @if(isset($unreadPanggilanCount) && $unreadPanggilanCount > 0)
+                        <span class="absolute top-1 right-1 flex h-4 w-4">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-4 w-4 bg-red-600 text-white text-[0.6rem] font-black items-center justify-center">
+                                {{ $unreadPanggilanCount }}
+                            </span>
+                        </span>
+                    @endif
                 </button>
 
                 <div class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 focus-within:opacity-100 focus-within:visible focus-within:scale-100 z-50 overflow-hidden">
                     <div class="px-4 py-3 border-b border-[#eaeaea] flex items-center justify-between bg-[#fafafa]">
                         <span class="text-sm font-bold text-[#333]">Notifikasi</span>
+                        @if(!$isBK && ($notifications->count() > 0 || $dbNotifications->count() > 0))
+                        <form action="{{ route('siswa.notifications.mark-as-read') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="text-[0.7rem] font-bold text-[#1a9488] hover:text-[#11675f] bg-transparent border-none p-0 cursor-pointer">
+                                Tandai Dibaca
+                            </button>
+                        </form>
+                        @endif
                     </div>
                     
-                    <div class="max-h-[300px] overflow-y-auto">
+                    <style>
+                        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+                        .custom-scrollbar::-webkit-scrollbar-track { background: #f9fafb; }
+                        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a9488; border-radius: 10px; }
+                        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #11675f; }
+                    </style>
+                    <div class="custom-scrollbar border-b border-[#f0f0f0]" style="max-height: 240px; overflow-y: auto;">
                         @if($dbNotifications->count() > 0)
                             @foreach($dbNotifications as $dbNotif)
                                 <a href="{{ $dbNotif->data['link'] ?? '#' }}" class="block p-3 border-b border-[#f5f5f5] bg-[#f0fdf9] hover:bg-[#e6f9f5] transition-colors no-underline">
@@ -157,18 +167,30 @@
                                         <div class="text-xs mb-1 {{ $isUnreadSelesai ? 'text-[#555]' : 'text-[#999]' }}">Sesi {{ ucfirst($notif->jenis) }} tanggal {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M Y') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
-                                    @else
-                                    @php 
-                                        $isUnread = !$notif->is_read && ($notif->status === 'menunggu' || $notif->status === 'dipanggil'); 
-                                    @endphp
-                                    <a href="{{ route('siswa.detail-panggilan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnread ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
+                                    @elseif($notif->status === 'disetujui')
+                                    @php $isUnreadJadwal = !$notif->is_read; @endphp
+                                    <a href="{{ $notif->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#e6f9f5] transition-colors no-underline {{ $isUnreadJadwal ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
                                         <div class="flex items-center gap-2 mb-0.5">
-                                            @if($isUnread)
+                                            @if($isUnreadJadwal)
                                             <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
                                             @endif
-                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Pelanggaran</div>
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnreadJadwal ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Jadwal Konseling Disetujui</div>
                                         </div>
-                                        <div class="text-xs text-[#555] mb-1 {{ $isUnread ? '' : 'text-[#999]' }}">Jadwal: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ \Carbon\Carbon::parse($notif->waktu)->format('H:i') }}</div>
+                                        <div class="text-xs text-[#555] mb-1">Sesi {{ ucfirst($notif->jenis) }}: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ $notif->waktu ? \Carbon\Carbon::parse($notif->waktu)->format('H:i') : '--:--' }}</div>
+                                        <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
+                                    </a>
+                                    @else
+                                    @php 
+                                        $isUnreadPanggilan = !$notif->is_read && ($notif->status === 'menunggu' || $notif->status === 'dipanggil'); 
+                                    @endphp
+                                    <a href="{{ route('siswa.detail-panggilan', $notif->id) }}" class="block p-3 border-b border-[#f5f5f5] hover:bg-[#f0f9f8] transition-colors no-underline {{ $isUnreadPanggilan ? 'bg-[#f0fdf9]' : 'opacity-60' }}">
+                                        <div class="flex items-center gap-2 mb-0.5">
+                                            @if($isUnreadPanggilan)
+                                            <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
+                                            @endif
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnreadPanggilan ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Pelanggaran</div>
+                                        </div>
+                                        <div class="text-xs text-[#555] mb-1 {{ $isUnreadPanggilan ? '' : 'text-[#999]' }}">Jadwal: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ \Carbon\Carbon::parse($notif->waktu)->format('H:i') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
                                     @endif
@@ -181,11 +203,10 @@
                             </div>
                         @endif
                     </div>
-                    
-                    @if($notifications->count() > 0)
-                    <div class="p-2 border-t border-[#eaeaea]">
-                        <a href="{{ $isBK ? route('bk.daftar-pengajuan') : route('siswa.panggilan') }}" class="block w-full text-center text-xs font-semibold text-[#1a9488] hover:text-[#11675f] py-1.5 transition-colors no-underline">
-                            Lihat Semua
+                    @if(!$isBK && ($notifications->count() > 0 || $dbNotifications->count() > 0))
+                    <div class="p-2 border-t border-[#eaeaea] bg-[#fdfdfd]">
+                        <a href="{{ route('siswa.notifications.index') }}" class="block w-full text-center text-xs font-bold text-[#1a9488] hover:text-[#11675f] py-2 transition-colors no-underline">
+                            Lihat Semua Notifikasi
                         </a>
                     </div>
                     @endif
@@ -287,6 +308,15 @@
                                             <div class="text-[0.85rem] font-semibold {{ $isUnreadSelesai ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Laporan Konseling Tersedia</div>
                                         </div>
                                         <div class="text-xs mb-1 {{ $isUnreadSelesai ? 'text-[#555]' : 'text-[#999]' }}">Sesi {{ ucfirst($notif->jenis) }} tanggal {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M Y') }}</div>
+                                        <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
+                                    </a>
+                                    @elseif($notif->status === 'disetujui')
+                                    <a href="{{ $notif->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}" class="block p-3 border-b border-[#f5f5f5] bg-[#f0fdf9] hover:bg-[#e6f9f5] transition-colors no-underline">
+                                        <div class="flex items-center gap-2 mb-0.5">
+                                            <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
+                                            <div class="text-[0.85rem] font-semibold text-[#1a1a1a]">Jadwal Konseling Disetujui</div>
+                                        </div>
+                                        <div class="text-xs text-[#555] mb-1">Sesi {{ ucfirst($notif->jenis) }}: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ $notif->waktu ? \Carbon\Carbon::parse($notif->waktu)->format('H:i') : '--:--' }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
                                     </a>
                                     @else

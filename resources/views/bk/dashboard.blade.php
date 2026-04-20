@@ -12,8 +12,11 @@
         <!-- Card 1: Panggilan Pelanggaran -->
         <a href="{{ route('bk.panggil-siswa.index') }}" class="no-underline group">
             <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden hover:shadow-[0_8px_30px_rgba(26,148,136,0.12)] hover:-translate-y-1 transition-all flex items-center p-5 gap-5">
-                <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0">
+                <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0 relative">
                     <img src="{{ asset('img/Phone conversation with speech bubble.svg') }}" alt="Panggil Siswa" class="h-10 object-contain transition-transform group-hover:scale-110">
+                    @if($panggilanCount > 0)
+                    <div class="absolute -top-1.5 -right-1.5 w-6 h-6 bg-[#ef4444] text-white text-[0.75rem] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ $panggilanCount }}</div>
+                    @endif
                 </div>
                 <div>
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors mb-1">Panggil Siswa</div>
@@ -41,8 +44,11 @@
         <!-- Card 3: Sesi Konseling -->
         <a href="{{ route('bk.sesi-konseling') }}" class="no-underline group">
             <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden hover:shadow-[0_8px_30px_rgba(26,148,136,0.12)] hover:-translate-y-1 transition-all flex items-center p-5 gap-5">
-                <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0">
+                <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0 relative">
                     <img src="{{ asset('img/Brainstorming and generating ideas online.svg') }}" alt="Sesi Konseling" class="h-10 object-contain transition-transform group-hover:scale-110">
+                    @if($sesiAktifCount > 0)
+                    <div class="absolute -top-1.5 -right-1.5 w-6 h-6 bg-blue-500 text-white text-[0.75rem] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ $sesiAktifCount }}</div>
+                    @endif
                 </div>
                 <div>
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors mb-1">Sesi Aktif</div>
@@ -144,10 +150,15 @@
                                class="px-3 py-1.5 bg-[#fdf3e1] text-[#f59e0b] text-[0.8rem] font-bold rounded-lg hover:bg-[#f59e0b] hover:text-white transition-colors no-underline whitespace-nowrap">
                                 Tinjau
                             </a>
-                            <a href="{{ route('bk.setujui-pengajuan', ['id' => $pending->id]) }}" 
-                               class="px-3 py-1.5 bg-[#e0f5f3] text-[#1a9488] text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors no-underline whitespace-nowrap">
-                                Setujui
-                            </a>
+                            
+                            <!-- Tombol Setujui Langsung (Sakti) -->
+                            <form method="POST" action="{{ route('bk.setujui-langsung', $pending->id) }}">
+                                @csrf
+                                <button type="submit" 
+                                    class="px-3 py-1.5 bg-[#e0f5f3] text-[#1a9488] text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors whitespace-nowrap">
+                                    Setujui
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

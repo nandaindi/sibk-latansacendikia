@@ -35,11 +35,21 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Count Sesi Aktif (Disetujui) untuk badge
+        $sesiAktifCount = Konseling::where('status', 'disetujui')
+            ->where('bk_id', $bkId)
+            ->count();
+
+        // Count Panggilan Aktif (Menunggu) untuk badge
+        $panggilanCount = \App\Models\Pelanggaran::where('status', 'menunggu')
+            ->where('bk_id', $bkId)
+            ->count();
+
         // Artikel Edukasi
         $articles = \App\Models\Artikel::with('penulis')->latest()->take(4)->get();
 
         return view('bk.dashboard', compact(
-            'pendingCount', 'jadwalHariIni', 'pendingRequests', 'articles'
+            'pendingCount', 'jadwalHariIni', 'pendingRequests', 'articles', 'sesiAktifCount', 'panggilanCount'
         ));
     }
 
@@ -135,6 +145,25 @@ class DashboardController extends Controller
         }
 
         return redirect()->route('bk.sesi-konseling')->with('sukses', 'Pengajuan berhasil disetujui!');
+    }
+
+    /** Setujui Langsung - Gunakan jadwal siswa tanpa pindah halaman */
+    public function setujuiLangsung($id)
+    {
+        $konseling = Konseling::findOrFail($id);
+        
+        $konseling->update([
+            'status'   => 'disetujui',
+            'bk_id'    => auth()->id(),
+            // Tanggal & Waktu tetap menggunakan usulan siswa yang sudah kita simpan di DB
+        ]);
+
+        // Send Notification to Students
+        if ($konseling->user) {
+            $konseling->user->notify(new \App\Notifications\KonselingStatusNotification($konseling, 'disetujui'));
+        }
+
+        return redirect()->route('bk.sesi-konseling')->with('sukses', 'Pengajuan berhasil disetujui sesuai jadwal siswa!');
     }
 
     /** Tolak Pengajuan - update status + simpan alasan */
@@ -321,11 +350,22 @@ class DashboardController extends Controller
     }
 
     /** Laporan Konseling - list laporan dari sesi selesai */
-    public function laporanKonseling()
+    public function laporanKonseling(Request $request)
     {
-        $laporans  = Laporan::with(['author', 'user', 'konseling'])->where('author_id', auth()->id())->latest()->paginate(10);
+        $jenis = $request->query('jenis');
+        
+        $query = Laporan::with(['author', 'user', 'konseling'])
+            ->where('author_id', auth()->id());
 
-        return view('bk.laporan-konseling', compact('laporans'));
+        if ($jenis && in_array($jenis, ['online', 'offline'])) {
+            $query->whereHas('konseling', function($q) use ($jenis) {
+                $q->where('jenis', $jenis);
+            });
+        }
+
+        $laporans = $query->latest()->paginate(10);
+
+        return view('bk.laporan-konseling', compact('laporans', 'jenis'));
     }
 
     /** Detail Laporan (BK) */

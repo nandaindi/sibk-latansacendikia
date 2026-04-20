@@ -134,7 +134,7 @@
 
     #printWrap {
         display: block !important;
-        font-family: Arial, sans-serif;
+        font-family: 'Poppins', sans-serif;
         padding: 40px;
         color: #1a1a1a;
         width: 100%;

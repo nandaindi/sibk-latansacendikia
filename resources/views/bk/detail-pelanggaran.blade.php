@@ -1,99 +1,206 @@
 @extends('layouts.bk')
-
-@section('title', 'Detail Pelanggaran – BK')
+@section('title', 'Detail Panggilan – ' . $pelanggaran->user->name)
 
 @section('content')
-<main class="w-full px-4 md:px-6 py-6 flex-1 pb-[100px] md:pb-10">
-    <div class="mb-4 flex items-center gap-3">
-        <a href="{{ route('bk.panggil-siswa.index') }}" class="w-10 h-10 rounded-full bg-white border border-[#eaeaea] flex items-center justify-center text-[#1a9488] shadow-sm hover:shadow-md transition-all">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+<main class="w-full px-4 md:px-6 py-6 pb-[100px] md:pb-10 max-w-7xl mx-auto">
+    
+    {{-- Top Navigation --}}
+    <div class="flex items-center gap-4 mb-8">
+        <a href="{{ route('bk.panggil-siswa.index') }}" class="group flex items-center justify-center w-11 h-11 bg-white border border-[#edf2f1] rounded-full shadow-sm hover:shadow-md hover:border-[#1a9488]/30 transition-all">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="text-[#1a9488] group-hover:-translate-x-1 transition-transform"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         </a>
-        <h2 class="text-[1.3rem] md:text-[1.5rem] font-extrabold text-[#1a1a1a]">Detail Panggilan Pelanggaran</h2>
+        <div>
+            <h1 class="text-[1.8rem] md:text-[2.2rem] font-black text-[#1a1a1a] tracking-tight leading-snug">Detail Panggilan</h1>
+            <p class="text-[0.9rem] text-[#888] font-medium uppercase tracking-[0.2em] mt-3">Status: 
+                <span class="
+                    @if($pelanggaran->status == 'menunggu') text-amber-500
+                    @elseif($pelanggaran->status == 'selesai') text-[#1a9488]
+                    @else text-red-500
+                    @endif">
+                    {{ str_replace('_', ' ', $pelanggaran->status) }}
+                </span>
+            </p>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- LEFT: Detail Info -->
-        <div class="lg:col-span-2 flex flex-col gap-6">
-            <div class="bg-white rounded-[24px] p-6 md:p-8 border border-[#edf2f1] shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-[#f5f5f5]">
-                    <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] border-2 border-[#1a9488] flex items-center justify-center text-[1.5rem] font-black text-[#1a9488]">
-                        {{ substr($pelanggaran->user->name, 0, 1) }}
-                    </div>
-                    <div>
-                        <div class="text-xl font-bold text-[#1a1a1a]">{{ $pelanggaran->user->name }}</div>
-                        <div class="text-sm text-[#777] font-medium">{{ $pelanggaran->user->kelas }} {{ $pelanggaran->user->jurusan }}</div>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider
-                            @if($pelanggaran->status == 'menunggu') bg-[#fff3cd] text-[#856404]
-                            @elseif($pelanggaran->status == 'selesai') bg-[#d4edda] text-[#155724]
-                            @else bg-[#f8d7da] text-[#721c24]
-                            @endif">
-                            {{ str_replace('_', ' ', $pelanggaran->status) }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <div class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest mb-1">Topik Panggilan</div>
-                        <div class="text-[1.05rem] font-semibold text-[#1a1a1a]">{{ $pelanggaran->topik }}</div>
-                    </div>
-                    <div>
-                        <div class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest mb-1">Jadwal Pertemuan</div>
-                        <div class="text-[1.05rem] font-semibold text-[#1a1a1a]">
-                            {{ \Carbon\Carbon::parse($pelanggaran->tanggal)->translatedFormat('l, d M Y') }} pkl {{ \Carbon\Carbon::parse($pelanggaran->waktu)->format('H:i') }}
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest mb-1">Catatan Pemanggilan</div>
-                    <div class="bg-[#f9fafb] rounded-[16px] p-4 text-[0.95rem] text-[#444] leading-relaxed whitespace-pre-line border border-[#f0f0f0]">
-                        {{ $pelanggaran->catatan_pemanggilan ?? '-' }}
-                    </div>
-                </div>
-                
-                @if($pelanggaran->status == 'selesai')
-                <div class="mt-6">
-                    <div class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest mb-1">Hasil & Tindak Lanjut</div>
-                    <div class="bg-[#f0fdf9] rounded-[16px] p-4 text-[0.95rem] text-[#155724] leading-relaxed whitespace-pre-line border border-[#c3e6cb]">
-                        {{ $pelanggaran->catatan_hasil ?? '-' }}
-                    </div>
-                </div>
+    {{-- Unified Hero Bar --}}
+    <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] p-8 md:p-10 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 mb-10 overflow-hidden relative group">
+        
+        <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8 overflow-hidden">
+            {{-- Big Avatar --}}
+            <div class="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-[#e0f5f3] border-[4px] border-white shrink-0 flex items-center justify-center">
+                @if($pelanggaran->user->avatar)
+                    <img src="{{ asset('storage/' . $pelanggaran->user->avatar) }}" alt="{{ $pelanggaran->user->name }}" class="w-full h-full object-cover">
+                @else
+                    <span class="text-4xl font-black text-[#1a9488]">{{ strtoupper(substr($pelanggaran->user->name, 0, 1)) }}</span>
                 @endif
             </div>
+
+            {{-- Meta Info --}}
+            <div class="text-center md:text-left">
+                <h2 class="text-[2rem] md:text-[2.4rem] font-black text-[#1a1a1a] leading-tight mb-2 uppercase tracking-tight">{{ $pelanggaran->user->name }}</h2>
+                <div class="flex flex-wrap justify-center md:justify-start items-center gap-2">
+                    <span class="px-3 py-1 bg-gray-50 text-gray-500 border border-gray-200 text-[0.65rem] font-bold rounded-lg uppercase tracking-widest">
+                        NIS: {{ $pelanggaran->user->nis ?? '000000' }}
+                    </span>
+                    <span class="px-3 py-1 bg-[#e0f5f3] text-[#1a9488] border border-[#1a9488]/20 text-[0.65rem] font-bold rounded-lg uppercase tracking-widest">
+                        Kelas: {{ $pelanggaran->user->kelas }} {{ $pelanggaran->user->jurusan }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Balanced Grid Workspace --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        {{-- LEFT: Case Context Details --}}
+        <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] p-8 md:p-10 shadow-sm flex flex-col gap-10">
+            <div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-1.5 h-6 bg-[#1a9488] rounded-full"></div>
+                    <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Jadwal Pertemuan</h3>
+                </div>
+                <div class="flex items-center gap-5">
+                    <div class="w-16 h-16 rounded-[1.2rem] bg-gray-50 flex flex-col items-center justify-center border border-gray-100 shrink-0">
+                        <span class="text-[0.65rem] font-bold text-[#aaa] uppercase">{{ \Carbon\Carbon::parse($pelanggaran->tanggal)->translatedFormat('M') }}</span>
+                        <span class="text-[1.4rem] font-black text-[#1a9488] leading-none">{{ \Carbon\Carbon::parse($pelanggaran->tanggal)->format('d') }}</span>
+                    </div>
+                    <div>
+                        <div class="text-[1.1rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($pelanggaran->tanggal)->translatedFormat('l, d F Y') }}</div>
+                        <div class="text-[0.9rem] text-[#777] font-medium mt-0.5">Pukul {{ \Carbon\Carbon::parse($pelanggaran->waktu)->format('H:i') }} WIB</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-1.5 h-6 bg-[#1a9488] rounded-full"></div>
+                    <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Topik Panggilan</h3>
+                </div>
+                <div class="text-[1.15rem] font-medium text-[#444] tracking-tight uppercase" style="padding-left: 1.0rem !important;">
+                    {{ $pelanggaran->topik }}
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-1.5 h-6 bg-[#1a9488] rounded-full"></div>
+                    <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Catatan Pemanggilan</h3>
+                </div>
+                <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200 border-dashed min-h-[120px]">
+                    <p class="text-[1.05rem] text-[#555] font-normal leading-[1.8] italic">
+                        "{!! nl2br(e($pelanggaran->catatan_pemanggilan ?? 'Tidak ada catatan khusus.')) !!}"
+                    </p>
+                </div>
+            </div>
+
+            {{-- Show result if status is already finished --}}
+            @if($pelanggaran->status != 'menunggu')
+            <div class="pt-8 border-t border-[#edf2f1]">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-1.5 h-6 bg-[#1a9488] rounded-full"></div>
+                    <h3 class="text-[0.9rem] font-bold uppercase tracking-[0.2em] text-[#111]">Hasil & Tindak Lanjut</h3>
+                </div>
+                <div class="text-[1.05rem] text-[#333] leading-relaxed font-normal bg-blue-50/50 p-6 rounded-[24px] border border-blue-100/50">
+                    {!! nl2br(e($pelanggaran->catatan_hasil)) !!}
+                </div>
+            </div>
+            @endif
         </div>
 
-        <!-- RIGHT: Form Update (If waiting) -->
-        <div class="lg:col-span-1">
+        {{-- RIGHT: Action Sidebar / Process Form --}}
+        <div class="lg:sticky lg:top-24">
             @if($pelanggaran->status == 'menunggu')
-            <div class="bg-white rounded-[24px] p-6 md:p-8 border border-[#edf2f1] shadow-[0_10px_30px_rgba(26,148,136,0.1)] sticky top-24">
-                <h3 class="text-lg font-bold text-[#1a1a1a] mb-5">Proses Pelanggaran</h3>
-                
-                <form id="formUpdate" action="{{ route('bk.panggil-siswa.update', $pelanggaran->id) }}" method="POST" class="flex flex-col gap-4">
-                    @csrf
-                    <div>
-                        <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-wide ml-1 mb-1 block">Status Akhir</label>
-                        <select name="status" class="w-full border-[2px] border-[#1a9488] rounded-full px-5 py-3 bg-white outline-none font-semibold text-sm">
-                            <option value="selesai">Hadir & Selesai</option>
-                            <option value="tidak_hadir">Tidak Hadir</option>
-                        </select>
-                    </div>
+                <div class="bg-white border-[2px] border-[#1a9488]/20 rounded-[32px] p-8 md:p-10 shadow-sm overflow-hidden relative">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-[#1a9488]/5 rounded-bl-[60px] -z-10"></div>
+                    
+                    <h3 class="text-[1.3rem] font-bold text-[#1a1a1a] mb-2">Proses Pelanggaran</h3>
+                    <p class="text-[0.85rem] text-[#888] font-medium mb-8">Ubah status kehadiran dan berikan catatan hasil pertemuan.</p>
+                    
+                    <form action="{{ route('bk.panggil-siswa.update', $pelanggaran->id) }}" method="POST" class="flex flex-col gap-6">
+                        @csrf
+                        <div>
+                            <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest block mb-4 ml-1 pl-1">Konfirmasi Kehadiran Siswa</label>
+                            <div class="flex flex-row gap-4">
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="status" value="selesai" checked class="status-radio-input">
+                                    <div class="status-btn-box btn-hadir">
+                                        Hadir
+                                    </div>
+                                </label>
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="status" value="tidak_hadir" class="status-radio-input">
+                                    <div class="status-btn-box btn-tidak-hadir">
+                                        Tidak Hadir
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
 
-                    <div>
-                        <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-wide ml-1 mb-1 block">Catatan Hasil</label>
-                        <textarea name="catatan_hasil" placeholder="Tuliskan hasil pertemuan dan arahan yang diberikan..." required rows="6"
-                                  class="w-full border-[2px] border-[#1a9488] rounded-[20px] px-5 py-4 bg-white outline-none font-medium text-sm resize-none"></textarea>
-                    </div>
+                        <div>
+                            <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-widest block mb-3 ml-1">Catatan Hasil & Tindakan</label>
+                            <textarea name="catatan_hasil" placeholder="Contoh: Siswa sudah diberikan peringatan tertulis dan diminta membuat surat pernyataan..." required rows="8"
+                                      class="w-full border-[2px] border-[#edf2f1] rounded-[24px] px-6 py-5 bg-[#fcfdfd] outline-none font-normal text-[0.95rem] resize-none focus:border-[#1a9488]/40 transition-colors placeholder:text-[#ccc]"></textarea>
+                        </div>
 
-                    <button type="submit" class="w-full py-4 bg-[#1a9488] text-white rounded-full font-bold shadow-[0_4px_16px_rgba(26,148,136,0.3)] hover:bg-[#157a70] transition-all active:scale-95 mt-2">
-                        Simpan Perubahan
-                    </button>
-                </form>
-            </div>
+                        <button type="submit" class="w-full py-5 bg-[#1a9488] text-white rounded-full font-black text-[0.95rem] tracking-wider uppercase shadow-[0_10px_25px_rgba(26,148,136,0.3)] hover:-translate-y-1 hover:shadow-[0_15px_30px_rgba(26,148,136,0.4)] active:scale-95 transition-all mt-2">
+                            Simpan Hasil Perubahan
+                        </button>
+                    </form>
+                </div>
+            @else
+                {{-- Finished State Branding --}}
+                <div class="bg-gray-50 border-[2px] border-dashed border-gray-300 rounded-[32px] p-12 text-center flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-[#1a9488] shadow-sm">
+                        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div class="text-[1.1rem] font-bold text-gray-500 uppercase tracking-[0.1em]">Kasus Ditutup</div>
+                    <p class="text-[0.9rem] text-gray-400 font-medium">Sesi ini sudah diproses dan tidak dapat diubah lagi.</p>
+                </div>
             @endif
         </div>
     </div>
 </main>
 @endsection
+
+@push('styles')
+<style>
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
+
+    /* Custom Status Buttons Logic */
+    .status-radio-input {
+        display: none !important;
+    }
+    .status-btn-box {
+        padding: 1rem;
+        border-radius: 20px;
+        border: 2px solid #f3f4f6;
+        text-align: center;
+        font-weight: 900;
+        font-size: 0.9rem;
+        color: #9ca3af;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background-color: white;
+    }
+    .status-btn-box:hover {
+        background-color: #f9fafb;
+    }
+    .status-radio-input:checked + .btn-hadir {
+        background-color: #22c55e !important;
+        color: white !important;
+        border-color: #22c55e !important;
+        box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.3);
+    }
+    .status-radio-input:checked + .btn-tidak-hadir {
+        background-color: #ef4444 !important;
+        color: white !important;
+        border-color: #ef4444 !important;
+        box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+    }
+</style>
+@endpush
