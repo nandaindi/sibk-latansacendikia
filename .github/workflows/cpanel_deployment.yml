@@ -35,7 +35,7 @@ jobs:
             ~/.nvm/versions/node/v24.3.0/bin/npm ci
 
             echo "🧩 Build Filament assets..."
-            ~/.nvm/versions/node/v24.3.0/bin/npm run build:filament
+            ~/.nvm/versions/node/v24.3.0/bin/npm run build
 
             echo "🚀 Run Laravel optimizations..."
             php artisan migrate --force
