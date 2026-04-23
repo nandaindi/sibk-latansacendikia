@@ -38,12 +38,20 @@
         .animate-robot-wave { animation: robot-wave 2s ease-in-out infinite; transform-origin: bottom center; }
         .animate-robot-pulse { animation: robot-heartbeat 1.5s ease-in-out infinite; }
         .animate-antenna { animation: antenna-blink 2s infinite; }
+
+        /* Toast Animations */
+        @keyframes toast-in {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-toast-in { animation: toast-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .toast-hide { opacity: 0; transform: translateY(-20px); transition: all 0.4s ease; }
     </style>
     @stack('styles')
 </head>
 <body class="bg-[#f4f6f9] min-h-screen text-[#1a1a1a]">
 
-<div id="toast-container" class="fixed top-0 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full max-w-sm flex flex-col items-center"></div>
+<div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full max-w-sm flex flex-col items-center gap-3"></div>
 
 @include('partials.siswa.modals')
 
@@ -80,7 +88,7 @@
         const closeBtn = `<button onclick="closeToast('${id}')" class="ml-3 p-1 hover:bg-white/20 rounded-full transition-colors pointer-events-auto border-none bg-transparent text-white cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
 
         const toastHtml = `
-            <div id="${id}" class="mt-5 translate-y-[-100px] opacity-0 pointer-events-auto ${bgColor} text-white px-6 py-3.5 rounded-full text-[0.95rem] font-bold shadow-[0_10px_30px_rgba(0,0,0,0.15)] flex items-center gap-3 whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
+            <div id="${id}" class="animate-toast-in pointer-events-auto ${bgColor} text-white px-6 py-3.5 rounded-full text-[0.9rem] font-bold shadow-[0_10px_30px_rgba(0,0,0,0.15)] flex items-center gap-3 whitespace-nowrap">
                 ${icon}
                 <span>${message}</span>
                 ${sticky ? closeBtn : ''}
@@ -88,15 +96,7 @@
         `;
 
         container.insertAdjacentHTML('beforeend', toastHtml);
-        const toastEl = document.getElementById(id);
 
-        // Show
-        setTimeout(() => {
-            toastEl.classList.remove('translate-y-[-100px]', 'opacity-0');
-            toastEl.classList.add('translate-y-0', 'opacity-100');
-        }, 10);
-
-        // Hide and Remove (only if not sticky)
         if (!sticky) {
             setTimeout(() => {
                 closeToast(id);
@@ -107,8 +107,8 @@
     window.closeToast = function(id) {
         const toastEl = document.getElementById(id);
         if (toastEl) {
-            toastEl.classList.add('translate-y-[-100px]', 'opacity-0');
-            setTimeout(() => toastEl.remove(), 600);
+            toastEl.classList.add('toast-hide');
+            setTimeout(() => toastEl.remove(), 450);
         }
     };
 

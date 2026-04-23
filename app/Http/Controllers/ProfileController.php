@@ -16,11 +16,11 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role === 'admin') {
+        if ($user->hasRole('admin')) {
             return view('admin.profile', compact('user'));
-        } elseif ($user->role === 'bk') {
+        } elseif ($user->hasRole('bk')) {
             return view('bk.profile', compact('user'));
-        } elseif ($user->role === 'siswa') {
+        } elseif ($user->hasRole('siswa')) {
             return view('siswa.profile', compact('user'));
         }
 

@@ -35,9 +35,9 @@
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Role Akses</label>
             <select name="role" required class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium cursor-pointer">
-                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="bk" {{ $user->role == 'bk' ? 'selected' : '' }}>BK / Konselor</option>
-                <option value="siswa" {{ $user->role == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                <option value="admin" {{ $user->hasRole('admin') ? 'selected' : '' }}>Admin</option>
+                <option value="bk" {{ $user->hasRole('bk') ? 'selected' : '' }}>BK / Konselor</option>
+                <option value="siswa" {{ $user->hasRole('siswa') ? 'selected' : '' }}>Siswa</option>
             </select>
         </div>
 

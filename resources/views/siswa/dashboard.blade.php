@@ -11,67 +11,132 @@
 
 @section('content')
     {{-- Notifikasi Status Pengajuan Aktif (Floating Pojok Kanan Atas - Dibawah Profile) --}}
-    @if($activeKonseling)
-    <div id="activeKonselingCard" class="fixed z-[9999] w-[calc(100%-32px)] md:w-[380px] animate-in fade-in slide-in-from-right-10 duration-700 ease-out" 
-         style="top: 100px; right: 24px; left: auto !important; display: none;">
-        <div class="bg-white border border-[#1a9488]/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(26,148,136,0.2)] flex items-start ring-1 ring-black/5 relative overflow-hidden">
-            
-            {{-- Close Button --}}
-            <button onclick="dismissActiveNotif()" class="absolute z-10 p-1 bg-white shadow-sm border border-red-100 text-red-500 hover:bg-red-500 hover:text-red rounded-full transition-all cursor-pointer flex items-center justify-center group" style="top: 8px; right: 8px; left: auto !important;" title="Tutup">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" class="group-hover:scale-90 transition-transform"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
+    {{-- Hub Notifikasi Aktif (Floating Pojok Kanan Atas) --}}
+    <div id="alertsHub" class="fixed z-[9999] w-fit flex flex-col gap-4 animate-in fade-in slide-in-from-right-10 duration-700 ease-out" 
+         style="top: 100px; right: 24px; left: auto !important;">
+        
+        @foreach($activeAlerts as $alert)
+            @if($alert->alert_type == 'konseling')
+                {{-- 1. Kartu Konseling Aktif --}}
+                <div id="activeKonselingCard" class="bg-white border border-[#1a9488]/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(26,148,136,0.2)] flex items-start ring-1 ring-black/5 relative overflow-hidden w-full md:w-[380px]" style="display: none;">
+                    {{-- Close Button --}}
+                    <button onclick="dismissNotif('konseling', '{{ $alert->id }}')" class="absolute z-10 p-1 bg-white shadow-sm border border-red-100 text-red-500 hover:bg-red-500 hover:text-red-500
+                     rounded-full transition-all cursor-pointer flex items-center justify-center group" style="top: 8px; right: 8px; left: auto !important;" title="Tutup">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
 
-            <div class="flex-1 min-w-0 pr-8">
-                <div class="font-black text-[1rem] text-[#1a1a1a] leading-tight tracking-tight capitalize">
-                    @if($activeKonseling->status == 'disetujui') Jadwal Konseling Aktif!
-                    @elseif($activeKonseling->status == 'dipanggil') Kamu Dipanggil Guru BK!
-                    @else Menunggu Persetujuan...
-                    @endif
+                    <div class="flex-1 min-w-0 pr-8">
+                        <div class="font-black text-[0.95rem] text-[#1a1a1a] leading-tight tracking-tight uppercase mb-1">
+                            @if($alert->status == 'disetujui') Jadwal Konseling Aktif
+                            @elseif($alert->status == 'dipanggil') Kamu Dipanggil Guru BK
+                            @else Menunggu Persetujuan
+                            @endif
+                        </div>
+                        <p class="text-[0.8rem] text-[#555] font-medium leading-relaxed">
+                            @if($alert->status == 'disetujui')
+                                {{ ucfirst($alert->jenis) }} · <span class="font-bold text-[#1a9488]">{{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} pkl {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}</span>
+                            @elseif($alert->status == 'dipanggil')
+                                Segera ke ruang BK hari ini sesuai instruksi Guru BK.
+                            @else
+                                Pengajuan {{ $alert->jenis }} sedang diproses.
+                            @endif
+                        </p>
+                        <div class="mt-3 flex items-center gap-2">
+                            @if($alert->status == 'disetujui')
+                            <a href="{{ $alert->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}"
+                               class="px-4 py-1.5 bg-[#1a9488] text-white text-[0.75rem] font-black rounded-lg hover:bg-[#157a70] transition-all no-underline shadow-sm">
+                                MULAI SESI
+                            </a>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-                <p class="text-[0.85rem] text-[#555] mt-1 font-medium leading-relaxed">
-                    @if($activeKonseling->status == 'disetujui')
-                        {{ ucfirst($activeKonseling->jenis) }} · <span class="font-bold text-[#1a9488]">{{ \Carbon\Carbon::parse($activeKonseling->tanggal)->format('d M') }} pkl {{ $activeKonseling->waktu ? \Carbon\Carbon::parse($activeKonseling->waktu)->format('H:i') : '--:--' }}</span>
-                    @else
-                        Pengajuan {{ $activeKonseling->jenis }} sedang diproses oleh Guru BK.
-                    @endif
-                </p>
-                
-                <div class="mt-4 flex items-center gap-2">
-                    @if($activeKonseling->status == 'disetujui')
-                    <a href="{{ $activeKonseling->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}"
-                       class="px-5 py-2 bg-[#1a9488] text-white text-[0.85rem] font-black rounded-xl hover:bg-[#157a70] transition-all shadow-md hover:shadow-lg active:scale-95 no-underline">
-                        Mulai Sesi
-                    </a>
-                    @elseif($activeKonseling->status == 'pending')
-                    <a href="{{ route('siswa.pengajuan-proses') }}"
-                       class="px-5 py-2 border-2 border-[#1a9488] text-[#1a9488] text-[0.85rem] font-black rounded-xl hover:bg-[#1a9488] hover:text-white transition-all no-underline">
-                        Lihat Status
-                    </a>
-                    @endif
+            @elseif($alert->alert_type == 'pelanggaran')
+                {{-- 2. Kartu Panggilan Pelanggaran --}}
+                <div id="activePelanggaranCard" class="bg-red-50 border border-red-500/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(239,68,68,0.2)] flex items-start ring-1 ring-red-500/10 relative overflow-hidden w-full md:w-[380px]" style="display: none;">
+                    {{-- Close Button --}}
+                    <button onclick="dismissNotif('pelanggaran', '{{ $alert->id }}')" class="absolute z-10 p-1 bg-white shadow-sm border border-red-100 text-red-500 hover:bg-red-500 hover:text-red-500 rounded-full transition-all cursor-pointer flex items-center justify-center" style="top: 8px; right: 8px; left: auto !important;" title="Tutup">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+
+                    <div class="flex-1 min-w-0 pr-8">
+                        <div class="flex items-center mb-1">
+                            <div class="font-black text-[1rem] text-red-700 leading-tight tracking-tight uppercase">Panggilan Pelanggaran!</div>
+                            <span class="flex h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse shrink-0 ml-2"></span>
+                        </div>
+                        
+                        <div class="text-[0.85rem] font-black text-red-800 uppercase tracking-wide mb-1">
+                            TOPIK: {{ strtoupper($alert->topik) }}
+                        </div>
+                        
+                        <p class="text-[0.8rem] text-red-600 font-medium leading-relaxed">
+                            Jadwal: <span class="font-bold text-red-700">{{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} pkl {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}</span> di Ruang BK.
+                        </p>
+
+                        <div class="mt-3 flex items-center gap-3">
+                            <a href="{{ route('siswa.panggilan') }}"
+                               style="background-color: #b91c1c !important; color: white !important;"
+                               class="px-5 py-2 text-white text-[0.8rem] font-black rounded-lg hover:brightness-110 transition-all no-underline shadow-md active:scale-95 inline-flex items-center justify-center">
+                                BACA DETAIL
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            @endif
+        @endforeach
     </div>
-    @endif
 
-    @if($activeCounseling = $activeKonseling)
     <script>
         (function() {
-            const key = 'dismissed_active_notif_{{ $activeCounseling->id }}';
-            if (localStorage.getItem(key) !== 'true') {
-                document.getElementById('activeKonselingCard').style.display = 'block';
-            } else {
-                document.addEventListener('DOMContentLoaded', () => {
-                    const btn = document.getElementById('restoreNotifBtn');
-                    if (btn) {
+            window.dismissNotif = function(type, id) {
+                const cardId = type === 'konseling' ? 'activeKonselingCard' : 'activePelanggaranCard';
+                const storageKey = `dismissed_${type}_notif_${id}`;
+                const card = document.getElementById(cardId);
+                if (card) {
+                    card.style.display = 'none';
+                    localStorage.setItem(storageKey, 'true');
+                    updateRestoreBtn();
+                }
+            };
+
+            window.restoreNotifs = function() {
+                @foreach($activeAlerts as $alert)
+                    localStorage.removeItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}');
+                @endforeach
+                location.reload();
+            };
+
+            function updateRestoreBtn() {
+                let anyDismissed = false;
+                @foreach($activeAlerts as $alert)
+                    if (localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') === 'true') anyDismissed = true;
+                @endforeach
+
+                const btn = document.getElementById('restoreNotifBtn');
+                if (btn) {
+                    if (anyDismissed) {
                         btn.classList.remove('hidden');
                         btn.classList.add('flex');
+                    } else {
+                        btn.classList.add('hidden');
+                        btn.classList.remove('flex');
                     }
-                });
+                }
             }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                @foreach($activeAlerts as $alert)
+                    if (localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') !== 'true') {
+                        const cardId = '{{ $alert->alert_type == 'konseling' ? "activeKonselingCard" : "activePelanggaranCard" }}';
+                        const c = document.getElementById(cardId);
+                        if (c) c.style.display = 'block';
+                    }
+                @endforeach
+
+                updateRestoreBtn();
+            });
         })();
     </script>
-    @endif
 
     @push('styles')
     <style>
@@ -130,8 +195,8 @@
             <div class="flex items-center justify-between mb-6">
                 <span class="text-xl md:text-[1.3rem] font-extrabold text-[#1a1a1a]">Menu Konseling</span>
                 
-                @if($activeKonselingCount > 0)
-                <button id="restoreNotifBtn" title="Lihat jadwal aktif" onclick="restoreActiveNotif()" class="hidden items-center gap-3 px-5 py-2 bg-white text-[#1a9488] rounded-full hover:bg-[#f0f9f8] transition-all border border-[#1a9488]/20 cursor-pointer shadow-[0_6px_20px_rgba(26,148,136,0.12)] group">
+                @if($activeKonselingCount > 0 || $activePelanggaranCount > 0)
+                <button id="restoreNotifBtn" title="Lihat jadwal aktif" onclick="restoreNotifs()" class="hidden items-center gap-3 px-5 py-2 bg-white text-[#1a9488] rounded-full hover:bg-[#f0f9f8] transition-all border border-[#1a9488]/20 cursor-pointer shadow-[0_6px_20px_rgba(26,148,136,0.12)] group">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a9488] opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#1a9488]"></span>
@@ -142,7 +207,7 @@
                     <span class="relative flex items-center justify-center">
                         <span class="animate-badge-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-50"></span>
                         <span class="relative flex items-center justify-center w-5 h-5 bg-[#ef4444] text-white text-[0.7rem] font-black rounded-full shadow-sm group-hover:scale-110 transition-transform animate-badge-pulse">
-                            {{ $activeKonselingCount }}
+                            {{ $activeKonselingCount + $activePelanggaranCount }}
                         </span>
                     </span>
                 </button>
@@ -231,40 +296,6 @@
 
 @push('scripts')
 <script>
-    const STORAGE_KEY = 'dismissed_active_notif_{{ $activeKonseling->id ?? 0 }}';
-    const notifCard = document.getElementById('activeKonselingCard');
-    const restoreBtn = document.getElementById('restoreNotifBtn');
 
-    function dismissActiveNotif() {
-        if (notifCard) {
-            notifCard.style.display = 'none';
-            localStorage.setItem(STORAGE_KEY, 'true');
-            if (restoreBtn) {
-                restoreBtn.classList.remove('hidden');
-                restoreBtn.classList.add('flex');
-            }
-        }
-    }
-
-    function restoreActiveNotif() {
-        if (notifCard) {
-            notifCard.style.display = 'block';
-            localStorage.removeItem(STORAGE_KEY);
-            if (restoreBtn) {
-                restoreBtn.classList.add('hidden');
-                restoreBtn.classList.remove('flex');
-            }
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem(STORAGE_KEY) === 'true') {
-            if (notifCard) notifCard.classList.add('hidden');
-            if (restoreBtn) {
-                restoreBtn.classList.remove('hidden');
-                restoreBtn.classList.add('flex');
-            }
-        }
-    });
 </script>
 @endpush

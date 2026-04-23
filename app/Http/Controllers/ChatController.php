@@ -21,8 +21,9 @@ class ChatController extends Controller
         ]);
 
         $konseling = Konseling::findOrFail($request->konseling_id);
-        if (auth()->user()->role === 'bk' && (int)$konseling->bk_id !== (int)auth()->id()) abort(403, 'Unauthorized BK');
-        if (auth()->user()->role === 'siswa' && (int)$konseling->user_id !== (int)auth()->id()) abort(403, 'Unauthorized Siswa');
+        $user = auth()->user();
+        if ($user->hasRole('bk') && (int)$konseling->bk_id !== (int)$user->id) abort(403, 'Unauthorized BK');
+        if ($user->hasRole('siswa') && (int)$konseling->user_id !== (int)$user->id) abort(403, 'Unauthorized Siswa');
 
         $pesan = PesanChat::create([
             'konseling_id' => $request->konseling_id,
@@ -40,7 +41,7 @@ class ChatController extends Controller
                 'id'         => $pesan->id,
                 'user_id'    => $pesan->user_id,
                 'user_name'  => $pesan->user->name,
-                'user_role'  => $pesan->user->role,
+                'user_role'  => $pesan->user->getRoleNames()->first(),
                 'pesan'      => $pesan->pesan,
                 'created_at' => $pesan->created_at->toISOString(),
             ],
@@ -60,8 +61,8 @@ class ChatController extends Controller
         $konselingId = $request->konseling_id;
 
         $konseling = Konseling::findOrFail($konselingId);
-        if ($user->role === 'bk' && (int)$konseling->bk_id !== (int)$user->id) abort(403, 'Unauthorized BK');
-        if ($user->role === 'siswa' && (int)$konseling->user_id !== (int)$user->id) abort(403, 'Unauthorized Siswa');
+        if ($user->hasRole('bk') && (int)$konseling->bk_id !== (int)$user->id) abort(403, 'Unauthorized BK');
+        if ($user->hasRole('siswa') && (int)$konseling->user_id !== (int)$user->id) abort(403, 'Unauthorized Siswa');
 
         $pesans = PesanChat::with('user')
             ->where('konseling_id', $konselingId)
@@ -71,7 +72,7 @@ class ChatController extends Controller
                 'id'         => $p->id,
                 'user_id'    => $p->user_id,
                 'user_name'  => $p->user->name,
-                'user_role'  => $p->user->role,
+                'user_role'  => $p->user->getRoleNames()->first(),
                 'pesan'      => $p->pesan,
                 'created_at' => $p->created_at->toISOString(),
             ]);
@@ -90,7 +91,8 @@ class ChatController extends Controller
         ]);
 
         $konseling = Konseling::with('user')->findOrFail($request->konseling_id);
-        if (auth()->user()->role === 'bk' && (int)$konseling->bk_id !== (int)auth()->id()) abort(403, 'Unauthorized BK');
+        $user = auth()->user();
+        if ($user->hasRole('bk') && (int)$konseling->bk_id !== (int)$user->id) abort(403, 'Unauthorized BK');
         
         $konseling->update(['status' => 'selesai']);
 

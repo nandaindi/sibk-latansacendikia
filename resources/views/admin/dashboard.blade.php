@@ -26,7 +26,7 @@
             </div>
             <div class="flex items-baseline gap-2">
                 <span class="w-14 text-[0.7rem] font-extrabold text-[#888] uppercase tracking-wider">Status</span>
-                <span class="text-[0.97rem] font-bold text-[#1a1a1a]">: {{ auth()->user()->role ?? 'Admin' }}</span>
+                <span class="text-[0.97rem] font-bold text-[#1a1a1a]">: {{ auth()->user()->getRoleNames()->first() ?? 'Admin' }}</span>
             </div>
         </div>
     </div>

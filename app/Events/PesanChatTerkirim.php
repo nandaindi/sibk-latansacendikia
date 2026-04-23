@@ -38,7 +38,7 @@ class PesanChatTerkirim implements ShouldBroadcast
             'id'         => $this->pesan->id,
             'user_id'    => $this->pesan->user_id,
             'user_name'  => $this->pesan->user->name,
-            'user_role'  => $this->pesan->user->role,
+            'user_role'  => $this->pesan->user->getRoleNames()->first(),
             'pesan'      => $this->pesan->pesan,
             'created_at' => $this->pesan->created_at->toISOString(),
         ];

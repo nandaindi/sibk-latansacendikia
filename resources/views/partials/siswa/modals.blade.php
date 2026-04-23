@@ -5,6 +5,11 @@
         ->where('status', 'dipanggil')
         ->latest()
         ->first();
+
+    $activePelanggaranModal = \App\Models\Pelanggaran::where('user_id', auth()->id())
+        ->where('status', 'menunggu')
+        ->latest()
+        ->first();
 @endphp
 
 
@@ -62,4 +67,72 @@
     </div>
 </div>
 
+@endif
+
+<!-- Modal Terima Panggilan Pelanggaran (Server-side Session) -->
+@if(session('ada_panggilan_pelanggaran'))
+<div id="modalTerimaPelanggaran" class="fixed inset-0 bg-black/45 z-[100] flex items-center justify-center p-4">
+    <div class="relative w-full max-w-[420px] transform">
+        <!-- Header Floating above -->
+        <div class="flex items-center gap-3 mb-2 pl-2">
+            <div class="p-1 px-3 bg-red-600 rounded-full shadow-lg">
+                <h3 class="text-sm font-black text-white tracking-widest uppercase">URGENT CALL</h3>
+            </div>
+        </div>
+
+        <!-- White Box -->
+        <div class="bg-white rounded-[20px] border-[3px] border-red-600 w-full p-5 md:p-7 relative shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+            <!-- Close Button (Red X) -->
+            <button onclick="document.getElementById('modalTerimaPelanggaran').remove()" class="absolute -top-4 -right-4 w-10 h-10 bg-white rounded-full border-[3px] border-red-600 flex items-center justify-center text-red-600 hover:bg-red-600 hover:text-white transition-all focus:outline-none z-10 shadow-md">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="stroke-current stroke-[4]" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Title -->
+            <div class="text-center mb-6">
+                <div class="text-[1.2rem] font-black text-red-700 uppercase tracking-tight">Panggilan Pelanggaran</div>
+                <div class="w-12 h-1 bg-red-600 mx-auto mt-2 rounded-full"></div>
+            </div>
+
+            <!-- Content Details -->
+            <div class="space-y-4 text-black mb-8">
+                <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                    <div class="text-[0.7rem] font-black text-red-500 uppercase tracking-widest mb-1">Topik Pemanggilan:</div>
+                    <div class="text-[1.1rem] font-black text-red-800 uppercase leading-snug">{{ $activePelanggaranModal->topik ?? 'PELANGGARAN TATA TERTIB' }}</div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <div class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-wider mb-0.5">Hari/Tanggal</div>
+                        <div class="text-[0.85rem] font-extrabold text-gray-800">{{ \Carbon\Carbon::parse($activePelanggaranModal->tanggal)->translatedFormat('l, d M') }}</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <div class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-wider mb-0.5">Waktu</div>
+                        <div class="text-[0.85rem] font-extrabold text-gray-800">PKL {{ \Carbon\Carbon::parse($activePelanggaranModal->waktu)->format('H:i') }} WIB</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div class="text-[0.65rem] font-bold text-gray-500 uppercase tracking-wider mb-0.5">Tempat</div>
+                    <div class="text-[0.85rem] font-extrabold text-gray-800">Ruang Bimbingan Konseling</div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="flex flex-col gap-3">
+                <form method="POST" action="{{ route('siswa.notifications.mark-as-read') }}" class="m-0">
+                    @csrf
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-xl text-[1rem] transition-all shadow-lg transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest">
+                        SAYA MENGERTI
+                    </button>
+                </form>
+                <div class="text-center">
+                    <a href="{{ route('siswa.panggilan') }}" class="text-[0.8rem] text-gray-400 hover:text-red-600 font-bold transition-colors">Lihat Detail Pelanggaran</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endif

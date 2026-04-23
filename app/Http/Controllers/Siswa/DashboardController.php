@@ -29,17 +29,44 @@ class DashboardController extends Controller
 
         // Cari konseling aktif / pending (exclude tidak_hadir & selesai & ditolak)
         $activeKonselingCount = \App\Models\Konseling::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'disetujui'])
+            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
             ->count();
             
         $activeKonseling = \App\Models\Konseling::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'disetujui'])
+            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
             ->latest()
             ->first();
 
+        // Cari panggilan pelanggaran aktif (status 'menunggu')
+        $activePelanggaranCount = \App\Models\Pelanggaran::where('user_id', $userId)
+            ->where('status', 'menunggu')
+            ->count();
+        
+        $activePelanggaran = \App\Models\Pelanggaran::where('user_id', $userId)
+            ->where('status', 'menunggu')
+            ->latest()
+            ->first();
+
+        // Gabungkan peringatan untuk diurutkan (terbaru di atas)
+        $activeAlerts = collect();
+        if ($activeKonseling) {
+            $activeKonseling->alert_type = 'konseling';
+            $activeAlerts->push($activeKonseling);
+        }
+        if ($activePelanggaran) {
+            $activePelanggaran->alert_type = 'pelanggaran';
+            $activeAlerts->push($activePelanggaran);
+        }
+        $activeAlerts = $activeAlerts->sortByDesc('updated_at');
+
         $articles = \App\Models\Artikel::with('penulis')->latest()->take(4)->get();
 
-        return view('siswa.dashboard', compact('activeKonseling', 'activeKonselingCount', 'articles'));
+        return view('siswa.dashboard', compact(
+            'activeAlerts',
+            'activeKonselingCount', 
+            'activePelanggaranCount', 
+            'articles'
+        ));
     }
 
     /** List panggilan/pelanggaran (dipanggil oleh BK) */

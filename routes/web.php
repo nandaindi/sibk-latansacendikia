@@ -131,6 +131,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/kelola-data/detail', [\App\Http\Controllers\Admin\DashboardController::class, 'detailKonseling'])->name('kelola-data.detail');
     Route::delete('/kelola-data', [\App\Http\Controllers\Admin\DashboardController::class, 'destroyData'])->name('kelola-data.destroy');
 
+    // Akun Activation
+    Route::get('/aktifkan-akun',      [\App\Http\Controllers\Admin\DashboardController::class, 'aktifkanAkun'])->name('aktifkan-akun');
+    Route::post('/aktifkan-akun',     [\App\Http\Controllers\Admin\DashboardController::class, 'storeAktifkanAkun'])->name('aktifkan-akun.store');
+
     // Data Siswa CRUD
     Route::get('/data-siswa',              [\App\Http\Controllers\Admin\DashboardController::class, 'dataSiswa'])->name('data-siswa');
     Route::get('/data-siswa/tambah',       [\App\Http\Controllers\Admin\DashboardController::class, 'tambahDataSiswa'])->name('data-siswa.tambah');

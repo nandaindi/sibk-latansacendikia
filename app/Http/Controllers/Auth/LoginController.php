@@ -20,9 +20,9 @@ class LoginController extends Controller
     {
         // Jika sudah login, redirect ke dashboard
         if (Auth::check()) {
-            $role = Auth::user()->role;
-            if ($role === 'admin') return redirect()->route('admin.dashboard');
-            if ($role === 'bk') return redirect()->route('bk.dashboard');
+            $user = Auth::user();
+            if ($user->hasRole('admin')) return redirect()->route('admin.dashboard');
+            if ($user->hasRole('bk')) return redirect()->route('bk.dashboard');
             return redirect()->route('siswa.dashboard');
         }
 
@@ -47,18 +47,18 @@ class LoginController extends Controller
         // Coba login dengan username
         if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
             $request->session()->regenerate();
-            $role = Auth::user()->role;
-            if ($role === 'admin') return redirect()->route('admin.dashboard')->with('login_success', true);
-            if ($role === 'bk') return redirect()->route('bk.dashboard')->with('login_success', true);
+            $user = Auth::user();
+            if ($user->hasRole('admin')) return redirect()->route('admin.dashboard')->with('login_success', true);
+            if ($user->hasRole('bk')) return redirect()->route('bk.dashboard')->with('login_success', true);
             return redirect()->route('siswa.dashboard')->with('login_success', true);
         }
 
         // Coba login dengan email (fallback)
         if (Auth::attempt(['email' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
             $request->session()->regenerate();
-            $role = Auth::user()->role;
-            if ($role === 'admin') return redirect()->route('admin.dashboard')->with('login_success', true);
-            if ($role === 'bk') return redirect()->route('bk.dashboard')->with('login_success', true);
+            $user = Auth::user();
+            if ($user->hasRole('admin')) return redirect()->route('admin.dashboard')->with('login_success', true);
+            if ($user->hasRole('bk')) return redirect()->route('bk.dashboard')->with('login_success', true);
             return redirect()->route('siswa.dashboard')->with('login_success', true);
         }
 

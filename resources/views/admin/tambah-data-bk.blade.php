@@ -19,28 +19,6 @@
     <form id="tambahBkForm" method="POST" action="{{ route('admin.data-bk.store') }}" class="flex flex-col gap-4">
         @csrf
 
-        {{-- Section: Info Akun --}}
-        <div class="mb-2">
-            <h3 class="text-[0.85rem] font-bold text-[#1a9488] uppercase tracking-wider mb-3 flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                Info Akun Login
-            </h3>
-
-            {{-- Email --}}
-            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Email</label>
-                <input type="email" name="email" placeholder="Contoh: guru@email.com" value="{{ old('email') }}" required
-                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-            </div>
-
-            {{-- Password --}}
-            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password</label>
-                <input type="password" name="password" placeholder="Min. 6 karakter" required
-                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
-            </div>
-        </div>
-
         {{-- Section: Data Diri Guru BK --}}
         <div class="mb-2">
             <h3 class="text-[0.85rem] font-bold text-[#1a9488] uppercase tracking-wider mb-3 flex items-center gap-2">

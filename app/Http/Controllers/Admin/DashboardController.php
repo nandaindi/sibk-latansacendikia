@@ -13,8 +13,8 @@ class DashboardController extends Controller
         $akunsCount = \App\Models\User::count();
         $konselingsCount = \App\Models\Konseling::count();
         $laporansCount = \App\Models\Laporan::count();
-        $siswaCount = \App\Models\User::where('role', 'siswa')->count();
-        $bkCount = \App\Models\User::where('role', 'bk')->count();
+        $siswaCount = \App\Models\User::role('siswa')->count();
+        $bkCount = \App\Models\User::role('bk')->count();
         $laporans = \App\Models\Laporan::with('author')->latest()->paginate(10);
 
         return view('admin.dashboard', compact('akunsCount', 'konselingsCount', 'laporansCount', 'siswaCount', 'bkCount', 'laporans'));
@@ -27,7 +27,7 @@ class DashboardController extends Controller
         $query = \App\Models\User::query();
 
         if ($RoleFilter) {
-            $query->where('role', $RoleFilter);
+            $query->role($RoleFilter);
         }
         
         $akuns = $query->latest()->paginate(10);
@@ -47,7 +47,7 @@ class DashboardController extends Controller
             'nama'     => 'required|string|max:100',
             'email'    => 'required|email|unique:users,email',
             'telepon'  => 'nullable|string|max:20',
-            'role'     => 'required|in:admin,bk,siswa',
+            'role'     => 'required|in:admin',
             'password' => 'required|string|min:6',
         ]);
 
@@ -58,14 +58,15 @@ class DashboardController extends Controller
             $username = explode('@', $request->email)[0] . rand(10, 99);
         }
 
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'name'     => $request->nama,
             'email'    => $request->email,
             'telepon'  => $request->telepon,
-            'role'     => $request->role,
             'password' => $request->password, 
             'username' => $username,
         ]);
+
+        $user->assignRole($request->role);
 
         return redirect()->route('admin.kelola-akun')->with('sukses_tambah', true);
     }
@@ -101,7 +102,6 @@ class DashboardController extends Controller
             'name'    => $request->nama,
             'email'   => $request->email,
             'telepon' => $request->telepon,
-            'role'    => $request->role,
         ];
 
         if ($request->filled('password')) {
@@ -109,6 +109,7 @@ class DashboardController extends Controller
         }
 
         $user->update($data);
+        $user->syncRoles([$request->role]);
 
         return redirect()->route('admin.kelola-akun')->with('sukses_edit', true);
     }
@@ -120,6 +121,33 @@ class DashboardController extends Controller
         $user->delete();
 
         return redirect()->route('admin.kelola-akun')->with('sukses_hapus', true);
+    }
+
+    /** Aktifkan Akun - Form */
+    public function aktifkanAkun(Request $request)
+    {
+        $user = \App\Models\User::findOrFail($request->query('id'));
+        return view('admin.aktifkan-akun', compact('user'));
+    }
+
+    /** Store Aktifkan Akun */
+    public function storeAktifkanAkun(Request $request)
+    {
+        $user = \App\Models\User::findOrFail($request->query('id'));
+
+        $request->validate([
+            'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'required|string|min:6',
+        ]);
+
+        $user->update([
+            'username' => $request->username,
+            'email'    => $request->email,
+            'password' => $request->password,
+        ]);
+
+        return redirect()->route('admin.kelola-akun')->with('sukses_aktivasi', true);
     }
 
     /** Kelola Data - list daftar konseling */
@@ -152,14 +180,15 @@ class DashboardController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'name'     => $request->nama,
             'email'    => $request->email,
             'nis'      => $request->nis,
-            'role'     => 'siswa',
             'password' => $request->password,
             'username' => $request->nis,
         ]);
+
+        $user->assignRole('siswa');
 
         return redirect()->route('admin.kelola-data')->with('sukses_tambah', true);
     }
@@ -330,7 +359,7 @@ class DashboardController extends Controller
     /** Data Siswa - List */
     public function dataSiswa(Request $request)
     {
-        $query = \App\Models\User::where('role', 'siswa');
+        $query = \App\Models\User::role('siswa');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -357,8 +386,6 @@ class DashboardController extends Controller
         $request->validate([
             'nama'         => 'required|string|max:100',
             'nis'          => 'required|string|unique:users,nis',
-            'email'        => 'required|email|unique:users,email',
-            'password'     => 'required|string|min:6',
             'kelas'        => 'nullable|string|max:20',
             'jurusan'      => 'nullable|string|max:50',
             'jenis_kelamin'=> 'nullable|in:L,P',
@@ -370,13 +397,10 @@ class DashboardController extends Controller
             'telepon_ortu' => 'nullable|string|max:20',
         ]);
 
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'name'          => $request->nama,
             'nis'           => $request->nis,
             'username'      => $request->nis,
-            'email'         => $request->email,
-            'password'      => $request->password,
-            'role'          => 'siswa',
             'kelas'         => $request->kelas,
             'jurusan'       => $request->jurusan,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -388,27 +412,29 @@ class DashboardController extends Controller
             'telepon_ortu'  => $request->telepon_ortu,
         ]);
 
+        $user->assignRole('siswa');
+
         return redirect()->route('admin.data-siswa')->with('sukses_tambah', true);
     }
 
     /** Data Siswa - Detail */
     public function detailDataSiswa(Request $request)
     {
-        $user = \App\Models\User::where('role', 'siswa')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('siswa')->findOrFail($request->query('id'));
         return view('admin.detail-data-siswa', compact('user'));
     }
 
     /** Data Siswa - Form Edit */
     public function editDataSiswa(Request $request)
     {
-        $user = \App\Models\User::where('role', 'siswa')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('siswa')->findOrFail($request->query('id'));
         return view('admin.edit-data-siswa', compact('user'));
     }
 
     /** Data Siswa - Update */
     public function updateDataSiswa(Request $request)
     {
-        $user = \App\Models\User::where('role', 'siswa')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('siswa')->findOrFail($request->query('id'));
 
         $request->validate([
             'nama'         => 'required|string|max:100',
@@ -444,7 +470,7 @@ class DashboardController extends Controller
     /** Data Siswa - Hapus */
     public function destroyDataSiswa(Request $request)
     {
-        $user = \App\Models\User::where('role', 'siswa')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('siswa')->findOrFail($request->query('id'));
         $user->delete();
 
         return redirect()->route('admin.data-siswa')->with('sukses_hapus', true);
@@ -457,7 +483,7 @@ class DashboardController extends Controller
     /** Data BK - List */
     public function dataBk(Request $request)
     {
-        $query = \App\Models\User::where('role', 'bk');
+        $query = \App\Models\User::role('bk');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -483,8 +509,6 @@ class DashboardController extends Controller
     {
         $request->validate([
             'nama'         => 'required|string|max:100',
-            'email'        => 'required|email|unique:users,email',
-            'password'     => 'required|string|min:6',
             'nip'          => 'nullable|string|max:30',
             'jenis_kelamin'=> 'nullable|in:L,P',
             'alamat'       => 'nullable|string',
@@ -492,17 +516,8 @@ class DashboardController extends Controller
             'jabatan'      => 'nullable|string|max:100',
         ]);
 
-        $username = explode('@', $request->email)[0] . rand(10, 99);
-        while (\App\Models\User::where('username', $username)->exists()) {
-            $username = explode('@', $request->email)[0] . rand(10, 99);
-        }
-
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'name'          => $request->nama,
-            'username'      => $username,
-            'email'         => $request->email,
-            'password'      => $request->password,
-            'role'          => 'bk',
             'nip'           => $request->nip,
             'jenis_kelamin' => $request->jenis_kelamin,
             'alamat'        => $request->alamat,
@@ -510,27 +525,29 @@ class DashboardController extends Controller
             'jabatan'       => $request->jabatan,
         ]);
 
+        $user->assignRole('bk');
+
         return redirect()->route('admin.data-bk')->with('sukses_tambah', true);
     }
 
     /** Data BK - Detail */
     public function detailDataBk(Request $request)
     {
-        $user = \App\Models\User::where('role', 'bk')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('bk')->findOrFail($request->query('id'));
         return view('admin.detail-data-bk', compact('user'));
     }
 
     /** Data BK - Form Edit */
     public function editDataBk(Request $request)
     {
-        $user = \App\Models\User::where('role', 'bk')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('bk')->findOrFail($request->query('id'));
         return view('admin.edit-data-bk', compact('user'));
     }
 
     /** Data BK - Update */
     public function updateDataBk(Request $request)
     {
-        $user = \App\Models\User::where('role', 'bk')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('bk')->findOrFail($request->query('id'));
 
         $request->validate([
             'nama'         => 'required|string|max:100',
@@ -556,7 +573,7 @@ class DashboardController extends Controller
     /** Data BK - Hapus */
     public function destroyDataBk(Request $request)
     {
-        $user = \App\Models\User::where('role', 'bk')->findOrFail($request->query('id'));
+        $user = \App\Models\User::role('bk')->findOrFail($request->query('id'));
         $user->delete();
 
         return redirect()->route('admin.data-bk')->with('sukses_hapus', true);

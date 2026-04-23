@@ -12,54 +12,59 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
+        // ── Create Roles ─────────────────────────────────────────
+        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'admin']);
+        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'bk']);
+        \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'siswa']);
+
         // ── Admin ──────────────────────────────────────────────
-        User::create([
+        $admin = User::create([
             'name'     => 'Admin Latansa',
             'username' => 'adminlatansa',
             'email'    => 'admin@latansa.com',
             'password' => bcrypt('password'),
-            'role'     => 'admin',
             'telepon'  => '081234567890',
         ]);
+        $admin->assignRole('admin');
 
         // ── Guru BK ────────────────────────────────────────────
-        User::create([
+        $bk1 = User::create([
             'name'     => 'Eni Kustiyorini, S.Psi',
             'username' => 'enilatansa',
             'email'    => 'eni@latansa.com',
             'password' => bcrypt('password'),
-            'role'     => 'bk',
             'telepon'  => '089876543210',
         ]);
+        $bk1->assignRole('bk');
 
-        User::create([
+        $bk2 = User::create([
             'name'     => 'Devina Rayining Tias, S.Psi',
             'username' => 'devinalatansa',
             'email'    => 'devina@latansa.com',
             'password' => bcrypt('password'),
-            'role'     => 'bk',
             'telepon'  => '082233445566',
         ]);
+        $bk2->assignRole('bk');
 
         // ── Siswa ─────────────────────────────────────────────
-        User::create([
+        $siswa1 = User::create([
             'name'     => 'Nanda Indi Lestari',
             'username' => 'nanda',
             'email'    => 'nanda@latansa.com',
             'password' => bcrypt('password'),
-            'role'     => 'siswa',
             'nis'      => '123456',
             'kelas'    => 'XII Inovatif',
         ]);
+        $siswa1->assignRole('siswa');
 
-        User::create([
+        $siswa2 = User::create([
             'name'     => 'Siswa Lain',
             'username' => 'siswa',
             'email'    => 'siswa@latansa.com',
             'password' => bcrypt('password'),
-            'role'     => 'siswa',
             'nis'      => '654321',
             'kelas'    => 'XI Kreatif',
         ]);
+        $siswa2->assignRole('siswa');
     }
 }

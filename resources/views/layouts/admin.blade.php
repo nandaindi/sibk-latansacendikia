@@ -59,10 +59,20 @@
                 display: none !important;
             }
         }
+
+        /* Toast Animations */
+        @keyframes toast-in {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-toast-in { animation: toast-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .toast-hide { opacity: 0; transform: translateY(-20px); transition: all 0.4s ease; }
     </style>
     @stack('styles')
 </head>
 <body class="bg-[#f4f6f9] min-h-screen text-[#1a1a1a]">
+
+<div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full max-w-sm flex flex-col items-center gap-3"></div>
 
 <div class="flex min-h-screen">
 
@@ -90,34 +100,21 @@
                 <span>Kelola Akun</span>
             </a>
 
-            <div class="flex flex-col">
-                <button type="button" onclick="toggleKelolaData()" id="kelolaDataBtn"
-                   class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors w-full border-none cursor-pointer {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }} bg-transparent">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <span class="flex-1 text-left">Kelola Data</span>
-                    <svg id="kelolaDataChevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 transition-transform duration-200 {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'rotate-180' : '' }}">
-                        <path d="m6 9 6 6 6-6"/>
-                    </svg>
-                </button>
-                <div id="kelolaDataSubmenu" class="flex-col gap-1 pl-8 mt-1 {{ request()->routeIs('admin.data-siswa*') || request()->routeIs('admin.data-bk*') ? 'flex' : 'hidden' }}">
-                    <a href="{{ route('admin.data-siswa') }}"
-                       class="flex items-center gap-2.5 rounded-lg py-2 px-3 font-semibold text-[0.88rem] transition-colors {{ request()->routeIs('admin.data-siswa*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/70 hover:bg-[#157167] hover:text-white' }}">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                        </svg>
-                        Data Siswa
-                    </a>
-                    <a href="{{ route('admin.data-bk') }}"
-                       class="flex items-center gap-2.5 rounded-lg py-2 px-3 font-semibold text-[0.88rem] transition-colors {{ request()->routeIs('admin.data-bk*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/70 hover:bg-[#157167] hover:text-white' }}">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                        Data BK
-                    </a>
-                </div>
-            </div>
+            <a href="{{ route('admin.data-siswa') }}"
+               class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.data-siswa*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                </svg>
+                <span>Kelola Data Siswa</span>
+            </a>
+
+            <a href="{{ route('admin.data-bk') }}"
+               class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.data-bk*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>Kelola Data BK</span>
+            </a>
 
             <a href="{{ route('admin.kelola-laporan') }}"
                class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.kelola-laporan*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
@@ -151,7 +148,7 @@
                     <div class="flex items-center gap-3 hover:bg-[#f8f9fa] py-2 px-3 rounded-xl transition-colors">
                         <div class="text-right hidden md:block">
                             <div class="text-[0.9rem] font-bold text-[#1a1a1a]">{{ auth()->user()->name ?? 'Admin User' }}</div>
-                            <div class="text-[0.75rem] text-[#888] capitalize">{{ auth()->user()->role ?? 'Admin' }}</div>
+                            <div class="text-[0.75rem] text-[#888] capitalize">{{ auth()->user()->getRoleNames()->first() ?? 'Admin' }}</div>
                         </div>
                         @if(auth()->user()->avatar)
                             <div class="w-10 h-10 rounded-full border-2 border-[#1a9488] overflow-hidden shrink-0">
@@ -241,19 +238,7 @@ function hideLogoutModal() {
     document.getElementById('logoutModal').classList.add('hidden');
     document.getElementById('logoutModal').classList.remove('flex');
 }
-function toggleKelolaData() {
-    const submenu = document.getElementById('kelolaDataSubmenu');
-    const chevron = document.getElementById('kelolaDataChevron');
-    if (submenu.classList.contains('hidden')) {
-        submenu.classList.remove('hidden');
-        submenu.classList.add('flex');
-        chevron.classList.add('rotate-180');
-    } else {
-        submenu.classList.add('hidden');
-        submenu.classList.remove('flex');
-        chevron.classList.remove('rotate-180');
-    }
-}
+
 
 function openSidebar() {
     document.getElementById('sidebar').classList.add('sidebar-open');
@@ -264,6 +249,65 @@ function closeSidebar() {
     document.getElementById('sidebar').classList.remove('sidebar-open');
     document.getElementById('sidebarOverlay').classList.remove('overlay-visible');
 }
+
+/* Toast System */
+window.showToast = function(message, type = 'success', sticky = false) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const id = 'toast-' + Date.now();
+    const colors = {
+        success: 'bg-[#1a9488]',
+        error: 'bg-[#b94040]',
+        warning: 'bg-amber-500'
+    };
+    const bgColor = colors[type] || colors.success;
+    
+    const icons = {
+        success: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+        error: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+        warning: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+    };
+    const icon = icons[type] || icons.success;
+
+    const closeBtn = `<button onclick="closeToast('${id}')" class="ml-3 p-1 hover:bg-white/20 rounded-full transition-colors pointer-events-auto border-none bg-transparent text-white cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+
+    const toastHtml = `
+        <div id="${id}" class="animate-toast-in pointer-events-auto ${bgColor} text-white px-6 py-3.5 rounded-full text-[0.9rem] font-bold shadow-[0_10px_30px_rgba(0,0,0,0.15)] flex items-center gap-3 whitespace-nowrap">
+            ${icon}
+            <span>${message}</span>
+            ${sticky ? closeBtn : ''}
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', toastHtml);
+
+    if (!sticky) {
+        setTimeout(() => {
+            closeToast(id);
+        }, 4000);
+    }
+};
+
+window.closeToast = function(id) {
+    const toastEl = document.getElementById(id);
+    if (toastEl) {
+        toastEl.classList.add('toast-hide');
+        setTimeout(() => toastEl.remove(), 450);
+    }
+};
+
+window.addEventListener('load', () => {
+    @if(session('success'))
+        showToast('{{ session('success') }}', 'success');
+    @endif
+    @if(session('error'))
+        showToast('{{ session('error') }}', 'error');
+    @endif
+    @if(session('warning'))
+        showToast('{{ session('warning') }}', 'warning');
+    @endif
+});
 </script>
 </body>
 </html>

@@ -12,7 +12,7 @@ class PemanggilanController extends Controller
     /** List students and calling history (Pelanggaran) */
     public function index()
     {
-        $siswas = User::where('role', 'siswa')->orderBy('name')->get();
+        $siswas = User::role('siswa')->orderBy('name')->get();
         
         $riwayatPanggilan = Pelanggaran::with('user')
             ->where('bk_id', auth()->id())

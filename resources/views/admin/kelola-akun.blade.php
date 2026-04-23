@@ -14,6 +14,9 @@
 @if(session('sukses_hapus'))
     <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">Akun berhasil dihapus.</div>
 @endif
+@if(session('sukses_aktivasi'))
+    <div class="mb-4 p-4 bg-[#e6f4f2] border border-[#1a9488] text-[#1a9488] rounded-xl">Akun berhasil diaktifkan.</div>
+@endif
 
 <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
     <div>
@@ -24,7 +27,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
-                Akun
+                Admin
             </a>
         </div>
     </div>
@@ -57,9 +60,20 @@
     <div class="akun-item bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 sm:px-5 py-3.5 flex items-center gap-3 sm:gap-4 shadow-sm hover:shadow-md transition-shadow">
         <span class="w-[30px] sm:w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($akuns->currentPage() - 1) * $akuns->perPage() }}</span>
         <span class="flex-1 text-[0.93rem] font-semibold text-[#1a1a1a] min-w-[100px] truncate">{{ $akun->name }}</span>
-        <span class="flex-1 text-[0.9rem] text-[#555] hidden sm:block truncate">{{ $akun->email }}</span>
-        <span class="w-[90px] shrink-0 text-center hidden md:block"><span class="inline-block px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold uppercase {{ $akun->role == 'admin' ? 'bg-purple-100 text-purple-700' : ($akun->role == 'bk' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">{{ $akun->role }}</span></span>
-        <div class="flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 w-[100px] sm:w-[112px]">
+        <span class="flex-1 text-[0.9rem] text-[#555] hidden sm:block truncate">
+            @if($akun->email)
+                {{ $akun->email }}
+            @else
+                <span class="text-red-500 italic text-[0.8rem] font-bold uppercase tracking-tight">Akun Belum Aktif</span>
+            @endif
+        </span>
+        <span class="w-[90px] shrink-0 text-center hidden md:block"><span class="inline-block px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold uppercase {{ $akun->hasRole('admin') ? 'bg-purple-100 text-purple-700' : ($akun->hasRole('bk') ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">{{ $akun->getRoleNames()->first() }}</span></span>
+        <div class="flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 w-[120px] sm:w-[130px]">
+            @if(!$akun->email)
+                <a href="{{ route('admin.aktifkan-akun', ['id' => $akun->id]) }}" title="Aktifkan Akun" class="w-8 h-8 rounded-full bg-[#1a9488] text-white flex items-center justify-center hover:brightness-110 transition-all shadow-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </a>
+            @endif
             <a href="{{ route('admin.detail-akun', ['id' => $akun->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </a>

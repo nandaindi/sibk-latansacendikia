@@ -42,12 +42,6 @@
             <div id="roleMenu" class="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border-[2px] border-[#1a9488] rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-50 overflow-hidden hidden flex-col">
                 <button type="button" onclick="selectRole('admin', 'Admin')" 
                         class="text-left px-5 py-3 hover:bg-[#e0f5f3] hover:text-[#1a9488] transition-colors text-[1rem] font-medium text-[#1a1a1a] border-none bg-transparent cursor-pointer">Admin</button>
-                <div class="h-px bg-[#e0f5f3] mx-3"></div>
-                <button type="button" onclick="selectRole('bk', 'BK / Konselor')" 
-                        class="text-left px-5 py-3 hover:bg-[#e0f5f3] hover:text-[#1a9488] transition-colors text-[1rem] font-medium text-[#1a1a1a] border-none bg-transparent cursor-pointer">BK / Konselor</button>
-                <div class="h-px bg-[#e0f5f3] mx-3"></div>
-                <button type="button" onclick="selectRole('siswa', 'Siswa')" 
-                        class="text-left px-5 py-3 hover:bg-[#e0f5f3] hover:text-[#1a9488] transition-colors text-[1rem] font-medium text-[#1a1a1a] border-none bg-transparent cursor-pointer">Siswa</button>
             </div>
         </div>
 

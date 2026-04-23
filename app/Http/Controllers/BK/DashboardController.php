@@ -56,7 +56,7 @@ class DashboardController extends Controller
     /** Panggil Siswa - form & list */
     public function panggilSiswa()
     {
-        $siswas = User::where('role', 'siswa')->orderBy('name')->get();
+        $siswas = User::role('siswa')->orderBy('name')->get();
         // Ambil riwayat panggilan (status dipanggil atau selesai) khusus BK ini
         $riwayatPanggilan = Konseling::with('user')
             ->where('bk_id', auth()->id())
