@@ -102,6 +102,7 @@ Route::middleware(['auth', 'role:bk'])->prefix('bk')->name('bk.')->group(functio
     Route::post('/konseling-offline/{id}/tidak-hadir', [BKController::class, 'tidakHadirOffline'])->name('konseling-offline.tidak-hadir');
 
     // Artikel Management (BK)
+    Route::get('/artikel/{id}/preview', [\App\Http\Controllers\BK\ArtikelController::class, 'preview'])->name('artikel.preview');
     Route::resource('artikel', \App\Http\Controllers\BK\ArtikelController::class);
 
     Route::get('/laporan-konseling',             [BKController::class, 'laporanKonseling'])->name('laporan-konseling');

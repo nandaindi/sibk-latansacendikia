@@ -41,7 +41,7 @@
                         </td>
                         <td class="p-4">
                             <div class="text-[0.95rem] font-bold text-[#1a1a1a] leading-tight mb-1">{{ $artikel->judul }}</div>
-                            <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" target="_blank" class="text-xs text-[#1a9488] hover:underline">Lihat Artikel</a>
+                            <a href="{{ route('bk.artikel.preview', $artikel->id) }}" target="_blank" class="text-xs text-[#1a9488] hover:underline">Lihat Artikel</a>
                         </td>
                         <td class="p-4 text-[0.9rem] font-medium text-[#555]">{{ $artikel->penulis->name ?? 'Unknown' }}</td>
                         <td class="p-4 text-[0.85rem] text-[#888]">{{ $artikel->created_at->format('d M Y') }}</td>

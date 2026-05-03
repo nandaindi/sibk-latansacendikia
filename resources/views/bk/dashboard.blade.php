@@ -5,7 +5,28 @@
 @section('content')
 <main class="w-full px-4 md:px-6 py-8 flex-1 flex flex-col gap-8">
 
+    {{-- Hero Banner --}}
+    <div class="bg-gradient-to-br from-[#14736a] via-[#1a9488] to-[#22c5b0] rounded-3xl px-8 py-10 md:px-14 md:py-12 flex flex-col md:flex-row items-center justify-between relative shadow-[0_12px_40px_rgba(26,148,136,0.28)] text-center md:text-left overflow-hidden">
 
+        {{-- Decorative blobs --}}
+        <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[200px] h-[200px] bg-black/5 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
+
+        <div class="flex-1 md:pr-10 z-10">
+            <p class="text-[0.78rem] md:text-[0.85rem] text-white/75 font-semibold mb-3 uppercase tracking-[0.15em]">Hallo, Selamat Datang!</p>
+            <h1 class="text-[1.7rem] md:text-[2.4rem] font-black text-white leading-tight md:leading-[1.15] mb-4 tracking-[-0.5px]">{{ auth()->user()->name }}</h1>
+            <p class="text-[0.9rem] md:text-[1rem] text-white/80 leading-relaxed max-w-[460px] mx-auto md:mx-0">Guru Bimbingan Konseling · Sekolah ini lebih baik<br class="hidden md:block">karena kehadiran dan kepedulian Anda.</p>
+        </div>
+
+        <div class="w-[120px] md:w-[200px] aspect-square shrink-0 relative z-10 mt-6 md:mt-0 md:mr-4">
+            <img
+                src="{{ asset('img/friendly cute robot.svg') }}"
+                alt="Robot BK"
+                class="w-full h-full object-contain animate-robot-float drop-shadow-xl"
+                loading="eager"
+            >
+        </div>
+    </div>
 
     {{-- Menu Cards Grid --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">

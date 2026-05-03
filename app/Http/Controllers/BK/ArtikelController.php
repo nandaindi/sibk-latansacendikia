@@ -61,6 +61,15 @@ class ArtikelController extends Controller
     }
 
     /**
+     * Preview artikel (accessible by BK role, not redirected to siswa route).
+     */
+    public function preview(string $id)
+    {
+        $artikel = Artikel::findOrFail($id);
+        return view('bk.artikel.preview', compact('artikel'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
