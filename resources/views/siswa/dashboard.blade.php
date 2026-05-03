@@ -18,68 +18,127 @@
         @foreach($activeAlerts as $alert)
             @if($alert->alert_type == 'konseling')
                 {{-- 1. Kartu Konseling Aktif --}}
-                <div id="activeKonselingCard" class="bg-white border border-[#1a9488]/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(26,148,136,0.2)] flex items-start ring-1 ring-black/5 relative overflow-hidden w-full md:w-[380px]" style="display: none;">
-                    {{-- Close Button --}}
-                    <button onclick="dismissNotif('konseling', '{{ $alert->id }}')" class="absolute z-10 p-1 bg-white shadow-sm border border-red-100 text-red-500 hover:bg-red-500 hover:text-red-500
-                     rounded-full transition-all cursor-pointer flex items-center justify-center group" style="top: 8px; right: 8px; left: auto !important;" title="Tutup">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
+                <div id="activeKonselingCard" class="bg-white border border-[#1a9488]/25 rounded-2xl shadow-[0_16px_40px_rgba(26,148,136,0.18)] ring-1 ring-black/5 relative overflow-hidden w-full md:w-[360px]" style="display: none;">
 
-                    <div class="flex-1 min-w-0 pr-8">
-                        <div class="font-black text-[0.95rem] text-[#1a1a1a] leading-tight tracking-tight uppercase mb-1">
-                            @if($alert->status == 'disetujui') Jadwal Konseling Aktif
-                            @elseif($alert->status == 'dipanggil') Kamu Dipanggil Guru BK
-                            @else Menunggu Persetujuan
-                            @endif
-                        </div>
-                        <p class="text-[0.8rem] text-[#555] font-medium leading-relaxed">
-                            @if($alert->status == 'disetujui')
-                                {{ ucfirst($alert->jenis) }} · <span class="font-bold text-[#1a9488]">{{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} pkl {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}</span>
-                            @elseif($alert->status == 'dipanggil')
-                                Segera ke ruang BK hari ini sesuai instruksi Guru BK.
-                            @else
-                                Pengajuan {{ $alert->jenis }} sedang diproses.
-                            @endif
-                        </p>
-                        <div class="mt-3 flex items-center gap-2">
-                            @if($alert->status == 'disetujui')
+                    {{-- Header Strip --}}
+                    <div class="flex items-center gap-2.5 px-4 pt-4 pb-3 border-b border-[#f0f7f6]">
+                        {{-- Icon Status --}}
+                        @if($alert->status == 'disetujui')
+                            <div class="w-8 h-8 rounded-full bg-[#e6f7f5] flex items-center justify-center shrink-0">
+                                <svg width="16" height="16" fill="none" stroke="#1a9488" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-black text-[0.82rem] text-[#1a1a1a] leading-tight uppercase tracking-tight">Jadwal Konseling Aktif</div>
+                                <div class="text-[0.7rem] text-[#1a9488] font-semibold mt-0.5">Terkonfirmasi</div>
+                            </div>
+                        @elseif($alert->status == 'dipanggil')
+                            <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                                <svg width="16" height="16" fill="none" stroke="#d97706" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-black text-[0.82rem] text-[#1a1a1a] leading-tight uppercase tracking-tight">Kamu Dipanggil Guru BK</div>
+                                <div class="text-[0.7rem] text-amber-600 font-semibold mt-0.5">Segera Hadir</div>
+                            </div>
+                        @else
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                                <svg width="16" height="16" fill="none" stroke="#64748b" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-black text-[0.82rem] text-[#1a1a1a] leading-tight uppercase tracking-tight">Menunggu Persetujuan</div>
+                                <div class="text-[0.7rem] text-slate-500 font-semibold mt-0.5">Sedang Diproses</div>
+                            </div>
+                        @endif
+
+                        {{-- Close Button --}}
+                        <button onclick="dismissNotif('konseling', '{{ $alert->id }}')"
+                                class="w-6 h-6 flex items-center justify-center rounded-full border border-red-100 bg-white text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all cursor-pointer shrink-0"
+                                title="Tutup">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    {{-- Body --}}
+                    <div class="px-4 py-3">
+                        @if($alert->status == 'disetujui')
+                            {{-- Info Row --}}
+                            <div class="flex items-center gap-3 bg-[#f4faf9] rounded-xl px-3 py-2.5 mb-3">
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Jenis Sesi</div>
+                                    <div class="text-[0.82rem] font-extrabold text-[#1a1a1a] capitalize">{{ $alert->jenis }}</div>
+                                </div>
+                                <div class="w-px h-8 bg-[#d6eeec]"></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
+                                    <div class="text-[0.82rem] font-extrabold text-[#1a9488]">
+                                        {{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} · {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
+                                    </div>
+                                </div>
+                            </div>
                             <a href="{{ $alert->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}"
-                               class="px-4 py-1.5 bg-[#1a9488] text-white text-[0.75rem] font-black rounded-lg hover:bg-[#157a70] transition-all no-underline shadow-sm">
-                                MULAI SESI
+                               class="flex items-center justify-center gap-2 w-full py-2.5 bg-[#1a9488] text-white text-[0.78rem] font-black rounded-xl hover:bg-[#157a70] transition-all no-underline shadow-sm tracking-wide">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                MULAI SESI SEKARANG
                             </a>
-                            @endif
-                        </div>
+                        @elseif($alert->status == 'dipanggil')
+                            <p class="text-[0.8rem] text-[#555] font-medium leading-relaxed">
+                                Segera ke ruang BK hari ini sesuai instruksi Guru BK.
+                            </p>
+                        @else
+                            <p class="text-[0.8rem] text-[#555] font-medium leading-relaxed">
+                                Pengajuan <span class="font-bold text-[#1a1a1a]">{{ $alert->jenis }}</span> sedang diproses oleh Guru BK.
+                            </p>
+                        @endif
                     </div>
                 </div>
             @elseif($alert->alert_type == 'pelanggaran')
                 {{-- 2. Kartu Panggilan Pelanggaran --}}
-                <div id="activePelanggaranCard" class="bg-red-50 border border-red-500/30 rounded-2xl p-4 shadow-[0_20px_50px_rgba(239,68,68,0.2)] flex items-start ring-1 ring-red-500/10 relative overflow-hidden w-full md:w-[380px]" style="display: none;">
-                    {{-- Close Button --}}
-                    <button onclick="dismissNotif('pelanggaran', '{{ $alert->id }}')" class="absolute z-10 p-1 bg-white shadow-sm border border-red-100 text-red-500 hover:bg-red-500 hover:text-red-500 rounded-full transition-all cursor-pointer flex items-center justify-center" style="top: 8px; right: 8px; left: auto !important;" title="Tutup">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
+                <div id="activePelanggaranCard" class="bg-white border border-red-200/60 rounded-2xl shadow-[0_16px_40px_rgba(239,68,68,0.15)] ring-1 ring-red-500/10 relative overflow-hidden w-full md:w-[360px]" style="display: none;">
 
-                    <div class="flex-1 min-w-0 pr-8">
-                        <div class="flex items-center mb-1">
-                            <div class="font-black text-[1rem] text-red-700 leading-tight tracking-tight uppercase">Panggilan Pelanggaran!</div>
-                            <span class="flex h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse shrink-0 ml-2"></span>
+                    {{-- Header Strip --}}
+                    <div class="flex items-center gap-2.5 px-4 pt-4 pb-3 border-b border-red-100/80 bg-red-50/60">
+                        {{-- Icon --}}
+                        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                            <svg width="16" height="16" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                         </div>
-                        
-                        <div class="text-[0.85rem] font-black text-red-800 uppercase tracking-wide mb-1">
-                            TOPIK: {{ strtoupper($alert->topik) }}
-                        </div>
-                        
-                        <p class="text-[0.8rem] text-red-600 font-medium leading-relaxed">
-                            Jadwal: <span class="font-bold text-red-700">{{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} pkl {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}</span> di Ruang BK.
-                        </p>
 
-                        <div class="mt-3 flex items-center gap-3">
-                            <a href="{{ route('siswa.panggilan') }}"
-                               style="background-color: #b91c1c !important; color: white !important;"
-                               class="px-5 py-2 text-white text-[0.8rem] font-black rounded-lg hover:brightness-110 transition-all no-underline shadow-md active:scale-95 inline-flex items-center justify-center">
-                                BACA DETAIL
-                            </a>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-black text-[0.82rem] text-red-700 leading-tight uppercase tracking-tight flex items-center gap-1.5">
+                                Panggilan Pelanggaran
+                                <span class="inline-flex h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0"></span>
+                            </div>
+                            <div class="text-[0.7rem] text-red-400 font-semibold mt-0.5">Perlu Tindakan Segera</div>
                         </div>
+
+                        {{-- Close Button --}}
+                        <button onclick="dismissNotif('pelanggaran', '{{ $alert->id }}')"
+                                class="w-6 h-6 flex items-center justify-center rounded-full border border-red-200 bg-white text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all cursor-pointer shrink-0"
+                                title="Tutup">
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    {{-- Body --}}
+                    <div class="px-4 py-3">
+                        {{-- Info Block --}}
+                        <div class="flex items-center gap-3 bg-red-50 rounded-xl px-3 py-2.5 mb-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="text-[0.7rem] text-red-400 font-semibold uppercase tracking-wide mb-0.5">Topik</div>
+                                <div class="text-[0.82rem] font-extrabold text-red-800 uppercase leading-tight line-clamp-2" title="{{ $alert->topik }}">{{ $alert->topik }}</div>
+                            </div>
+                            <div class="w-px h-8 bg-red-200"></div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-[0.7rem] text-red-400 font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
+                                <div class="text-[0.82rem] font-extrabold text-red-700">
+                                    {{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} · {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ route('siswa.panggilan') }}"
+                           class="flex items-center justify-center gap-2 w-full py-2.5 bg-red-600 text-white text-[0.78rem] font-black rounded-xl hover:bg-red-700 transition-all no-underline shadow-sm tracking-wide active:scale-[0.98]">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            BACA DETAIL
+                        </a>
                     </div>
                 </div>
             @endif
