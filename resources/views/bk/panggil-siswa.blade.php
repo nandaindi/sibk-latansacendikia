@@ -14,10 +14,9 @@
         <div class="flex-1 w-full">
             <form id="formPanggil" class="flex flex-col gap-5" method="POST" action="{{ route('bk.panggil-siswa.store') }}">
                 @csrf
-
                 <div class="relative w-full" id="custom-select-container">
                     <input type="text" name="user_id" id="selected-user-id" required class="absolute bottom-0 left-1/2 w-0 h-0 opacity-0 pointer-events-none" tabindex="-1">
-                    
+                    <label class="text-[0.7rem] font-bold text-[#1a9488] ml-3 mb-1 block uppercase tracking-wide">Pilih Siswa <span class="text-red-500">*</span></label>
                     <div id="custom-select-trigger" class="border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white hover:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all flex items-center justify-between cursor-pointer group">
                         <span id="custom-select-text" class="text-[1rem] font-medium text-[#aaa]">-- Pilih Siswa --</span>
                         <div id="custom-select-arrow" class="pointer-events-none text-[#1a9488] shrink-0 ml-2 transition-transform duration-200">
@@ -37,25 +36,26 @@
                 </div>
 
                 <div class="border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                    <input type="text" name="topik" placeholder="Topik Panggilan (cth: Evaluasi Nilai)" required
+                    <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-0.5 block uppercase tracking-wide">Topik Panggilan <span class="text-red-500">*</span></label>
+                    <input type="text" name="topik" placeholder="cth: Evaluasi Nilai" required
                            class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium">
                 </div>
 
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1 border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                        <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-0.5 block uppercase tracking-wide">Tanggal Panggilan</label>
+                        <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-0.5 block uppercase tracking-wide">Tanggal Panggilan <span class="text-red-500">*</span></label>
                         <input type="date" name="tanggal" required value="{{ date('Y-m-d') }}"
                                class="w-full border-none outline-none text-[0.95rem] text-[#1a1a1a] bg-transparent font-medium">
                     </div>
                     <div class="flex-1 border-[2px] border-[#1a9488] rounded-full px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                        <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-0.5 block uppercase tracking-wide">Jam Pelaksanaan</label>
+                        <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-0.5 block uppercase tracking-wide">Jam Pelaksanaan <span class="text-red-500">*</span></label>
                         <input type="time" name="waktu" required value="09:00"
                                class="w-full border-none outline-none text-[0.95rem] text-[#1a1a1a] bg-transparent font-medium">
                     </div>
                 </div>
 
                 <div class="border-[2px] border-[#1a9488] rounded-[20px] px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                    <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-1 block uppercase tracking-wide">Detail Pemanggilan</label>
+                    <label class="text-[0.7rem] font-bold text-[#1a9488] ml-1 mb-1 block uppercase tracking-wide">Detail Pemanggilan <span class="text-red-500">*</span></label>
                     <textarea name="catatan" placeholder="Jelaskan detail alasan pemanggilan siswa ini..." rows="4" required
                               class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium resize-none"></textarea>
                 </div>

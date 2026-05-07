@@ -32,11 +32,11 @@
             <div class="text-center md:text-left flex-1">
                 <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-3 tracking-tight uppercase">{{ $pelanggaran->user->name }}</h2>
                 <div class="flex items-center justify-center md:justify-start gap-2 mt-1">
-                    <p class="text-sm md:text-base font-bold text-gray-500 uppercase">NIS : {{ $pelanggaran->user->nis ?? '000000' }} 
-                        <span class="mx-1 text-gray-300 font-light">| </span> 
-                     <p class="text-sm md:text-base font-bold text-gray-500 uppercase">KELAS : {{ $pelanggaran->user->kelas }} {{ $pelanggaran->user->jurusan }}</p>
-                    
-                   
+                    <p class="text-sm md:text-base font-bold text-gray-500 uppercase">
+                        NIS : {{ $pelanggaran->user->nis ?? '000000' }} 
+                        <span class="mx-1 text-gray-300 font-light">|</span> 
+                        KELAS : {{ $pelanggaran->user->kelas }} {{ $pelanggaran->user->jurusan }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -54,10 +54,12 @@
                 {{-- Jadwal Section --}}
                 <section>
                     <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Jadwal Pertemuan</h3>
-                    <div class="flex items-center gap-4">
-                        <div class="flex flex-col">
-                            <div class="text-xl font-bold text-gray-900 tracking-tight">{{ \Carbon\Carbon::parse($pelanggaran->tanggal)->translatedFormat('l, d F Y') }}</div>
-                            <div class="text-base text-gray-500 font-medium mt-1">Pukul {{ \Carbon\Carbon::parse($pelanggaran->waktu)->format('H:i') }} WIB</div>
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                        <div class="flex items-center gap-4">
+                            <div class="flex flex-col">
+                                <div class="text-xl font-bold text-gray-900 tracking-tight">{{ \Carbon\Carbon::parse($pelanggaran->tanggal)->translatedFormat('l, d F Y') }}</div>
+                                <div class="text-base text-gray-500 font-medium mt-1">Pukul {{ \Carbon\Carbon::parse($pelanggaran->waktu)->format('H:i') }} WIB</div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -65,8 +67,10 @@
                 {{-- Topik Section --}}
                 <section>
                     <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Topik Panggilan</h3>
-                    <div class="text-xl font-bold text-gray-800 tracking-tight pl-1 uppercase">
-                        {{ $pelanggaran->topik }}
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                        <div class="text-xl font-bold text-gray-800 tracking-tight uppercase">
+                            {{ $pelanggaran->topik }}
+                        </div>
                     </div>
                 </section>
 

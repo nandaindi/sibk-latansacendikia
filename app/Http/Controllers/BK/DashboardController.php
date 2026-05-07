@@ -20,13 +20,22 @@ class DashboardController extends Controller
         // Quick Stats
         $pendingCount = Konseling::where('status', 'pending')->count();
 
-        // Jadwal Hari Ini
-        $jadwalHariIni = Konseling::with('user')
+        // Jadwal Hari Ini (Gabungan Konseling & Pelanggaran)
+        $konselingHariIni = Konseling::with('user')
             ->where('status', 'disetujui')
             ->where('bk_id', $bkId)
             ->whereDate('tanggal', $today)
-            ->orderBy('waktu', 'asc')
-            ->get();
+            ->get()
+            ->each(function($item) { $item->entry_type = 'konseling'; });
+
+        $panggilanHariIni = \App\Models\Pelanggaran::with('user')
+            ->where('status', 'menunggu')
+            ->where('bk_id', $bkId)
+            ->whereDate('tanggal', $today)
+            ->get()
+            ->each(function($item) { $item->entry_type = 'pelanggaran'; });
+
+        $jadwalHariIni = $konselingHariIni->concat($panggilanHariIni)->sortBy('waktu');
 
         // Pengajuan Pending Terbaru
         $pendingRequests = Konseling::with('user')

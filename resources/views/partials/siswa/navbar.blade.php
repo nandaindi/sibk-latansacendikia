@@ -360,7 +360,7 @@
                     }
                     
                     document.querySelectorAll('button > svg').forEach(svg => {
-\                        if (!svg.querySelector('circle[fill="#ef4444"]')) {
+                        if (!svg.querySelector('circle[fill="#ef4444"]')) {
                             svg.innerHTML += '<circle cx="19" cy="5" r="3.5" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>';
                         }
                     });

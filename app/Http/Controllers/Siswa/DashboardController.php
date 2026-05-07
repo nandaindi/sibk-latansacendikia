@@ -20,10 +20,19 @@ class DashboardController extends Controller
             ->each(function ($sesi) {
                 $waktu   = $sesi->waktu ?? '23:59';
                 $jadwal  = \Carbon\Carbon::parse($sesi->tanggal . ' ' . $waktu)->addHours(2);
-                
-                // Jika jadwal terlewat dan session belum diupdate dalam 2 jam terakhir (mencegah bug jam 00:00)
                 if (now()->greaterThan($jadwal) && now()->diffInHours($sesi->updated_at) >= 2) {
                     $sesi->update(['status' => 'tidak_hadir']);
+                }
+            });
+
+        // Auto-expire Pelanggaran: jika sudah lewat hari, tandai 'tidak_hadir' (Mangkir)
+        \App\Models\Pelanggaran::where('user_id', $userId)
+            ->where('status', 'menunggu')
+            ->get()
+            ->each(function ($panggilan) {
+                $jadwal = \Carbon\Carbon::parse($panggilan->tanggal . ' ' . ($panggilan->waktu ?? '23:59'))->addDay();
+                if (now()->greaterThan($jadwal)) {
+                    $panggilan->update(['status' => 'tidak_hadir']);
                 }
             });
 

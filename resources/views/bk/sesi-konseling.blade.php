@@ -34,15 +34,11 @@
                 <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3.5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
                     <!-- Robot avatar -->
                     <div class="w-12 h-12 shrink-0 border border-[#edf2f1] rounded-full overflow-hidden bg-[#e0f5f3]">
-                        @if($item->user->avatar)
-                            <img src="{{ Storage::url($item->user->avatar) }}" class="w-full h-full object-cover">
-                        @else
-                            @include('partials.bk.robot-avatar')
-                        @endif
+                        <img src="{{ $item->user->avatar ? asset('storage/' . $item->user->avatar) : asset('img/default-profile.png') }}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="font-semibold text-[0.95rem] text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</div>
-                        <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }} <span class="text-[#1a9488] font-medium ml-2 uppercase text-xs px-2 py-0.5 bg-[#e0f5f3] rounded-full">{{ $item->jenis }}</span></div>
+                        <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }}</div>
                     </div>
                     <a href="{{ route('bk.detail-sesi', ['id' => $item->id]) }}" class="text-[#1a9488] text-[0.9rem] font-semibold shrink-0 no-underline hover:text-[#12635a] transition-colors">
                         Detail
@@ -63,15 +59,11 @@
                 @php $offlineCount++; @endphp
                 <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3.5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
                     <div class="w-12 h-12 shrink-0 border border-[#edf2f1] rounded-full overflow-hidden bg-[#e0f5f3]">
-                        @if($item->user->avatar)
-                            <img src="{{ Storage::url($item->user->avatar) }}" class="w-full h-full object-cover">
-                        @else
-                            @include('partials.bk.robot-avatar')
-                        @endif
+                        <img src="{{ $item->user->avatar ? asset('storage/' . $item->user->avatar) : asset('img/default-profile.png') }}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="font-semibold text-[0.95rem] text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</div>
-                        <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }} <span class="text-[#1a9488] font-medium ml-2 uppercase text-xs px-2 py-0.5 bg-[#e0f5f3] rounded-full">{{ $item->jenis }}</span></div>
+                        <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }}</div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <form action="{{ route('bk.konseling-offline.mulai', $item->id) }}" method="POST">

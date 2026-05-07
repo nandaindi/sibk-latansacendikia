@@ -101,35 +101,50 @@
                                 @if($jadwal->user->avatar)
                                     <img src="{{ asset('storage/' . $jadwal->user->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center font-bold text-[#1a9488]">{{ strtoupper(substr($jadwal->user->name, 0, 1)) }}</div>
+                                    <div class="w-full h-full flex items-center justify-center font-bold text-[#1a9488]">
+                                        <img src="{{ asset('img/default-profile.png') }}" class="w-full h-full object-cover">
+                                    </div>
                                 @endif
                             </div>
                             <div class="min-w-0">
                                 <div class="font-bold text-[#1a1a1a] text-[1rem] truncate">{{ $jadwal->user->name }}</div>
                                 <div class="text-[0.82rem] text-[#777]">{{ $jadwal->user->kelas ?? '-' }} {{ $jadwal->user->jurusan ?? '' }}</div>
                                 <div class="flex items-center gap-2 mt-1">
-                                    <span class="inline-block px-2 py-0.5 rounded-full text-[0.72rem] font-bold capitalize {{ $jadwal->jenis == 'online' ? 'bg-[#e0eff5] text-[#1a7394]' : 'bg-[#f5e0ef] text-[#941a73]' }}">
-                                        {{ $jadwal->jenis }}
-                                    </span>
+                                    @if($jadwal->entry_type == 'konseling')
+                                        <span class="inline-block px-2 py-0.5 rounded-full text-[0.72rem] font-bold capitalize {{ $jadwal->jenis == 'online' ? 'bg-[#e0eff5] text-[#1a7394]' : 'bg-[#f5e0ef] text-[#941a73]' }}">
+                                            {{ $jadwal->jenis }}
+                                        </span>
+                                    @else
+                                        <span class="inline-block px-2 py-0.5 rounded-full text-[0.72rem] font-bold uppercase bg-red-100 text-red-600">
+                                            Panggilan
+                                        </span>
+                                    @endif
                                     <span class="text-[0.82rem] font-semibold text-[#1a1a1a]">{{ $jadwal->waktu ? \Carbon\Carbon::parse($jadwal->waktu)->format('H:i') . ' WIB' : 'TBA' }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="flex flex-row items-center gap-2 shrink-0">
-                            <a href="{{ route('bk.detail-sesi', ['id' => $jadwal->id]) }}" 
-                               class="px-3 py-1.5 bg-[#e0f5f3] text-[#1a9488] text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors no-underline whitespace-nowrap">
-                                Lihat Detail
-                            </a>
-                            @if($jadwal->jenis == 'online')
-                            <a href="{{ route('bk.konseling-online', ['id' => $jadwal->id]) }}" 
-                               class="px-3 py-1.5 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap">
-                                Mulai Sesi
-                            </a>
+                            @if($jadwal->entry_type == 'konseling')
+                                <a href="{{ route('bk.detail-sesi', ['id' => $jadwal->id]) }}" 
+                                   class="px-3 py-1.5 bg-[#e0f5f3] text-[#1a9488] text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors no-underline whitespace-nowrap">
+                                    Lihat Detail
+                                </a>
+                                @if($jadwal->jenis == 'online')
+                                <a href="{{ route('bk.konseling-online', ['id' => $jadwal->id]) }}" 
+                                   class="px-3 py-1.5 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap">
+                                    Mulai Sesi
+                                </a>
+                                @else
+                                <a href="{{ route('bk.form-konseling-offline', $jadwal->id) }}" 
+                                   class="px-3 py-1.5 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap">
+                                    Catat Offline
+                                </a>
+                                @endif
                             @else
-                            <a href="{{ route('bk.form-konseling-offline', $jadwal->id) }}" 
-                               class="px-3 py-1.5 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap">
-                                Catat Offline
-                            </a>
+                                <a href="{{ route('bk.panggil-siswa.detail', $jadwal->id) }}" 
+                                   class="px-3 py-1.5 bg-red-50 text-red-600 text-[0.8rem] font-bold rounded-lg hover:bg-red-600 hover:text-white transition-colors no-underline whitespace-nowrap">
+                                    Proses Panggilan
+                                </a>
                             @endif
                         </div>
                     </div>
