@@ -51,18 +51,9 @@
     <div class="w-full px-5 md:px-6 py-4 flex items-center justify-between">
 
         <div class="flex items-center gap-3">
-            @if(auth()->user()->avatar)
-                <div class="w-11 h-11 rounded-full border-2 border-[#1a9488] overflow-hidden shrink-0">
-                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
-                </div>
-            @else
-                <div class="w-11 h-11 rounded-full bg-[#e0f5f3] border-2 border-[#1a9488] flex items-center justify-center shrink-0">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                </div>
-            @endif
+            <div class="w-11 h-11 rounded-full border-2 border-[#1a9488] overflow-hidden shrink-0">
+                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('img/default-profile.png') }}" alt="Avatar" class="w-full h-full object-cover">
+            </div>
             <div>
                 <div class="text-base font-bold text-[#1a1a1a]">{{ auth()->user()->name ?? 'Test User' }}</div>
                 <div class="text-xs text-[#777] mt-0.5">{{ $subtitle }}</div>
@@ -215,15 +206,9 @@
 
             <div class="relative group cursor-pointer" tabindex="0">
                 <div class="flex items-center gap-2 hover:bg-[#f8f9fa] py-2 px-3 rounded-xl transition-colors">
-                    @if(auth()->user()->avatar)
-                        <div class="w-8 h-8 rounded-full border border-[#1a9488] overflow-hidden shrink-0 shadow-sm">
-                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
-                        </div>
-                    @else
-                        <div class="w-8 h-8 rounded-full bg-[#1a9488] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-                            {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
-                        </div>
-                    @endif
+                    <div class="w-8 h-8 rounded-full border border-[#1a9488] overflow-hidden shrink-0 shadow-sm">
+                        <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('img/default-profile.png') }}" alt="Avatar" class="w-full h-full object-cover">
+                    </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-[#1a9488] transition-colors"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
 

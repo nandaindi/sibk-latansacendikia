@@ -74,8 +74,8 @@
 
             @forelse($riwayatPanggilan as $item)
             <a href="{{ route('bk.panggil-siswa.detail', $item->id) }}" class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3 flex items-center gap-4 shadow-sm hover:translate-x-1 transition-transform no-underline">
-                <div class="w-12 h-12 shrink-0 rounded-full bg-[#e0f5f3] text-[#1a9488] flex items-center justify-center font-bold text-lg border border-[#c7ece8]">
-                    {{ substr($item->user->name, 0, 1) }}
+                <div class="w-12 h-12 shrink-0 rounded-full overflow-hidden border border-[#c7ece8]">
+                    <img src="{{ $item->user->avatar ? asset('storage/' . $item->user->avatar) : asset('img/default-profile.png') }}" class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="font-semibold text-[0.95rem] text-[#1a1a1a] truncate">{{ $item->user->name }}</div>
