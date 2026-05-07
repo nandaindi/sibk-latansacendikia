@@ -70,7 +70,7 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
                                     <div class="text-[0.82rem] font-extrabold text-[#1a9488]">
-                                        {{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} · {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
+                                        {{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d F Y') }}, {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@
                             <div class="flex-1 min-w-0">
                                 <div class="text-[0.7rem] text-red-400 font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
                                 <div class="text-[0.82rem] font-extrabold text-red-700">
-                                    {{ \Carbon\Carbon::parse($alert->tanggal)->format('d M') }} · {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
+                                    {{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d F Y') }}, {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
                                 </div>
                             </div>
                         </div>
