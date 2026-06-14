@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artikel;
+use App\Models\Konseling;
+use App\Models\Pelanggaran;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DashboardController extends Controller
 {
@@ -12,51 +17,45 @@ class DashboardController extends Controller
     {
         $userId = auth()->id();
 
-        // Auto-expire: tandai sesi 'disetujui' yang sudah lewat jadwal + 2 jam sebagai 'tidak_hadir'
-        // Tetapi jangan langsung dimatikan jika statusnya baru saja diubah (updated_at < 2 hours ago)
-        \App\Models\Konseling::where('user_id', $userId)
+        Konseling::where('user_id', $userId)
             ->where('status', 'disetujui')
             ->get()
             ->each(function ($sesi) {
-                $waktu   = $sesi->waktu ?? '23:59';
-                $jadwal  = \Carbon\Carbon::parse($sesi->tanggal . ' ' . $waktu)->addHours(2);
+                $waktu = $sesi->waktu ?? '23:59';
+                $jadwal = Carbon::parse($sesi->tanggal.' '.$waktu)->addHours(2);
                 if (now()->greaterThan($jadwal) && now()->diffInHours($sesi->updated_at) >= 2) {
                     $sesi->update(['status' => 'tidak_hadir']);
                 }
             });
 
-        // Auto-expire Pelanggaran: jika sudah lewat hari, tandai 'tidak_hadir' (Mangkir)
-        \App\Models\Pelanggaran::where('user_id', $userId)
+        Pelanggaran::where('user_id', $userId)
             ->where('status', 'menunggu')
             ->get()
             ->each(function ($panggilan) {
-                $jadwal = \Carbon\Carbon::parse($panggilan->tanggal . ' ' . ($panggilan->waktu ?? '23:59'))->addDay();
+                $jadwal = Carbon::parse($panggilan->tanggal.' '.($panggilan->waktu ?? '23:59'))->addDay();
                 if (now()->greaterThan($jadwal)) {
                     $panggilan->update(['status' => 'tidak_hadir']);
                 }
             });
 
-        // Cari konseling aktif / pending (exclude tidak_hadir & selesai & ditolak)
-        $activeKonselingCount = \App\Models\Konseling::where('user_id', $userId)
+        $activeKonselingCount = Konseling::where('user_id', $userId)
             ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
             ->count();
-            
-        $activeKonseling = \App\Models\Konseling::where('user_id', $userId)
+
+        $activeKonseling = Konseling::where('user_id', $userId)
             ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
             ->latest()
             ->first();
 
-        // Cari panggilan pelanggaran aktif (status 'menunggu')
-        $activePelanggaranCount = \App\Models\Pelanggaran::where('user_id', $userId)
+        $activePelanggaranCount = Pelanggaran::where('user_id', $userId)
             ->where('status', 'menunggu')
             ->count();
-        
-        $activePelanggaran = \App\Models\Pelanggaran::where('user_id', $userId)
+
+        $activePelanggaran = Pelanggaran::where('user_id', $userId)
             ->where('status', 'menunggu')
             ->latest()
             ->first();
 
-        // Gabungkan peringatan untuk diurutkan (terbaru di atas)
         $activeAlerts = collect();
         if ($activeKonseling) {
             $activeKonseling->alert_type = 'konseling';
@@ -68,12 +67,12 @@ class DashboardController extends Controller
         }
         $activeAlerts = $activeAlerts->sortByDesc('updated_at');
 
-        $articles = \App\Models\Artikel::with('penulis')->latest()->take(4)->get();
+        $articles = Artikel::with('penulis')->latest()->take(4)->get();
 
         return view('siswa.dashboard', compact(
             'activeAlerts',
-            'activeKonselingCount', 
-            'activePelanggaranCount', 
+            'activeKonselingCount',
+            'activePelanggaranCount',
             'articles'
         ));
     }
@@ -81,17 +80,18 @@ class DashboardController extends Controller
     /** List panggilan/pelanggaran (dipanggil oleh BK) */
     public function panggilan()
     {
-        $panggilan = \App\Models\Pelanggaran::where('user_id', auth()->id())
+        $panggilan = Pelanggaran::where('user_id', auth()->id())
             ->where('status', 'menunggu')
             ->latest()
             ->get();
+
         return view('siswa.panggilan', compact('panggilan'));
     }
 
-    /** Detail panggilan pelanggaran */
+    /** Detail Panggil Siswa */
     public function detailPanggilan($id)
     {
-        $panggilan = \App\Models\Pelanggaran::where('user_id', auth()->id())
+        $panggilan = Pelanggaran::where('user_id', auth()->id())
             ->where('id', $id)
             ->firstOrFail();
 
@@ -105,10 +105,6 @@ class DashboardController extends Controller
             'pelanggaran_id' => 'required|exists:pelanggarans,id',
         ]);
 
-        // Dalam flow baru, siswa cuma melihat detail atau tombol "Mengerti"
-        // Jika perlu status dibaca, bisa ditambahkan di migration nanti.
-        // Untuk sekarang redirect ke dashboard.
-        
         return redirect()->route('siswa.dashboard')->with('sukses', 'Silakan temui Guru BK sesuai jadwal panggilan.');
     }
 
@@ -120,8 +116,8 @@ class DashboardController extends Controller
 
     public function storePengajuanOnline(Request $request)
     {
-        // Cek apakah sudah ada pengajuan aktif
-        $activeKonseling = \App\Models\Konseling::where('user_id', auth()->id())
+
+        $activeKonseling = Konseling::where('user_id', auth()->id())
             ->whereIn('status', ['pending', 'disetujui'])
             ->first();
 
@@ -130,24 +126,24 @@ class DashboardController extends Controller
                 ->with('warning_pengajuan', 'Kamu sudah punya pengajuan konseling yang sedang aktif. Harap tunggu sampai selesai.');
         }
 
-        // Parse jadwal (datetime-local)
         $tanggal = now()->format('Y-m-d');
         $waktu = now()->format('H:i');
         if ($request->jadwal) {
-            $dt = \Carbon\Carbon::parse($request->jadwal);
+            $dt = Carbon::parse($request->jadwal);
             $tanggal = $dt->format('Y-m-d');
             $waktu = $dt->format('H:i');
         }
 
-        \App\Models\Konseling::create([
+        Konseling::create([
             'user_id' => auth()->id(),
             'jenis' => 'online',
             'problem_type' => $request->problem_type,
             'tanggal' => $tanggal,
             'waktu' => $waktu,
             'status' => 'pending',
-            'catatan_siswa' => $request->note
+            'catatan_siswa' => $request->note,
         ]);
+
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
 
@@ -159,8 +155,8 @@ class DashboardController extends Controller
 
     public function storePengajuanOffline(Request $request)
     {
-        // Cek apakah sudah ada pengajuan aktif
-        $activeKonseling = \App\Models\Konseling::where('user_id', auth()->id())
+
+        $activeKonseling = Konseling::where('user_id', auth()->id())
             ->whereIn('status', ['pending', 'disetujui'])
             ->first();
 
@@ -169,27 +165,26 @@ class DashboardController extends Controller
                 ->with('warning_pengajuan', 'Kamu sudah punya pengajuan konseling yang sedang aktif. Harap tunggu sampai selesai.');
         }
 
-        // Parse jadwal (datetime-local)
         $tanggal = now()->format('Y-m-d');
         $waktu = now()->format('H:i');
         if ($request->jadwal) {
-            $dt = \Carbon\Carbon::parse($request->jadwal);
+            $dt = Carbon::parse($request->jadwal);
             $tanggal = $dt->format('Y-m-d');
             $waktu = $dt->format('H:i');
         }
 
-        \App\Models\Konseling::create([
+        Konseling::create([
             'user_id' => auth()->id(),
             'jenis' => 'offline',
             'problem_type' => $request->problem_type,
             'tanggal' => $tanggal,
             'waktu' => $waktu,
             'status' => 'pending',
-            'catatan_siswa' => $request->note
+            'catatan_siswa' => $request->note,
         ]);
+
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
-
 
     /** Pengajuan Sedang Diproses */
     public function pengajuanProses()
@@ -200,23 +195,23 @@ class DashboardController extends Controller
     /** Pengajuan Ditolak - tampilkan alasan */
     public function pengajuanDitolak()
     {
-        $tolak = \App\Models\Konseling::where('user_id', auth()->id())
+        $tolak = Konseling::where('user_id', auth()->id())
             ->where('status', 'ditolak')
             ->latest()
             ->first();
+
         return view('siswa.pengajuan-ditolak', compact('tolak'));
     }
 
     /** Detail Laporan (Selesai) */
     public function detailLaporan($id)
     {
-        $laporan = \App\Models\Konseling::where('user_id', auth()->id())
+        $laporan = Konseling::where('user_id', auth()->id())
             ->where('id', $id)
             ->where('status', 'selesai')
             ->firstOrFail();
 
-        // Tandai sudah dibaca begitu siswa membuka laporan ini
-        if (!$laporan->is_read) {
+        if (! $laporan->is_read) {
             $laporan->is_read = true;
             $laporan->save();
         }
@@ -227,20 +222,22 @@ class DashboardController extends Controller
     /** Mulai Konseling Online */
     public function mulaiKonseling()
     {
-        $konseling = \App\Models\Konseling::where('user_id', auth()->id())
+        $konseling = Konseling::where('user_id', auth()->id())
             ->where('status', 'disetujui')
             ->where('jenis', 'online')
             ->latest()->first();
+
         return view('siswa.mulai-konseling', compact('konseling'));
     }
 
     /** Konseling Offline - tampilan jadwal offline yang disetujui */
     public function konselingOffline()
     {
-        $konseling = \App\Models\Konseling::where('user_id', auth()->id())
+        $konseling = Konseling::where('user_id', auth()->id())
             ->where('status', 'disetujui')
             ->where('jenis', 'offline')
             ->latest()->first();
+
         return view('siswa.konseling-offline', compact('konseling'));
     }
 
@@ -248,19 +245,18 @@ class DashboardController extends Controller
     public function chatKonseling()
     {
         $userId = auth()->id();
-        
-        // Cari konseling aktif (disetujui) OR konseling selesai tapi belum ada feedback (kesimpulan_siswa)
-        $konseling = \App\Models\Konseling::where('user_id', $userId)
-            ->where(function($q) {
+
+        $konseling = Konseling::where('user_id', $userId)
+            ->where(function ($q) {
                 $q->where('status', 'disetujui')
-                  ->orWhere(function($sq) {
-                      $sq->where('status', 'selesai')
-                         ->whereNull('kesimpulan_siswa');
-                  });
+                    ->orWhere(function ($sq) {
+                        $sq->where('status', 'selesai')
+                            ->whereNull('kesimpulan_siswa');
+                    });
             })
             ->where('jenis', 'online')
             ->latest()->first();
-            
+
         return view('siswa.chat-konseling', compact('konseling'));
     }
 
@@ -270,15 +266,23 @@ class DashboardController extends Controller
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
             'kesimpulan_siswa' => 'required|string',
-            'saran_siswa'      => 'required|string',
+            'saran_siswa' => 'required|string',
+            'kepuasan_penerimaan' => 'nullable|string',
+            'kepuasan_kemudahan' => 'nullable|string',
+            'kepuasan_kepercayaan' => 'nullable|string',
+            'kepuasan_pelayanan' => 'nullable|string',
         ]);
 
-        $konseling = \App\Models\Konseling::where('user_id', auth()->id())
+        $konseling = Konseling::where('user_id', auth()->id())
             ->findOrFail($request->konseling_id);
 
         $konseling->update([
             'kesimpulan_siswa' => $request->kesimpulan_siswa,
-            'saran_siswa'      => $request->saran_siswa,
+            'saran_siswa' => $request->saran_siswa,
+            'kepuasan_penerimaan' => $request->kepuasan_penerimaan,
+            'kepuasan_kemudahan' => $request->kepuasan_kemudahan,
+            'kepuasan_kepercayaan' => $request->kepuasan_kepercayaan,
+            'kepuasan_pelayanan' => $request->kepuasan_pelayanan,
         ]);
 
         return redirect()->route('siswa.dashboard')->with('sukses', 'Terima kasih atas kesimpulan dan saran yang telah kamu berikan.');
@@ -287,24 +291,27 @@ class DashboardController extends Controller
     /** Riwayat Konseling - semua historis laporan (selesai) */
     public function riwayatKonseling()
     {
-        $riwayats = \App\Models\Konseling::where('user_id', auth()->id())
+        $riwayats = Konseling::where('user_id', auth()->id())
             ->where('status', 'selesai')
             ->latest()
             ->paginate(10);
+
         return view('siswa.riwayat-konseling', compact('riwayats'));
     }
 
     /** Membaca Artikel Edukasi */
     public function bacaArtikel($slug)
     {
-        $artikel = \App\Models\Artikel::with('penulis')->where('slug', $slug)->firstOrFail();
+        $artikel = Artikel::with('penulis')->where('slug', $slug)->firstOrFail();
+
         return view('siswa.artikel-detail', compact('artikel'));
     }
 
     /** Daftar Semua Artikel Edukasi */
     public function indexArtikel()
     {
-        $articles = \App\Models\Artikel::with('penulis')->latest()->paginate(12);
+        $articles = Artikel::with('penulis')->latest()->paginate(12);
+
         return view('siswa.artikel-index', compact('articles'));
     }
 
@@ -312,16 +319,14 @@ class DashboardController extends Controller
     public function markNotificationsAsRead()
     {
         $user = auth()->user();
-        
-        // 1. Database Notifications (Laravel Standard)
+
         $user->unreadNotifications->markAsRead();
 
-        // 2. Manual Model Notifications (Konseling & Pelanggaran)
-        \App\Models\Konseling::where('user_id', $user->id)
+        Konseling::where('user_id', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        \App\Models\Pelanggaran::where('user_id', $user->id)
+        Pelanggaran::where('user_id', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
@@ -333,28 +338,24 @@ class DashboardController extends Controller
     {
         $userId = auth()->id();
 
-        // 1. Ambil data Konseling
-        $konselingNotifs = \App\Models\Konseling::with('bk')
+        $konselingNotifs = Konseling::with('bk')
             ->where('user_id', $userId)
             ->latest()
             ->get();
 
-        // 2. Ambil data Pelanggaran/Panggilan
-        $pelanggaranNotifs = \App\Models\Pelanggaran::with('bk')
+        $pelanggaranNotifs = Pelanggaran::with('bk')
             ->where('user_id', $userId)
             ->latest()
             ->get();
 
-        // 3. Gabungkan dan Urutkan
         $mergedNotifications = $konselingNotifs->concat($pelanggaranNotifs)
-            ->sortByDesc(function($item) {
+            ->sortByDesc(function ($item) {
                 return $item->updated_at ?? $item->created_at;
             });
 
-        // 4. Manual Pagination (Simple version for a better UI)
         $perPage = 15;
         $page = request()->get('page', 1);
-        $notifications = new \Illuminate\Pagination\LengthAwarePaginator(
+        $notifications = new LengthAwarePaginator(
             $mergedNotifications->forPage($page, $perPage),
             $mergedNotifications->count(),
             $perPage,

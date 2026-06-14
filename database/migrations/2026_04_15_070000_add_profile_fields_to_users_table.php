@@ -12,17 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Profil umum
+
             $table->enum('jenis_kelamin', ['L', 'P'])->nullable()->after('kelas');
             $table->string('tempat_lahir')->nullable()->after('jenis_kelamin');
             $table->date('tanggal_lahir')->nullable()->after('tempat_lahir');
             $table->text('alamat')->nullable()->after('tanggal_lahir');
 
-            // Khusus siswa
             $table->string('nama_ortu')->nullable()->after('alamat');
             $table->string('telepon_ortu')->nullable()->after('nama_ortu');
 
-            // Khusus guru/BK
             $table->string('nip')->nullable()->after('telepon_ortu');
             $table->string('jabatan')->nullable()->after('nip');
         });

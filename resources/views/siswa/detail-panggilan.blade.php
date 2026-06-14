@@ -16,7 +16,7 @@
 <main class="w-full px-5 py-8 md:py-12 flex-1 flex flex-col items-end">
     <!-- Main Info Box -->
     <div class="bg-white rounded-[32px] border-[2px] border-[#0F766E] p-6 md:p-10 w-full mb-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] text-left">
-        <h1 class="text-[1.3rem] md:text-[1.6rem] font-extrabold text-[#1a1a1a] mb-2">Panggilan Pelanggaran</h1>
+        <h1 class="text-[1.3rem] md:text-[1.6rem] font-extrabold text-[#1a1a1a] mb-2">Panggil Siswa</h1>
         <div class="text-[0.95rem] text-[#777] font-medium mb-4">
             Topik: <span class="text-[#0F766E]">{{ $panggilan->topik }}</span>
         </div>

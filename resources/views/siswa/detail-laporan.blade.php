@@ -54,15 +54,55 @@
                     <div class="text-xs font-medium text-[#1a9488]">Dari Kamu untuk Sesi Ini</div>
                 </div>
             </div>
-            <div class="p-6 flex flex-col gap-5">
+            <div class="p-6 flex flex-col gap-4">
                 <div>
-                    <h4 class="text-[0.8rem] font-bold text-[#1a9488] uppercase tracking-wider mb-2">Kesimpulan Saya:</h4>
-                    <p class="text-[#333] leading-relaxed italic">"{{ $laporan->kesimpulan_siswa }}"</p>
+                    <h4 class="text-[0.7rem] font-semibold text-[#1a9488] uppercase tracking-widest mb-2">Kesimpulan Siswa</h4>
+                    <p class="text-[#333] text-[0.95rem] leading-relaxed italic">"{{ $laporan->kesimpulan_siswa }}"</p>
                 </div>
+                
+                <div class="w-full h-[1px] bg-gray-200 my-2"></div>
+                
                 <div>
-                    <h4 class="text-[0.8rem] font-bold text-[#1a9488] uppercase tracking-wider mb-2">Saran Saya:</h4>
-                    <p class="text-[#333] leading-relaxed">"{{ $laporan->saran_siswa }}"</p>
+                    <h4 class="text-[0.7rem] font-semibold text-[#1a9488] uppercase tracking-widest mb-2">Saran Untuk Layanan BK</h4>
+                    <p class="text-[#333] text-[0.95rem] leading-relaxed">"{{ $laporan->saran_siswa }}"</p>
                 </div>
+
+                @php
+                    $kepuasanItems = [
+                        'Penerimaan guru bimbingan dan konseling atau konselor terhadap kehadiran Anda' => $laporan->kepuasan_penerimaan,
+                        'Kemudahan guru bimbingan dan konseling atau konselor untuk diajak curhat' => $laporan->kepuasan_kemudahan,
+                        'Kepercayaan Anda terhadap guru bimbingan dan konseling atau konselor dalam layanan konseling' => $laporan->kepuasan_kepercayaan,
+                        'Pelayanan pemecahan masalah tercapai melalui konseling individual' => $laporan->kepuasan_pelayanan
+                    ];
+                @endphp
+
+                @if(array_filter($kepuasanItems))
+                    <div class="w-full h-[1px] bg-gray-200 my-2"></div>
+                    <div>
+                        <h4 class="text-[0.7rem] font-semibold text-[#1a9488] uppercase tracking-widest mb-4">Penilaian Layanan (Kepuasan Siswa)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            @foreach($kepuasanItems as $label => $value)
+                                @if($value)
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 shadow-sm">
+                                        <span class="text-xs text-gray-600 font-medium leading-tight w-[70%]">{{ $label }}</span>
+                                        <div class="flex items-center gap-1">
+                                            @if($value == 'Sangat Memuaskan')
+                                                <span class="text-xl" title="Sangat Memuaskan">😊</span>
+                                                <span class="text-[0.65rem] font-bold text-green-600 uppercase tracking-tighter">Sangat</span>
+                                            @elseif($value == 'Memuaskan')
+                                                <span class="text-xl" title="Memuaskan">😐</span>
+                                                <span class="text-[0.65rem] font-bold text-yellow-600 uppercase tracking-tighter">Cukup</span>
+                                            @else
+                                                <span class="text-xl" title="Kurang Memuaskan">☹️</span>
+                                                <span class="text-[0.65rem] font-bold text-red-600 uppercase tracking-tighter">Kurang</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     @else
@@ -79,6 +119,68 @@
                 @csrf
                 <input type="hidden" name="konseling_id" value="{{ $laporan->id }}">
                 
+                <div class="flex flex-col gap-3 mb-2">
+                    <label class="text-[0.8rem] font-bold text-[#1a9488] uppercase tracking-wide border-b border-[#1a9488]/20 pb-1">Penilaian Kepuasan Layanan</label>
+                    
+                    <style>
+                        .emoji-radio input[type="radio"] { display: none; }
+                        .emoji-radio label { cursor: pointer; opacity: 0.5; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(0.9); border: 2px solid transparent; border-radius: 50%; padding: 4px; }
+                        .emoji-radio input[type="radio"]:hover + label { opacity: 0.8; transform: scale(1.05); }
+                        .emoji-radio input[type="radio"]:checked + label { opacity: 1; transform: scale(1.15); border-color: currentColor; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+                        
+                        /* Colors */
+                        .emoji-radio .label-kurang { color: #ef4444; }
+                        .emoji-radio input[value="Kurang Memuaskan"]:checked + label { background: #fef2f2; }
+                        
+                        .emoji-radio .label-cukup { color: #f59e0b; }
+                        .emoji-radio input[value="Memuaskan"]:checked + label { background: #fffbeb; }
+                        
+                        .emoji-radio .label-sangat { color: #10b981; }
+                        .emoji-radio input[value="Sangat Memuaskan"]:checked + label { background: #ecfdf5; }
+                    </style>
+
+                    @php
+                        $kepuasanItems = [
+                            'kepuasan_penerimaan' => 'Penerimaan guru bimbingan dan konseling atau konselor terhadap kehadiran Anda',
+                            'kepuasan_kemudahan' => 'Kemudahan guru bimbingan dan konseling atau konselor untuk diajak curhat',
+                            'kepuasan_kepercayaan' => 'Kepercayaan Anda terhadap guru bimbingan dan konseling atau konselor dalam layanan konseling',
+                            'kepuasan_pelayanan' => 'Pelayanan pemecahan masalah tercapai melalui konseling individual'
+                        ];
+                    @endphp
+
+                    @foreach($kepuasanItems as $name => $label)
+                    <div class="bg-[#f9fbfb] border border-[#1a9488]/20 rounded-xl p-3 flex flex-col gap-3">
+                        <div class="text-[0.85rem] text-[#333] font-medium leading-tight text-center">{{ $label }}</div>
+                        <div class="flex justify-center items-center gap-6 emoji-radio">
+                            <!-- Kurang Memuaskan -->
+                            <div class="flex flex-col items-center gap-1">
+                                <input type="radio" name="{{ $name }}" id="{{ $name }}_kurang" value="Kurang Memuaskan" required>
+                                <label for="{{ $name }}_kurang" class="text-3xl label-kurang" title="Kurang Memuaskan">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                                </label>
+                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter">Kurang</span>
+                            </div>
+                            <!-- Memuaskan -->
+                            <div class="flex flex-col items-center gap-1">
+                                <input type="radio" name="{{ $name }}" id="{{ $name }}_cukup" value="Memuaskan" required>
+                                <label for="{{ $name }}_cukup" class="text-3xl label-cukup" title="Memuaskan">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                                </label>
+                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter">Cukup</span>
+                            </div>
+                            <!-- Sangat Memuaskan -->
+                            <div class="flex flex-col items-center gap-1">
+                                <input type="radio" name="{{ $name }}" id="{{ $name }}_sangat" value="Sangat Memuaskan" required>
+                                <label for="{{ $name }}_sangat" class="text-3xl label-sangat" title="Sangat Memuaskan">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                                </label>
+                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter">Sangat</span>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
                 <div class="flex flex-col gap-1.5">
                     <label class="text-[0.75rem] font-extrabold text-[#1a9488] uppercase tracking-wide">Kesimpulan Kamu</label>
                     <textarea name="kesimpulan_siswa" rows="3" required placeholder="Apa yang kamu simpulkan dari bimbingan ini?"

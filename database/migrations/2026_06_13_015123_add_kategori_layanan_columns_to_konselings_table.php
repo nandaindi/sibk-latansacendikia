@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('konselings', function (Blueprint $table) {
-            $table->text('alasan_tolak')->nullable()->after('status');
-            $table->text('catatan_bk')->nullable()->after('alasan_tolak');
-        });
+        Schema::table('konselings', function (Blueprint $table) {});
     }
 
     /**

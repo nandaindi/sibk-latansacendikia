@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Artikel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -16,6 +16,7 @@ class ArtikelController extends Controller
     public function index()
     {
         $articles = Artikel::with('penulis')->latest()->get();
+
         return view('admin.artikel.index', compact('articles'));
     }
 
@@ -42,7 +43,7 @@ class ArtikelController extends Controller
 
         Artikel::create([
             'judul' => $validated['judul'],
-            'slug' => Str::slug($validated['judul']) . '-' . uniqid(),
+            'slug' => Str::slug($validated['judul']).'-'.uniqid(),
             'konten' => $validated['konten'],
             'gambar' => $path,
             'penulis_id' => auth()->id(),
@@ -57,6 +58,7 @@ class ArtikelController extends Controller
     public function show(string $id)
     {
         $artikel = Artikel::findOrFail($id);
+
         return view('admin.artikel.show', compact('artikel'));
     }
 
@@ -66,6 +68,7 @@ class ArtikelController extends Controller
     public function edit(string $id)
     {
         $artikel = Artikel::findOrFail($id);
+
         return view('admin.artikel.edit', compact('artikel'));
     }
 
@@ -84,7 +87,7 @@ class ArtikelController extends Controller
 
         $data = [
             'judul' => $validated['judul'],
-            'slug' => Str::slug($validated['judul']) . '-' . uniqid(),
+            'slug' => Str::slug($validated['judul']).'-'.uniqid(),
             'konten' => $validated['konten'],
         ];
 

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
-use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -18,11 +18,16 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        // Jika sudah login, redirect ke dashboard
+
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->hasRole('admin')) return redirect()->route('admin.dashboard');
-            if ($user->hasRole('bk')) return redirect()->route('bk.dashboard');
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.dashboard');
+            }
+            if ($user->hasRole('bk')) {
+                return redirect()->route('bk.dashboard');
+            }
+
             return redirect()->route('siswa.dashboard');
         }
 
@@ -44,21 +49,29 @@ class LoginController extends Controller
 
         $remember = $request->boolean('remember');
 
-        // Coba login dengan username
         if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
             $request->session()->regenerate();
             $user = Auth::user();
-            if ($user->hasRole('admin')) return redirect()->route('admin.dashboard')->with('login_success', true);
-            if ($user->hasRole('bk')) return redirect()->route('bk.dashboard')->with('login_success', true);
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.dashboard')->with('login_success', true);
+            }
+            if ($user->hasRole('bk')) {
+                return redirect()->route('bk.dashboard')->with('login_success', true);
+            }
+
             return redirect()->route('siswa.dashboard')->with('login_success', true);
         }
 
-        // Coba login dengan email (fallback)
         if (Auth::attempt(['email' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
             $request->session()->regenerate();
             $user = Auth::user();
-            if ($user->hasRole('admin')) return redirect()->route('admin.dashboard')->with('login_success', true);
-            if ($user->hasRole('bk')) return redirect()->route('bk.dashboard')->with('login_success', true);
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.dashboard')->with('login_success', true);
+            }
+            if ($user->hasRole('bk')) {
+                return redirect()->route('bk.dashboard')->with('login_success', true);
+            }
+
             return redirect()->route('siswa.dashboard')->with('login_success', true);
         }
 
@@ -94,14 +107,12 @@ class LoginController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        // Kita coba cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->withErrors(['email' => 'Email tidak terdaftar dalam sistem kami.']);
         }
 
-        // Kirim link reset password
         $status = Password::sendResetLink($request->only('email'));
 
         return $status === Password::RESET_LINK_SENT
@@ -137,7 +148,7 @@ class LoginController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();

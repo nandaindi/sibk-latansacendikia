@@ -62,7 +62,47 @@
                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium resize-none"></textarea>
         </div>
 
+        <!-- Checkbox: Jadwal Pertemuan Selanjutnya -->
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white transition-all mt-2">
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="has_next_meeting" id="hasNextMeetingOffline" value="1" class="w-5 h-5 accent-[#1a9488]" onchange="toggleNextMeetingOffline()">
+                <span class="text-[0.95rem] font-bold text-[#1a9488]">Jadwalkan Pertemuan Selanjutnya?</span>
+            </label>
+            
+            <div id="nextMeetingFieldsOffline" class="hidden mt-4 pt-4 border-t border-[#eaeaea]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1">Tanggal Pertemuan</label>
+                        <input type="date" name="next_tanggal" class="w-full border-b-2 border-[#eee] outline-none py-2 text-[1rem] text-[#1a1a1a] focus:border-[#1a9488] transition-colors" />
+                    </div>
+                    <div>
+                        <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1">Waktu Pertemuan</label>
+                        <input type="time" name="next_waktu" class="w-full border-b-2 border-[#eee] outline-none py-2 text-[1rem] text-[#1a1a1a] focus:border-[#1a9488] transition-colors" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
+
+    <script>
+        function toggleNextMeetingOffline() {
+            const isChecked = document.getElementById('hasNextMeetingOffline').checked;
+            const fields = document.getElementById('nextMeetingFieldsOffline');
+            const tgl = document.querySelector('input[name="next_tanggal"]');
+            const wkt = document.querySelector('input[name="next_waktu"]');
+            
+            if (isChecked) {
+                fields.classList.remove('hidden');
+                tgl.required = true;
+                wkt.required = true;
+            } else {
+                fields.classList.add('hidden');
+                tgl.required = false;
+                wkt.required = false;
+            }
+        }
+    </script>
 
     <!-- Save Button (right aligned) -->
     <div class="flex justify-end mt-6">

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\BK;
 
 use App\Http\Controllers\Controller;
+use App\Models\Artikel;
 use App\Models\Konseling;
 use App\Models\Laporan;
+use App\Models\Pelanggaran;
 use App\Models\User;
 use App\Notifications\KonselingStatusNotification;
 use Illuminate\Http\Request;
@@ -17,45 +19,43 @@ class DashboardController extends Controller
         $bkId = auth()->id();
         $today = now()->format('Y-m-d');
 
-        // Quick Stats
         $pendingCount = Konseling::where('status', 'pending')->count();
 
-        // Jadwal Hari Ini (Gabungan Konseling & Pelanggaran)
         $konselingHariIni = Konseling::with('user')
             ->where('status', 'disetujui')
             ->where('bk_id', $bkId)
             ->whereDate('tanggal', $today)
             ->get()
-            ->each(function($item) { $item->entry_type = 'konseling'; });
+            ->each(function ($item) {
+                $item->entry_type = 'konseling';
+            });
 
-        $panggilanHariIni = \App\Models\Pelanggaran::with('user')
+        $panggilanHariIni = Pelanggaran::with('user')
             ->where('status', 'menunggu')
             ->where('bk_id', $bkId)
             ->whereDate('tanggal', $today)
             ->get()
-            ->each(function($item) { $item->entry_type = 'pelanggaran'; });
+            ->each(function ($item) {
+                $item->entry_type = 'pelanggaran';
+            });
 
         $jadwalHariIni = $konselingHariIni->concat($panggilanHariIni)->sortBy('waktu');
 
-        // Pengajuan Pending Terbaru
         $pendingRequests = Konseling::with('user')
             ->where('status', 'pending')
             ->latest()
             ->take(5)
             ->get();
 
-        // Count Sesi Aktif (Disetujui) untuk badge
         $sesiAktifCount = Konseling::where('status', 'disetujui')
             ->where('bk_id', $bkId)
             ->count();
 
-        // Count Panggilan Aktif (Menunggu) untuk badge
-        $panggilanCount = \App\Models\Pelanggaran::where('status', 'menunggu')
+        $panggilanCount = Pelanggaran::where('status', 'menunggu')
             ->where('bk_id', $bkId)
             ->count();
 
-        // Artikel Edukasi
-        $articles = \App\Models\Artikel::with('penulis')->latest()->take(4)->get();
+        $articles = Artikel::with('penulis')->latest()->take(4)->get();
 
         return view('bk.dashboard', compact(
             'pendingCount', 'jadwalHariIni', 'pendingRequests', 'articles', 'sesiAktifCount', 'panggilanCount'
@@ -66,11 +66,11 @@ class DashboardController extends Controller
     public function panggilSiswa()
     {
         $siswas = User::role('siswa')->orderBy('name')->get();
-        // Ambil riwayat panggilan (status dipanggil atau selesai) khusus BK ini
+
         $riwayatPanggilan = Konseling::with('user')
             ->where('bk_id', auth()->id())
             ->whereIn('status', ['dipanggil', 'selesai', 'tidak_hadir'])
-            ->where('jenis', 'offline') // Karena Panggil Siswa itu offline
+            ->where('jenis', 'offline')
             ->latest()
             ->take(10)
             ->get();
@@ -83,21 +83,21 @@ class DashboardController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'topik'   => 'required|string|max:200',
+            'topik' => 'required|string|max:200',
             'tanggal' => 'required|date',
-            'waktu'   => 'required',
+            'waktu' => 'required',
             'catatan' => 'nullable|string|max:1000',
         ]);
 
-        $catatanLengkap = "Topik: " . $request->topik . "\n\nCatatan: " . ($request->catatan ?? '-');
+        $catatanLengkap = 'Topik: '.$request->topik."\n\nCatatan: ".($request->catatan ?? '-');
 
         Konseling::create([
-            'user_id'    => $request->user_id,
-            'bk_id'      => auth()->id(),
-            'jenis'      => 'offline',
-            'tanggal'    => $request->tanggal,
-            'waktu'      => $request->waktu,
-            'status'     => 'dipanggil',
+            'user_id' => $request->user_id,
+            'bk_id' => auth()->id(),
+            'jenis' => 'offline',
+            'tanggal' => $request->tanggal,
+            'waktu' => $request->waktu,
+            'status' => 'dipanggil',
             'catatan_bk' => $catatanLengkap,
         ]);
 
@@ -119,6 +119,7 @@ class DashboardController extends Controller
     public function validasiPengajuan(Request $request)
     {
         $konseling = Konseling::with('user')->findOrFail($request->id);
+
         return view('bk.validasi-pengajuan', compact('konseling'));
     }
 
@@ -126,6 +127,7 @@ class DashboardController extends Controller
     public function setujuiPengajuan(Request $request)
     {
         $konseling = Konseling::with('user')->findOrFail($request->id);
+
         return view('bk.setujui-pengajuan', compact('konseling'));
     }
 
@@ -134,21 +136,20 @@ class DashboardController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
-            'tanggal'      => 'required|date',
-            'waktu'        => 'required',
-            'link_meet'    => 'nullable|url',
+            'tanggal' => 'required|date',
+            'waktu' => 'required',
+            'link_meet' => 'nullable|url',
         ]);
 
         $konseling = Konseling::findOrFail($request->konseling_id);
         $konseling->update([
-            'status'   => 'disetujui',
-            'bk_id'    => auth()->id(),
-            'tanggal'  => $request->tanggal,
-            'waktu'    => $request->waktu,
-            'link_meet'=> $request->link_meet,
+            'status' => 'disetujui',
+            'bk_id' => auth()->id(),
+            'tanggal' => $request->tanggal,
+            'waktu' => $request->waktu,
+            'link_meet' => $request->link_meet,
         ]);
 
-        // Send Instant Notification to Students
         if ($konseling->user) {
             $konseling->user->notify(new KonselingStatusNotification($konseling, 'disetujui'));
         }
@@ -160,16 +161,15 @@ class DashboardController extends Controller
     public function setujuiLangsung($id)
     {
         $konseling = Konseling::findOrFail($id);
-        
+
         $konseling->update([
-            'status'   => 'disetujui',
-            'bk_id'    => auth()->id(),
-            // Tanggal & Waktu tetap menggunakan usulan siswa yang sudah kita simpan di DB
+            'status' => 'disetujui',
+            'bk_id' => auth()->id(),
+
         ]);
 
-        // Send Notification to Students
         if ($konseling->user) {
-            $konseling->user->notify(new \App\Notifications\KonselingStatusNotification($konseling, 'disetujui'));
+            $konseling->user->notify(new KonselingStatusNotification($konseling, 'disetujui'));
         }
 
         return redirect()->route('bk.sesi-konseling')->with('sukses', 'Pengajuan berhasil disetujui sesuai jadwal siswa!');
@@ -185,12 +185,11 @@ class DashboardController extends Controller
 
         $konseling = Konseling::findOrFail($request->konseling_id);
         $konseling->update([
-            'status'       => 'ditolak',
-            'bk_id'        => auth()->id(),
+            'status' => 'ditolak',
+            'bk_id' => auth()->id(),
             'alasan_tolak' => $request->alasan_tolak,
         ]);
 
-        // Send Instant Notification to Students
         if ($konseling->user) {
             $konseling->user->notify(new KonselingStatusNotification($konseling, 'ditolak'));
         }
@@ -214,6 +213,7 @@ class DashboardController extends Controller
     public function detailSesi(Request $request)
     {
         $konseling = Konseling::with('user')->findOrFail($request->id);
+
         return view('bk.detail-sesi', compact('konseling'));
     }
 
@@ -221,9 +221,8 @@ class DashboardController extends Controller
     public function konselingOnline(Request $request)
     {
         $konseling = Konseling::with('user')->findOrFail($request->id);
-        
-        // Catat waktu mulai jika belum ada
-        if (!$konseling->started_at) {
+
+        if (! $konseling->started_at) {
             $konseling->update(['started_at' => now()]);
         }
 
@@ -234,9 +233,8 @@ class DashboardController extends Controller
     public function formKonselingOffline($id)
     {
         $konseling = Konseling::with('user')->findOrFail($id);
-        
-        // Cek jika started_at belum ada, beri fallback atau biarkan (sekarang lewat tombol Mulai)
-        if (!$konseling->started_at) {
+
+        if (! $konseling->started_at) {
             $konseling->update(['started_at' => now()]);
         }
 
@@ -247,9 +245,10 @@ class DashboardController extends Controller
     public function mulaiSesiOffline($id)
     {
         $konseling = Konseling::findOrFail($id);
-        if (!$konseling->started_at) {
+        if (! $konseling->started_at) {
             $konseling->update(['started_at' => now()]);
         }
+
         return redirect()->route('bk.form-konseling-offline', $id);
     }
 
@@ -258,52 +257,61 @@ class DashboardController extends Controller
     {
         $konseling = Konseling::findOrFail($id);
         $konseling->update(['status' => 'tidak_hadir']);
+
         return redirect()->route('bk.sesi-konseling')->with('sukses', 'Siswa ditandai tidak hadir.');
     }
-
 
     /** Store form konseling offline – simpan catatan & selesaikan sesi */
     public function storeFormKonselingOffline(Request $request)
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
-            'problem'      => 'required|string',
-            'solution'     => 'required|string',
-            'note'         => 'nullable|string',
+            'problem' => 'required|string',
+            'solution' => 'required|string',
+            'note' => 'nullable|string',
+            'has_next_meeting' => 'nullable',
+            'next_tanggal' => 'nullable|required_with:has_next_meeting|date',
+            'next_waktu' => 'nullable|required_with:has_next_meeting',
         ]);
 
-
-
-        $catatanFormatted = "Problem:\n" . $request->problem . "\n\nSolution:\n" . $request->solution;
+        $catatanFormatted = "Problem:\n".$request->problem."\n\nSolution:\n".$request->solution;
         if ($request->note) {
-            $catatanFormatted .= "\n\nNote:\n" . $request->note;
+            $catatanFormatted .= "\n\nNote:\n".$request->note;
         }
 
         $konseling = Konseling::findOrFail($request->konseling_id);
-        
-        // Hitung durasi otomatis menit
+
         $durasi = 1;
         if ($konseling->started_at) {
             $durasi = max(1, now()->diffInMinutes($konseling->started_at));
         }
 
         $konseling->update([
-            'status'     => 'selesai',
-            'durasi'     => $durasi,
+            'status' => 'selesai',
+            'durasi' => $durasi,
             'catatan_bk' => $catatanFormatted,
         ]);
 
-
-
-        // Buat laporan otomatis dari sesi yang selesai
         Laporan::create([
-            'nama_laporan' => 'Laporan Konseling: ' . $konseling->user->name,
-            'author_id'    => auth()->id(),
-            'user_id'      => $konseling->user_id,
+            'nama_laporan' => 'Laporan Konseling: '.$konseling->user->name,
+            'author_id' => auth()->id(),
+            'user_id' => $konseling->user_id,
             'konseling_id' => $konseling->id,
-            'tanggal'      => now()->format('Y-m-d'),
-            'search_key'   => now()->format('l, d F Y'),
+            'tanggal' => now()->format('Y-m-d'),
+            'search_key' => now()->format('l, d F Y'),
         ]);
+
+        if ($request->has('has_next_meeting') && $request->next_tanggal && $request->next_waktu) {
+            Konseling::create([
+                'user_id' => $konseling->user_id,
+                'bk_id' => auth()->id(),
+                'jenis' => 'offline',
+                'tanggal' => $request->next_tanggal,
+                'waktu' => $request->next_waktu,
+                'status' => 'dipanggil',
+                'catatan_bk' => 'Topik: Tindak Lanjut Sesi Sebelumnya',
+            ]);
+        }
 
         return redirect()->route('bk.laporan-konseling')->with('sukses', 'Sesi selesai, laporan berhasil dibuat!');
     }
@@ -312,6 +320,7 @@ class DashboardController extends Controller
     public function formKonselingOnline($id)
     {
         $konseling = Konseling::with('user')->findOrFail($id);
+
         return view('bk.form-konseling-online', compact('konseling'));
     }
 
@@ -320,40 +329,51 @@ class DashboardController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
-            'problem'      => 'required|string',
-            'solution'     => 'required|string',
-            'note'         => 'nullable|string',
+            'problem' => 'required|string',
+            'solution' => 'required|string',
+            'note' => 'nullable|string',
+            'has_next_meeting' => 'nullable',
+            'next_tanggal' => 'nullable|required_with:has_next_meeting|date',
+            'next_waktu' => 'nullable|required_with:has_next_meeting',
         ]);
 
-
-        $catatanFormatted = "Problem:\n" . $request->problem . "\n\nSolution:\n" . $request->solution;
+        $catatanFormatted = "Problem:\n".$request->problem."\n\nSolution:\n".$request->solution;
         if ($request->note) {
-            $catatanFormatted .= "\n\nNote:\n" . $request->note;
+            $catatanFormatted .= "\n\nNote:\n".$request->note;
         }
 
         $konseling = Konseling::findOrFail($request->konseling_id);
-        
-        // Hitung durasi otomatis menit
+
         $durasi = 1;
         if ($konseling->started_at) {
             $durasi = max(1, now()->diffInMinutes($konseling->started_at));
         }
 
         $konseling->update([
-            'durasi'     => $durasi,
+            'durasi' => $durasi,
             'catatan_bk' => $catatanFormatted,
         ]);
 
-
-        // Buat laporan otomatis
         Laporan::create([
-            'nama_laporan' => 'Laporan Konseling: ' . $konseling->user->name,
-            'author_id'    => auth()->id(),
-            'user_id'      => $konseling->user_id,
+            'nama_laporan' => 'Laporan Konseling: '.$konseling->user->name,
+            'author_id' => auth()->id(),
+            'user_id' => $konseling->user_id,
             'konseling_id' => $konseling->id,
-            'tanggal'      => now()->format('Y-m-d'),
-            'search_key'   => now()->format('l, d F Y'),
+            'tanggal' => now()->format('Y-m-d'),
+            'search_key' => now()->format('l, d F Y'),
         ]);
+
+        if ($request->has('has_next_meeting') && $request->next_tanggal && $request->next_waktu) {
+            Konseling::create([
+                'user_id' => $konseling->user_id,
+                'bk_id' => auth()->id(),
+                'jenis' => 'offline',
+                'tanggal' => $request->next_tanggal,
+                'waktu' => $request->next_waktu,
+                'status' => 'dipanggil',
+                'catatan_bk' => 'Topik: Tindak Lanjut Sesi Sebelumnya',
+            ]);
+        }
 
         return redirect()->route('bk.laporan-konseling')->with('sukses', 'Hasil konseling online berhasil dicatat dan laporan dibuat!');
     }
@@ -362,12 +382,12 @@ class DashboardController extends Controller
     public function laporanKonseling(Request $request)
     {
         $jenis = $request->query('jenis');
-        
+
         $query = Laporan::with(['author', 'user', 'konseling'])
             ->where('author_id', auth()->id());
 
         if ($jenis && in_array($jenis, ['online', 'offline'])) {
-            $query->whereHas('konseling', function($q) use ($jenis) {
+            $query->whereHas('konseling', function ($q) use ($jenis) {
                 $q->where('jenis', $jenis);
             });
         }
@@ -382,41 +402,38 @@ class DashboardController extends Controller
     {
         $id = $request->query('id');
         $laporan = Laporan::with('author')->findOrFail($id);
-        
-        $items = collect(); // Default empty
-        
-        // Pemetaan 1-to-1 untuk Laporan yang di-generate otomatis (Laporan Konseling: Nama Siswa)
+
+        $items = collect();
+
         if (str_starts_with($laporan->nama_laporan, 'Laporan Konseling: ')) {
             $namaSiswa = trim(str_replace('Laporan Konseling:', '', $laporan->nama_laporan));
-            
-            // Cari tahu ini Laporan ke-berapa untuk siswa tersebut (berdasarkan created_at)
+
             $userLaporans = Laporan::where('nama_laporan', $laporan->nama_laporan)
                 ->orderBy('id', 'asc')->get();
-            
-            // Cari index dari laporan yang sedang dibuka (0, 1, 2, dll)
+
             $index = $userLaporans->search(function ($item) use ($laporan) {
                 return $item->id == $laporan->id;
             });
-            
+
             if ($index !== false) {
-                // Ambil sesi Konseling ke-{index} dari siswa tersebut
+
                 $konseling = Konseling::with('user')
                     ->where('status', 'selesai')
-                    ->whereHas('user', function($q) use ($namaSiswa) {
-                        $q->where('name', 'like', '%' . $namaSiswa . '%');
+                    ->whereHas('user', function ($q) use ($namaSiswa) {
+                        $q->where('name', 'like', '%'.$namaSiswa.'%');
                     })
-                    ->orderBy('id', 'asc') // Urutkan terlama pertama
+                    ->orderBy('id', 'asc')
                     ->skip($index)->first();
-                    
+
                 if ($konseling) {
-                    $items = collect([$konseling]); // Masukkan 1 sesi secara spesifik
+                    $items = collect([$konseling]);
                 }
             }
         } else {
-            // Untuk laporan manual ("Semester Ganjil", dll)
+
             $items = Konseling::with('user')->where('status', 'selesai')->latest()->get();
         }
-        
+
         return view('bk.detail-laporan', compact('laporan', 'items'));
     }
 }

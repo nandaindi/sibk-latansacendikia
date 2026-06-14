@@ -38,15 +38,15 @@ class SessionReminderNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $waktu = \Carbon\Carbon::parse($this->konseling->waktu)->format('H:i');
-        
+        $waktu = Carbon::parse($this->konseling->waktu)->format('H:i');
+
         $message = (new MailMessage)
             ->subject('PENGINGAT: Sesi Bimbingan Konseling Dimulai 10 Menit Lagi')
-            ->greeting('Halo ' . $notifiable->name . ',')
+            ->greeting('Halo '.$notifiable->name.',')
             ->line('Ini adalah pengingat otomatis bahwa sesi Bimbingan Konseling Anda akan dimulai dalam 10 menit.')
-            ->line('Jadwal: ' . \Carbon\Carbon::parse($this->konseling->tanggal)->format('d F Y') . ' jam ' . $waktu)
-            ->line('Jenis: ' . ucfirst($this->konseling->jenis));
-            
+            ->line('Jadwal: '.Carbon::parse($this->konseling->tanggal)->format('d F Y').' jam '.$waktu)
+            ->line('Jenis: '.ucfirst($this->konseling->jenis));
+
         if ($this->konseling->jenis === 'online' && $this->konseling->link_meet) {
             $message->action('Bergabung ke Pertemuan (Meet)', $this->konseling->link_meet);
         } else {
@@ -63,12 +63,13 @@ class SessionReminderNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
-        $waktu = \Carbon\Carbon::parse($this->konseling->waktu)->format('H:i');
+        $waktu = Carbon::parse($this->konseling->waktu)->format('H:i');
+
         return [
             'konseling_id' => $this->konseling->id,
             'title' => 'Sesi Konseling 10 Menit Lagi!',
-            'message' => 'Sesi bimbingan (' . ucfirst($this->konseling->jenis) . ') akan segera dimulai pada pukul ' . $waktu . '.',
-            'link' => '#' 
+            'message' => 'Sesi bimbingan ('.ucfirst($this->konseling->jenis).') akan segera dimulai pada pukul '.$waktu.'.',
+            'link' => '#',
         ];
     }
 }

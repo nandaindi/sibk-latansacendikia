@@ -91,7 +91,7 @@
                     </div>
                 </div>
             @elseif($alert->alert_type == 'pelanggaran')
-                {{-- 2. Kartu Panggilan Pelanggaran --}}
+                {{-- 2. Kartu Panggil Siswa --}}
                 <div id="activePelanggaranCard" class="bg-white border border-red-200/60 rounded-2xl shadow-[0_16px_40px_rgba(239,68,68,0.15)] ring-1 ring-red-500/10 relative overflow-hidden w-full md:w-[360px]" style="display: none;">
 
                     {{-- Header Strip --}}
@@ -103,7 +103,7 @@
 
                         <div class="flex-1 min-w-0">
                             <div class="font-black text-[0.82rem] text-red-700 leading-tight uppercase tracking-tight flex items-center gap-1.5">
-                                Panggilan Pelanggaran
+                                Panggil Siswa
                                 <span class="inline-flex h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0"></span>
                             </div>
                             <div class="text-[0.7rem] text-red-400 font-semibold mt-0.5">Perlu Tindakan Segera</div>
@@ -287,7 +287,7 @@
                         ->count();
                 @endphp
                 
-                <!-- Card 1: Panggilan Pelanggaran -->
+                <!-- Card 1: Panggil Siswa -->
                 <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full relative group/card">
                     {{-- Badge inside Card - Clean No Shadow --}}
                     @if($unreadPanggilanCount > 0)
@@ -299,11 +299,11 @@
                     @endif
 
                     <div class="px-6 mb-8">
-                        <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggilan Pelanggaran" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110 animate-robot-wave">
+                        <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggil Siswa" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110 animate-robot-wave">
                     </div>
                     
                     <a href="{{ route('siswa.panggilan') }}" class="w-full @if($unreadPanggilanCount > 0) bg-[#ef4444] @else bg-[#1a9488] @endif text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:brightness-110 transition-all cursor-pointer flex items-center justify-center rounded-b-[32px]">
-                        PANGGILAN PELANGGARAN
+                        Panggil Siswa
                     </a>
                 </div>
                 <!-- Card 2: Pengajuan Online -->

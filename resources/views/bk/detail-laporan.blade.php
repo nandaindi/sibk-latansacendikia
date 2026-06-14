@@ -2,247 +2,521 @@
 @section('title', 'Detail Laporan – BK')
 
 @section('content')
-<div id="main-content" class="w-full px-4 md:px-6 py-6 pb-[100px] md:pb-10 max-w-7xl mx-auto">
-    
-    {{-- Header --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-        <div>
-            <a href="{{ route('bk.laporan-konseling') }}" class="flex items-center gap-2 text-[0.85rem] font-semibold text-[#1a9488] hover:translate-x-[-4px] transition-transform mb-2 no-underline">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                Kembali ke Daftar Laporan
-            </a>
-            <h1 class="text-[2rem] md:text-[2.6rem] font-black text-[#1a1a1a] tracking-tight leading-tight">Laporan Konseling Detail</h1>
-            <p class="text-[1rem] text-[#888] font-medium mt-1">Dokumentasi lengkap hasil sesi bimbingan untuk Sesi #{{ $laporan->id }}{{ rand(10,99) }}</p>
+<div class="flex flex-col flex-1 pb-[80px] md:pb-10">
+
+    <!-- Page Header (dark teal) -->
+    <div class="bg-[#1a7a70] px-5 md:px-8 py-5 flex items-center justify-between gap-3">
+        <h2 class="text-[1.1rem] md:text-[1.3rem] font-bold text-white">Detail Laporan Konseling</h2>
+        <div class="flex gap-2 no-print">
+            @php $firstItemWithFeedback = $items->firstWhere('kepuasan_penerimaan', '!=', null); @endphp
+            @if($firstItemWithFeedback)
+            <button onclick="cetakFeedback()" class="px-4 py-2 bg-white/20 text-white rounded-lg text-[0.8rem] font-bold hover:bg-white/30 transition-colors border-none cursor-pointer">
+                Cetak Feedback
+            </button>
+            @endif
+            <button onclick="cetakLaporan()" class="px-4 py-2 bg-white/20 text-white rounded-lg text-[0.8rem] font-bold hover:bg-white/30 transition-colors border-none cursor-pointer">
+                Cetak Laporan
+            </button>
         </div>
-        <button onclick="cetakLaporan()" class="px-6 py-3 bg-[#f3f4f6] text-[#4b5563] rounded-xl flex items-center gap-2.5 hover:bg-[#e5e7eb] transition-all border-none cursor-pointer font-bold text-[0.9rem] shadow-sm no-print">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="shrink-0" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
-            </svg>
-            Cetak Laporan
-        </button>
     </div>
 
-    {{-- Main Grid --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
-        {{-- Sidebar (Left) --}}
-        <div class="lg:col-span-4 flex flex-col gap-8">
-            @foreach($items as $item)
-                {{-- Loop for cases where a report might have multiple sessions --}}
-                <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] p-8 shadow-sm flex flex-col items-center text-center">
-                    {{-- Student Avatar --}}
-                    <div class="w-32 h-32 rounded-[2.5rem] overflow-hidden bg-[#e0f5f3] border-[4px] border-white shadow-xl mb-6">
-                        @if($item->user->avatar)
-                            <img src="{{ asset('storage/' . $item->user->avatar) }}" alt="Student Avatar" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-4xl font-black text-[#1a9488]">{{ substr($item->user->name, 0, 1) }}</div>
-                        @endif
-                    </div>
-                    
-                    <h3 class="text-[1.3rem] font-bold text-[#1a1a1a] leading-tight">{{ $item->user->name }}</h3>
-                    <p class="text-[0.9rem] text-[#888] font-normal mt-1 uppercase tracking-widest">Student ID: {{ $item->user->nis ?? $item->user->nomor_induk ?? '2023-001-' . $item->user->id }}</p>
-                    
-                    <div class="w-full h-[2px] bg-[#f8fafc] my-6"></div>
-                    
-                    <div class="w-full flex flex-col gap-4">
-                        <div class="flex items-center gap-4 text-left">
-                            <div class="w-10 h-10 rounded-xl bg-[#e0f5f3] flex items-center justify-center text-[#1a9488] shrink-0">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            </div>
-                            <div>
-                                <div class="text-[0.65rem] font-medium text-[#aaa] uppercase tracking-wider">Tanggal Sesi</div>
-                                <div class="text-[0.95rem] font-semibold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->format('d F, Y') }}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-4 text-left">
-                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <div>
-                                <div class="text-[0.65rem] font-medium text-[#aaa] uppercase tracking-wider">Durasi</div>
-                                <div class="text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $item->durasi ?? 45 }} Menit</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="w-full px-4 md:px-6 py-5 flex flex-col gap-4">
 
-                {{-- Counselor Section --}}
-                <div class="bg-[#f9fafb] border-[1px] border-[#f0f0f0] rounded-[24px] p-6">
-                    <label class="text-[0.7rem] font-medium text-[#aaa] uppercase tracking-[0.15em] mb-4 block">Konselor yang Bertugas</label>
+        {{-- Back Link --}}
+        <a href="{{ route('bk.laporan-konseling') }}" class="flex items-center gap-2 text-[0.85rem] font-semibold text-[#1a9488] hover:translate-x-[-4px] transition-transform no-underline no-print">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Kembali ke Daftar Laporan
+        </a>
+
+        @forelse($items as $item)
+        @php
+            $note = $item->catatan_bk;
+            $problem = ''; $solution = ''; $additional = '';
+            if (preg_match('/Problem:\s*(.*?)(?=Solution:|Note:|$)/s', $note, $matches)) { $problem = trim($matches[1]); }
+            if (preg_match('/Solution:\s*(.*?)(?=Note:|$)/s', $note, $matches)) { $solution = trim($matches[1]); }
+            if (preg_match('/Note:\s*(.*)/s', $note, $matches)) { $additional = trim($matches[1]); }
+            if (empty($problem) && empty($solution) && !empty($note)) { $problem = $note; }
+        @endphp
+
+        {{-- Two Column Layout --}}
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 items-start">
+
+            {{-- LEFT: Student & Konselor in One Card --}}
+            <div class="lg:col-span-2 lg:sticky lg:top-4">
+                <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 shadow-sm flex flex-col gap-4">
+
+                    {{-- Student --}}
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full overflow-hidden bg-[#1a9488] border-[3px] border-white shadow-sm shrink-0">
-                            @if($item->bk->avatar)
-                                <img src="{{ asset('storage/' . $item->bk->avatar) }}" alt="Konselor" class="w-full h-full object-cover">
+                        <div class="w-12 h-12 shrink-0 border border-[#edf2f1] rounded-full overflow-hidden bg-[#e0f5f3]">
+                            <img src="{{ $item->user->avatar ? asset('storage/' . $item->user->avatar) : asset('img/default-profile.png') }}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="min-w-0">
+                            <div class="font-bold text-[1rem] text-[#1a1a1a]">{{ $item->user->name }}</div>
+                            <div class="text-[0.82rem] text-[#888]">{{ $item->user->kelas ?? '-' }} {{ $item->user->jurusan ?? '' }}</div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-[#edf2f1]"></div>
+
+                    {{-- Meta --}}
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider">Tanggal</span>
+                            <span class="text-[0.85rem] font-semibold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('D MMMM YYYY') }}</span>
+                        </div>
+                        @if($item->waktu)
+                        <div class="flex items-center justify-between">
+                            <span class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider">Waktu</span>
+                            <span class="text-[0.85rem] font-semibold text-[#1a9488]">{{ \Carbon\Carbon::parse($item->waktu)->format('H:i') }} WIB</span>
+                        </div>
+                        @endif
+                        <div class="flex items-center justify-between">
+                            <span class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider">Jenis</span>
+                            <span class="px-2.5 py-0.5 bg-[#e0f5f3] text-[#1a9488] font-medium rounded-full text-[0.72rem] uppercase tracking-wider">{{ $item->jenis == 'online' ? 'Online' : 'Offline' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-[#edf2f1]"></div>
+
+                    {{-- Konselor --}}
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full overflow-hidden bg-[#1a9488] shrink-0">
+                            @if($item->bk->avatar ?? null)
+                                <img src="{{ asset('storage/' . $item->bk->avatar) }}" class="w-full h-full object-cover">
                             @else
-                                <div class="w-full h-full flex items-center justify-center font-bold text-white">{{ substr($item->bk->name ?? 'BK', 0, 1) }}</div>
+                                <div class="w-full h-full flex items-center justify-center font-bold text-white text-sm">{{ substr($item->bk->name ?? 'BK', 0, 1) }}</div>
                             @endif
                         </div>
                         <div>
-                            <div class="text-[1rem] font-bold text-[#1a1a1a] leading-tight">{{ $item->bk->name ?? 'Guru BK' }}</div>
-                            <div class="text-[0.75rem] text-[#777] font-normal">Guru Pembimbing & Konseling</div>
+                            <div class="text-[0.9rem] font-bold text-[#1a1a1a]">{{ $item->bk->name ?? 'Guru BK' }}</div>
+                            <div class="text-[0.75rem] text-[#888]">Konselor</div>
                         </div>
                     </div>
                 </div>
-            @endforeach
-        </div>
+            </div>
 
-        {{-- Main Content (Right) --}}
-        <div class="lg:col-span-8 flex flex-col gap-8">
-            @forelse($items as $item)
-                @php
-                    $note = $item->catatan_bk;
-                    $problem = ''; $solution = ''; $additional = '';
-                    if (preg_match('/Problem:\s*(.*?)(?=Solution:|Note:|$)/s', $note, $matches)) { $problem = trim($matches[1]); }
-                    if (preg_match('/Solution:\s*(.*?)(?=Note:|$)/s', $note, $matches)) { $solution = trim($matches[1]); }
-                    if (preg_match('/Note:\s*(.*)/s', $note, $matches)) { $additional = trim($matches[1]); }
-                    if (empty($problem) && empty($solution) && !empty($note)) { $problem = $note; }
-                @endphp
+            {{-- RIGHT: Content --}}
+            <div class="lg:col-span-3 flex flex-col gap-4">
 
-                <div class="flex flex-col gap-10">
-                    {{-- 1. Problem Description --}}
-                    <div class="flex flex-col gap-4">
-                        <div class="flex items-center gap-2 text-[#111] px-1">
-                            <h3 class="text-[0.9rem] font-semibold uppercase tracking-[0.2em]">Deskripsi Permasalahan</h3>
-                        </div>
-                        <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.4s_ease-out]">
-                            <div class="flex flex-col gap-6">
-                                <div class="text-[1.05rem] text-[#333] leading-[1.8] font-normal max-w-3xl">
-                                    {!! nl2br(e($problem)) !!}
-                                </div>
-                                <div class="flex flex-wrap gap-2 mt-2">
-                                    @php
-                                        $pType = $item->problem_type ?? 'umum';
-                                        $typeMap = [
-                                            'akademik' => ['label' => 'Masalah Akademik', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
-                                            'sosial'   => ['label' => 'Masalah Sosial', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
-                                            'keluarga' => ['label' => 'Masalah Keluarga', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
-                                            'karir'    => ['label' => 'Perencanaan Karir', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
-                                            'lainnya'  => ['label' => 'Masalah Lainnya', 'color' => 'bg-gray-50 text-gray-600 border-gray-200'],
-                                            'umum'     => ['label' => 'Konseling Umum', 'color' => 'bg-gray-50 text-gray-400 border-gray-200'],
-                                        ];
-                                        $currentType = $typeMap[$pType] ?? $typeMap['umum'];
-                                    @endphp
-                                    <span class="px-4 py-1.5 {{ $currentType['color'] }} border-[1px] text-[0.7rem] font-bold rounded-full uppercase tracking-widest transition-all">
-                                        {{ $currentType['label'] }}
-                                    </span>
-                                    @if($item->jenis == 'online')
-                                        <span class="px-4 py-1.5 bg-gray-50 text-gray-500 border-[1px] border-gray-200 text-[0.7rem] font-bold rounded-full uppercase tracking-widest">Pertemuan Virtual</span>
-                                    @endif
-                                </div>
-                            </div>
+                {{-- Main Notes (Problem + Solution + Notes in One Card) --}}
+                @if($problem || $solution || $additional)
+                <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-5 shadow-sm flex flex-col gap-4">
+
+                    @if($problem)
+                    <div>
+                        <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block mb-1">Deskripsi Permasalahan</label>
+                        <div class="text-[0.9rem] text-[#444] leading-relaxed">{!! nl2br(e($problem)) !!}</div>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            @php
+                                $pType = $item->problem_type ?? 'umum';
+                                $typeLabels = ['akademik' => 'Akademik', 'sosial' => 'Sosial', 'keluarga' => 'Keluarga', 'karir' => 'Karir', 'lainnya' => 'Lainnya', 'umum' => 'Umum'];
+                            @endphp
+                            <span class="px-3 py-1 bg-[#e0f5f3] text-[#1a9488] font-medium rounded-full text-[0.72rem] uppercase tracking-wider">
+                                {{ $typeLabels[$pType] ?? 'Umum' }}
+                            </span>
                         </div>
                     </div>
+                    @endif
 
-                    {{-- 2. Solution & Action --}}
+                    @if($problem && ($solution || $additional))
+                    <div class="border-t border-[#edf2f1]"></div>
+                    @endif
+
                     @if($solution)
-                        <div class="flex flex-col gap-4">
-                            <div class="flex items-center gap-2 text-[#111] px-1">
-                                <h3 class="text-[0.9rem] font-semibold uppercase tracking-[0.2em]">Solusi & Tindakan</h3>
-                            </div>
-                            <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.5s_ease-out]">
-                                <div class="flex flex-col gap-5">
-                                    <div class="flex flex-col gap-2">
-                                        <div class="text-[1rem] text-[#333] leading-relaxed font-medium">
-                                            {!! nl2br(e($solution)) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block mb-1">Solusi & Tindakan</label>
+                        <div class="text-[0.9rem] text-[#444] leading-relaxed">{!! nl2br(e($solution)) !!}</div>
+                    </div>
                     @endif
 
-                    {{-- 3. Additional Notes --}}
+                    @if($solution && $additional)
+                    <div class="border-t border-[#edf2f1]"></div>
+                    @endif
+
                     @if($additional)
-                        <div class="flex flex-col gap-4">
-                            <div class="flex items-center gap-2 text-[#111] px-1">
-                                <h3 class="text-[0.9rem] font-semibold uppercase tracking-[0.2em]">Catatan Tambahan</h3>
-                            </div>
-                            <div class="bg-white border-[2px] border-[#edf2f1] rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.6s_ease-out]">
-                                <div class="bg-gray-50 rounded-2xl p-6 border border-gray-200 border-dashed">
-                                    <p class="text-[1.05rem] text-[#555] font-normal leading-[1.8] italic">
-                                        "{!! nl2br(e($additional)) !!}"
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block mb-1">Catatan Tambahan</label>
+                        <div class="text-[0.9rem] text-[#555] leading-relaxed italic">"{!! nl2br(e($additional)) !!}"</div>
+                    </div>
                     @endif
+                </div>
+                @endif
 
-                    {{-- 4. Student Feedback (Refleksi) --}}
+                {{-- Student Feedback --}}
+                @if($item->kesimpulan_siswa || $item->kepuasan_penerimaan)
+                <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-5 shadow-sm">
+                    <label class="text-[0.7rem] font-bold text-[#1a9488] uppercase tracking-wider block mb-3">Refleksi & Feedback Siswa</label>
+
                     @if($item->kesimpulan_siswa)
-                        <div class="flex flex-col gap-4">
-                            <div class="flex items-center gap-2 text-[#111] px-1">
-                                <div class="w-2 h-6 bg-[#1a9488] rounded-full"></div>
-                                <h3 class="text-[0.9rem] font-semibold uppercase tracking-[0.2em]">Refleksi & Feedback Siswa</h3>
-                            </div>
-                            <div class="bg-white border-[2px] border-[#1a9488]/30 rounded-[32px] shadow-sm overflow-hidden flex flex-col p-8 md:p-10 group animate-[fadeInUp_0.7s_ease-out]">
-                                <div class="flex flex-col gap-6">
-                                    <div>
-                                        <label class="text-[0.7rem] font-semibold text-[#1a9488] uppercase tracking-widest block mb-2">Kesimpulan Siswa</label>
-                                        <div class="text-[1.05rem] text-[#333] font-normal italic">
-                                            "{!! nl2br(e($item->kesimpulan_siswa)) !!}"
-                                        </div>
-                                    </div>
-                                    @if($item->saran_siswa)
-                                        <div class="pt-6 border-t border-[#edf2f1]">
-                                            <label class="text-[0.7rem] font-semibold text-[#1a9488] uppercase tracking-widest block mb-2">Saran Untuk Layanan BK</label>
-                                            <div class="text-[0.95rem] text-[#555] font-normal leading-relaxed">
-                                                {!! nl2br(e($item->saran_siswa)) !!}
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <div class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider mb-1">Kesimpulan Siswa</div>
+                        <div class="text-[0.9rem] text-[#444] italic">"{!! nl2br(e($item->kesimpulan_siswa)) !!}"</div>
+                    </div>
                     @endif
 
-                    @if(!$solution && !$additional)
-                        <div class="bg-white border-[1px] border-[#eee] rounded-[32px] p-10 text-center animate-[fadeInUp_0.5s_ease-out]">
-                            <p class="text-[#bbb] font-bold italic">Tidak ada catatan solusi atau tambahan yang direkam untuk sesi ini.</p>
+                    @if($item->saran_siswa)
+                    <div class="border-t border-[#edf2f1] my-3"></div>
+                    <div class="mb-4">
+                        <div class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider mb-1">Saran Untuk BK</div>
+                        <div class="text-[0.9rem] text-[#555]">{!! nl2br(e($item->saran_siswa)) !!}</div>
+                    </div>
+                    @endif
+
+                    @php
+                        $kepuasanItems = [
+                            'Penerimaan guru bimbingan dan konseling atau konselor terhadap kehadiran Anda' => $item->kepuasan_penerimaan,
+                            'Kemudahan guru bimbingan dan konseling atau konselor untuk diajak curhat' => $item->kepuasan_kemudahan,
+                            'Kepercayaan Anda terhadap guru bimbingan dan konseling atau konselor dalam layanan konseling' => $item->kepuasan_kepercayaan,
+                            'Pelayanan pemecahan masalah tercapai melalui konseling individual' => $item->kepuasan_pelayanan
+                        ];
+                    @endphp
+
+                    @if(array_filter($kepuasanItems))
+                    <div class="border-t border-[#edf2f1] my-3"></div>
+                    <div>
+                        <div class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider mb-3">Kepuasan Siswa</div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse text-left">
+                                <thead>
+                                    <tr class="border-b-2 border-[#edf2f1]">
+                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider w-8">No</th>
+                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider">Aspek yang Dinilai</th>
+                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider text-center whitespace-nowrap">Sangat</th>
+                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider text-center whitespace-nowrap">Memuaskan</th>
+                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider text-center whitespace-nowrap">Kurang</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php $no = 1; @endphp
+                                    @foreach($kepuasanItems as $label => $value)
+                                        @if($value)
+                                        <tr class="border-b border-[#f0f0f0]">
+                                            <td class="py-3 px-2 text-[0.85rem] text-[#888] font-semibold align-top">{{ $no }}</td>
+                                            <td class="py-3 px-2 text-[0.82rem] text-[#444] leading-snug align-top">{{ $label }}</td>
+                                            <td class="py-3 px-2 text-center align-top">
+                                                @if($value == 'Sangat Memuaskan')
+                                                    <span class="text-green-600 font-bold text-lg">✓</span>
+                                                @endif
+                                            </td>
+                                            <td class="py-3 px-2 text-center align-top">
+                                                @if($value == 'Memuaskan')
+                                                    <span class="text-yellow-600 font-bold text-lg">✓</span>
+                                                @endif
+                                            </td>
+                                            <td class="py-3 px-2 text-center align-top">
+                                                @if($value == 'Kurang Memuaskan')
+                                                    <span class="text-red-500 font-bold text-lg">✓</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @php $no++; @endphp
+                                        @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
                     @endif
                 </div>
-            @empty
-                <div class="text-center py-12 text-[#888] font-medium bg-white rounded-[24px] border border-[#eee] shadow-sm">
-                    <svg class="mx-auto mb-3 opacity-20" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
-                    Belum ada data sesi pada laporan ini.
+                @endif
+
+                @if(!$problem && !$solution && !$additional && !($item->kesimpulan_siswa || $item->kepuasan_penerimaan))
+                <div class="text-center py-6 text-gray-500 font-medium bg-white rounded-2xl border-[2px] border-[#edf2f1]">
+                    Tidak ada catatan untuk sesi ini.
                 </div>
-            @endforelse
+                @endif
+            </div>
+
         </div>
+
+        @empty
+        <div class="text-center py-6 text-gray-500 font-medium bg-white rounded-2xl border-[2px] border-[#edf2f1]">
+            Belum ada data sesi pada laporan ini.
+        </div>
+        @endforelse
+
     </div>
+
 </div>
 
 {{-- Area cetak – disiapkan statis dan hanya muncul saat window.print() --}}
 <div id="printArea">
-    <div class="pr-header">
-        <h1>Detailed Counseling Report</h1>
-        <div class="pr-subtitle">Layanan Bimbingan Konseling &ndash; SMK Latansa Cendekia</div>
+    <div class="pr-header-kop" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px;">
+        <div style="font-size: 14pt; font-weight: bold; font-family: 'Times New Roman', Times, serif;">SMAIT LATANSA CENDEKIA</div>
+        <div style="font-size: 10pt; font-family: 'Times New Roman', Times, serif;">Telp: 021-59319100, Email: humas.smaitlc@gmail.com</div>
+        <div style="font-size: 10pt; font-family: 'Times New Roman', Times, serif;">Website: sma.latansacendekia.sch.id</div>
     </div>
-    <div class="pr-section">
-        <h2 class="pr-section-title">Informasi Laporan</h2>
-        <div class="pr-field"><label>Nama Laporan</label><span>: {{ $laporan->nama_laporan }}</span></div>
-        <div class="pr-field"><label>Penulis (BK)</label><span>: {{ $laporan->author->name ?? 'BK' }}</span></div>
-        <div class="pr-field"><label>Tanggal Terbit</label><span>: {{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span></div>
+
+    <div class="pr-report-title" style="text-align: center; margin-bottom: 30px; font-family: 'Times New Roman', Times, serif;">
+        <div style="font-size: 12pt; font-weight: bold; text-transform: uppercase;">{{ strtoupper($laporan->nama_laporan ?? 'LAPORAN PELAKSANAAN LAYANAN KONSELING') }}</div>
+        @php
+            $tanggalLap = \Carbon\Carbon::parse($laporan->tanggal ?? now());
+            $bulan = $tanggalLap->month;
+            $tahun = $tanggalLap->year;
+            $semester = ($bulan >= 7 && $bulan <= 12) ? 'GANJIL' : 'GENAP';
+            $tahunAjaran = ($bulan >= 7) ? $tahun . '/' . ($tahun + 1) : ($tahun - 1) . '/' . $tahun;
+        @endphp
+        <div style="font-size: 12pt; font-weight: bold; text-transform: uppercase;">SEMESTER {{ $semester }} TAHUN AJARAN {{ $tahunAjaran }}</div>
     </div>
-    <div class="pr-section">
-        <h2 class="pr-section-title">Detail Sesi</h2>
-        <div class="pr-log-container">
-            @forelse($items as $item)
-                <div class="pr-log-item" style="border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px;">
-                    <div class="pr-log-title" style="font-size: 1.1rem; font-weight: 800; color: #1a9488; margin-bottom: 10px;">
-                        Siswa: {{ $item->user->name }} ({{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }})
-                    </div>
-                    <div class="pr-log-content" style="line-height: 1.6; color: #444;">
-                        {!! nl2br(e($item->catatan_bk)) !!}
-                    </div>
-                </div>
-            @empty
-                <div class="pr-field" style="font-style: italic;">Belum ada sesi pada laporan ini.</div>
-            @endforelse
+
+    <table style="width: 100%; font-size: 11pt; margin-bottom: 20px; border-collapse: collapse; font-family: 'Times New Roman', Times, serif;">
+        <tr>
+            <td style="width: 4%; vertical-align: top; padding-bottom: 5px;">1.</td>
+            <td style="width: 26%; vertical-align: top; padding-bottom: 5px;">Nama Konseli</td>
+            <td style="width: 3%; vertical-align: top; padding-bottom: 5px;">:</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">
+                @php $konseliNames = $items->map(fn($item) => $item->user->name)->unique()->implode(', '); @endphp
+                {{ $konseliNames ?: '-' }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 5px;">2.</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">Kelas</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">
+                @php 
+                    $kelasNames = $items->map(function($item) {
+                        return $item->user->kelas->nama_kelas ?? '-';
+                    })->filter(fn($val) => $val !== '-')->unique()->implode(', ');
+                @endphp
+                {{ $kelasNames ?: '-' }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 5px;">3.</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">Hari, Tanggal</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">
+                @php 
+                    $firstItem = $items->first();
+                    $dateStr = $firstItem ? \Carbon\Carbon::parse($firstItem->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') : '-';
+                @endphp
+                {{ $dateStr }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 5px;">4.</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">Pertemuan Ke</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">
+                @php 
+                    $pertemuanKe = '-';
+                    if($firstItem) {
+                        $pertemuanKe = \App\Models\Konseling::where('user_id', $firstItem->user_id)
+                            ->where('status', 'selesai')
+                            ->where('id', '<=', $firstItem->id)
+                            ->count();
+                    }
+                @endphp
+                {{ $pertemuanKe }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 5px;">5.</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">Waktu</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">
+                 {{ $firstItem && $firstItem->waktu ? \Carbon\Carbon::parse($firstItem->waktu)->format('H:i') : '-' }} WIB
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; padding-bottom: 5px;">6.</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">Tempat</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
+            <td style="vertical-align: top; padding-bottom: 5px;">
+                @if($firstItem)
+                    {{ $firstItem->jenis === 'online' ? ($firstItem->link_meet ?? 'Online') : 'Ruang BK' }}
+                @else
+                    -
+                @endif
+            </td>
+        </tr>
+
+        @php $counter = 7; @endphp
+        @forelse($items as $item)
+            @php
+                $note = $item->catatan_bk;
+                $problem = ''; $solution = ''; $additional = '';
+                if (preg_match('/Problem:\s*(.*?)(?=Solution:|Note:|$)/s', $note, $matches)) { $problem = trim($matches[1]); }
+                if (preg_match('/Solution:\s*(.*?)(?=Note:|$)/s', $note, $matches)) { $solution = trim($matches[1]); }
+                if (preg_match('/Note:\s*(.*)/s', $note, $matches)) { $additional = trim($matches[1]); }
+                if (empty($problem) && empty($solution) && !empty($note)) { $problem = $note; }
+            @endphp
+            
+            @if($problem)
+            <tr>
+                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;">{{ $counter++ }}.</td>
+                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;" colspan="3">
+                    Deskripsi Permasalahan :<br>
+                    <div style="margin-top: 5px;">{!! nl2br(e($problem)) !!}</div>
+                </td>
+            </tr>
+            @endif
+
+            @if($solution)
+            <tr>
+                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;">{{ $counter++ }}.</td>
+                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;" colspan="3">
+                    Solusi dan Tindakan :<br>
+                    <div style="margin-top: 5px;">{!! nl2br(e($solution)) !!}</div>
+                </td>
+            </tr>
+            @endif
+
+            @if($additional)
+            <tr>
+                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;">{{ $counter++ }}.</td>
+                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;" colspan="3">
+                    Catatan Tambahan :<br>
+                    <div style="margin-top: 5px;">{!! nl2br(e($additional)) !!}</div>
+                </td>
+            </tr>
+            @endif
+        @empty
+            <tr>
+                <td colspan="4" style="font-style: italic; padding-top: 10px;">Belum ada sesi pada laporan ini.</td>
+            </tr>
+        @endforelse
+    </table>
+
+    <table style="width: 100%; margin-top: 50px; font-size: 11pt; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 40px;">
+        <tr>
+            <td style="width: 50%; padding-left: 10px;">
+                Mengetahui,<br>
+                Kepala Sekolah<br><br><br><br><br>
+                <strong>Louly Risdianty, S.P., S.Pd</strong>
+            </td>
+            <td style="width: 50%; padding-left: 10px;">
+                Tangerang, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY') }}<br>
+                Guru Bimbingan Konseling<br><br><br><br><br>
+                <strong>{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</strong>
+            </td>
+        </tr>
+    </table>
+
+    <div style="border-top: 1px solid black; padding-top: 5px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <div style="font-style: italic; margin-bottom: 2px;">Keterangan: Dokumen Ini Bersifat Rahasia</div>
+            <div>SMAIT LATANSA CENDEKIA</div>
+            <div>{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</div>
+        </div>
+        <div>
+            https://gurubkkonselor.com
         </div>
     </div>
-    <div class="pr-footer" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; font-size: 0.8rem; color: #999;">
-        Dicetak pada: {{ now()->format('d/m/Y H:i') }}
+</div>
+
+<div id="printFeedbackArea">
+    <div style="text-align: center; font-family: 'Times New Roman', Times, serif; line-height: 1.3;">
+        <div style="font-size: 14pt;">SMAIT LATANSA CENDEKIA BANTEN</div>
+        <div style="font-size: 10pt;">Telp: 021-59319109, Email: humas.smaitlc@gmail.com</div>
+        <div style="font-size: 10pt;">Website: sma.latansacendekia.sch.id</div>
+    </div>
+    <div style="border-bottom: 2px solid black; margin-top: 10px; margin-bottom: 20px;"></div>
+    
+    <div style="text-align: center; font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 12pt; margin-bottom: 30px;">
+        KEPUASAN KONSELI TERHADAP PROSES KONSELING INDIVIDUAL
+    </div>
+
+    <table style="width: 100%; font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 20px;" border="0" cellspacing="0" cellpadding="2">
+        <tr>
+            <td style="width: 130px;">Identitas</td>
+            <td style="width: 10px;">:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Nama Konseli</td>
+            <td>:</td>
+            <td style="border-bottom: 1.5px dashed #000; padding-left: 5px; font-style: italic;">
+                @php 
+                    $studentNames = $items->map(function($item) {
+                        return $item->user->name ?? '';
+                    })->filter()->unique()->implode(', ');
+                @endphp
+                {{ $studentNames ?: ($laporan->user->name ?? '-') }}
+            </td>
+        </tr>
+        <tr>
+            <td>Nama Konselor</td>
+            <td>:</td>
+            <td style="border-bottom: 1.5px dashed #000; padding-left: 5px; font-style: italic;">{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</td>
+        </tr>
+    </table>
+
+    <div style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 15px;">
+        Petunjuk :<br>
+        Bacalah secara teliti, Berilah tanda centang pada kolom jawaban yang tersedia
+    </div>
+
+    <style>
+        @media print {
+            .feedback-table, .feedback-table th, .feedback-table td {
+                border: 1px solid black !important;
+            }
+        }
+    </style>
+    <table class="feedback-table" style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 60px; text-align: center; border: 1px solid black;">
+        <thead style="font-weight: bold;">
+            <tr>
+                <td style="padding: 12px 5px; width: 6%; border: 1px solid black;">No</td>
+                <td style="padding: 12px 5px; width: 46%; border: 1px solid black;">Aspek yang dinilai</td>
+                <td style="padding: 12px 5px; width: 16%; border: 1px solid black;">Sangat<br>Memuaskan</td>
+                <td style="padding: 12px 5px; width: 16%; border: 1px solid black;">Memuaskan</td>
+                <td style="padding: 12px 5px; width: 16%; border: 1px solid black;">Kurang<br>Memuaskan</td>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $feedbacks = [];
+                if (isset($firstItemWithFeedback)) {
+                    $feedbacks = [
+                        'Penerimaan guru bimbingan dan konseling atau konselor terhadap kehadiran Anda' => $firstItemWithFeedback->kepuasan_penerimaan,
+                        'Kemudahan guru bimbingan dan konseling atau konselor untuk diajak curhat' => $firstItemWithFeedback->kepuasan_kemudahan,
+                        'Kepercayaan Anda terhadap guru bimbingan dan konseling atau konselor dalam layanan konseling' => $firstItemWithFeedback->kepuasan_kepercayaan,
+                        'Pelayanan pemecahan masalah tercapai melalui konseling individual' => $firstItemWithFeedback->kepuasan_pelayanan
+                    ];
+                }
+                $no = 1;
+            @endphp
+            @foreach($feedbacks as $aspek => $nilai)
+            <tr>
+                <td style="padding: 15px 5px; border: 1px solid black;">{{ $no++ }}</td>
+                <td style="padding: 15px 10px; text-align: left; border: 1px solid black;">{{ $aspek }}</td>
+                <td style="padding: 15px 5px; border: 1px solid black;">
+                    @if($nilai == 'Sangat Memuaskan') <span style="font-size: 16pt;">&#10003;</span> @endif
+                </td>
+                <td style="padding: 15px 5px; border: 1px solid black;">
+                    @if($nilai == 'Memuaskan') <span style="font-size: 16pt;">&#10003;</span> @endif
+                </td>
+                <td style="padding: 15px 5px; border: 1px solid black;">
+                    @if($nilai == 'Kurang Memuaskan') <span style="font-size: 16pt;">&#10003;</span> @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <table style="width: 100%; border: none; font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 50px;">
+        <tr>
+            <td style="width: 60%;"></td>
+            <td style="width: 40%; text-align: center;">
+                Peserta didik/Konseli,<br><br><br><br><br>
+                <span style="border-bottom: 1px dotted #000; padding: 0 20px; display: inline-block;">
+                    {{ $studentNames ?: ($laporan->user->name ?? '-') }}
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    <div style="border-top: 1px solid black; padding-top: 5px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <div style="font-style: italic; margin-bottom: 2px;">Keterangan: Dokumen Ini Bersifat Rahasia</div>
+            <div>SMAIT LATANSA CENDEKIA BANTEN</div>
+            <div>{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</div>
+        </div>
+        <div>
+            https://gurubkkonselor.com
+        </div>
     </div>
 </div>
 @endsection
@@ -250,43 +524,21 @@
 @push('styles')
 <style>
     /* Sembunyikan printArea saat normal */
-    #printArea { display: none; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    #printArea, #printFeedbackArea { display: none; }
     
     @media print {
         /* Hide layout elements explicitly */
-        aside, header, nav, .no-print, #app-wrapper, #main-content { display: none !important; }
+        aside, header, nav, .no-print, #app-wrapper { display: none !important; }
         body { background: white !important; margin: 0; padding: 0; }
         #printWrap {
             display: block !important;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Times New Roman', Times, serif;
             padding: 40px;
-            color: #1a1a1a;
+            color: black;
             width: 100%;
             background: white;
+            line-height: 1.5;
         }
-        #printWrap .pr-header {
-            border-bottom: 5px solid #1a9488;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-        }
-        #printWrap .pr-header h1 {
-            font-size: 2rem;
-            font-weight: 900;
-            color: #1a1a1a;
-            margin: 0;
-        }
-        #printWrap .pr-section-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #1a9488;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 20px;
-        }
-        #printWrap .pr-field { margin-bottom: 10px; display: flex; gap: 20px; font-size: 0.95rem; }
-        #printWrap .pr-field label { font-weight: 800; min-width: 150px; }
     }
 </style>
 @endpush
@@ -313,6 +565,41 @@
         
         // Assign content
         printWrap.innerHTML = document.getElementById('printArea').innerHTML;
+        printWrap.style.display = 'block';
+        
+        // Print
+        window.print();
+        
+        // Restore
+        printWrap.style.display = 'none';
+        printWrap.innerHTML = '';
+        children.forEach(child => {
+            if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
+                child.style.display = child.dataset.originalDisplay || '';
+            }
+        });
+    }
+
+    function cetakFeedback() {
+        // Hide original body children
+        const children = Array.from(document.body.children);
+        children.forEach(child => {
+            if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
+                child.dataset.originalDisplay = child.style.display;
+                child.style.display = 'none';
+            }
+        });
+        
+        // Create or get print container
+        let printWrap = document.getElementById('printWrap');
+        if(!printWrap) {
+            printWrap = document.createElement('div');
+            printWrap.id = 'printWrap';
+            document.body.appendChild(printWrap);
+        }
+        
+        // Assign content
+        printWrap.innerHTML = document.getElementById('printFeedbackArea').innerHTML;
         printWrap.style.display = 'block';
         
         // Print

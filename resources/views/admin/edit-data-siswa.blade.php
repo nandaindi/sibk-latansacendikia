@@ -61,8 +61,10 @@
                     <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Jurusan</label>
                     <select name="jurusan" class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium cursor-pointer">
                         <option value="">-- Pilih Jurusan --</option>
-                        <option value="IPA" {{ old('jurusan', $user->jurusan) == 'IPA' ? 'selected' : '' }}>IPA</option>
-                        <option value="IPS" {{ old('jurusan', $user->jurusan) == 'IPS' ? 'selected' : '' }}>IPS</option>
+                        <option value="IPA 1" {{ old('jurusan', $user->jurusan) == 'IPA 1' ? 'selected' : '' }}>IPA 1</option>
+                        <option value="IPA 2" {{ old('jurusan', $user->jurusan) == 'IPA 2' ? 'selected' : '' }}>IPA 2</option>
+                        <option value="IPS 1" {{ old('jurusan', $user->jurusan) == 'IPS 1' ? 'selected' : '' }}>IPS 1</option>
+                        <option value="IPS 2" {{ old('jurusan', $user->jurusan) == 'IPS 2' ? 'selected' : '' }}>IPS 2</option>
                     </select>
                 </div>
             </div>

@@ -30,7 +30,7 @@
 
     {{-- Menu Cards Grid --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        <!-- Card 1: Panggilan Pelanggaran -->
+        <!-- Card 1: Panggil Siswa -->
         <a href="{{ route('bk.panggil-siswa.index') }}" class="no-underline group">
             <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden hover:shadow-[0_8px_30px_rgba(26,148,136,0.12)] hover:-translate-y-1 transition-all flex items-center p-5 gap-5">
                 <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0 relative">

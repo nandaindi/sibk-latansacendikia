@@ -4,7 +4,7 @@
     $homeActive = $isBK ? request()->routeIs('bk.dashboard') : request()->routeIs('siswa.dashboard');
     $kelas = auth()->user()->kelas;
     $jurusan = auth()->user()->jurusan;
-    $kelasText = $kelas ? ($jurusan ? $kelas . ' ' . $jurusan : $kelas) : 'XII Inovatif';
+    $kelasText = $kelas ? ($jurusan ? $kelas . ' ' . $jurusan : $kelas) : 'XII IPA 1';
     $subtitle  = $isBK ? 'Halo Selamat Datang!' : $kelasText;
 
     $hasNotification = false;
@@ -78,6 +78,10 @@
             <a href="{{ route('bk.laporan-konseling') }}"
                class="{{ request()->routeIs('bk.laporan-konseling') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
                Riwayat Konseling
+            </a>
+            <a href="{{ route('bk.riwayat-panggilan') }}"
+               class="{{ request()->routeIs('bk.riwayat-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
+               Riwayat Panggilan
             </a>
             @endif
 
@@ -179,7 +183,7 @@
                                             @if($isUnreadPanggilan)
                                             <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
                                             @endif
-                                            <div class="text-[0.85rem] font-semibold {{ $isUnreadPanggilan ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Pelanggaran</div>
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnreadPanggilan ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggil Siswa</div>
                                         </div>
                                         <div class="text-xs text-[#555] mb-1 {{ $isUnreadPanggilan ? '' : 'text-[#999]' }}">Jadwal: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ \Carbon\Carbon::parse($notif->waktu)->format('H:i') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>
@@ -313,7 +317,7 @@
                                             @if($isUnread)
                                             <span class="w-2 h-2 rounded-full bg-[#1a9488] shrink-0"></span>
                                             @endif
-                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggilan Pelanggaran</div>
+                                            <div class="text-[0.85rem] font-semibold {{ $isUnread ? 'text-[#1a1a1a]' : 'text-[#777]' }}">Panggil Siswa</div>
                                         </div>
                                         <div class="text-xs text-[#555] mb-1 {{ $isUnread ? '' : 'text-[#999]' }}">Jadwal: {{ \Carbon\Carbon::parse($notif->tanggal)->translatedFormat('d M') }} pkl {{ \Carbon\Carbon::parse($notif->waktu)->format('H:i') }}</div>
                                         <div class="text-[0.7rem] text-[#888]">{{ \Carbon\Carbon::parse($notif->updated_at)->diffForHumans() }}</div>

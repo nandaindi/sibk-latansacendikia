@@ -44,31 +44,28 @@ class ProfileController extends Controller
                 Rule::unique('users')->ignore($user->id),
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'avatar'   => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 
-        // Handle Avatar Upload
         if ($request->hasFile('avatar')) {
-            // Hapus avatar lama jika bukan null
+
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            // Simpan yang baru
+
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = $path;
         }
 
-        // Cek apakah password diisi (jika tidak kosong berarti ingin diubah)
         if ($request->filled('password')) {
             $user->password = Hash::make($validated['password']);
         }
 
         $user->save();
 
-        // Redirect back dengan pesan sukses sesuai role
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.siswa')
 
-@section('title', 'Panggilan Pelanggaran – BK')
+@section('title', 'Panggil Siswa – BK')
 
 @section('content')
     <!-- Content -->

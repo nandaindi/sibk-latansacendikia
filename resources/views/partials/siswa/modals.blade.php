@@ -69,7 +69,7 @@
 
 @endif
 
-<!-- Modal Terima Panggilan Pelanggaran (Server-side Session) -->
+<!-- Modal Terima Panggil Siswa (Server-side Session) -->
 @if(session('ada_panggilan_pelanggaran'))
 <div id="modalTerimaPelanggaran" class="fixed inset-0 bg-black/45 z-[100] flex items-center justify-center p-4">
     <div class="relative w-full max-w-[420px] transform">
@@ -92,7 +92,7 @@
 
             <!-- Title -->
             <div class="text-center mb-6">
-                <div class="text-[1.2rem] font-black text-red-700 uppercase tracking-tight">Panggilan Pelanggaran</div>
+                <div class="text-[1.2rem] font-black text-red-700 uppercase tracking-tight">Panggil Siswa</div>
                 <div class="w-12 h-1 bg-red-600 mx-auto mt-2 rounded-full"></div>
             </div>
 

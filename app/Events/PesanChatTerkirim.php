@@ -14,10 +14,7 @@ class PesanChatTerkirim implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public PesanChat $pesan)
-    {
-        //
-    }
+    public function __construct(public PesanChat $pesan) {}
 
     /**
      * Broadcast ke private channel berdasarkan ID konseling.
@@ -25,7 +22,7 @@ class PesanChatTerkirim implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('chat.' . $this->pesan->konseling_id),
+            new PrivateChannel('chat.'.$this->pesan->konseling_id),
         ];
     }
 
@@ -35,11 +32,11 @@ class PesanChatTerkirim implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'id'         => $this->pesan->id,
-            'user_id'    => $this->pesan->user_id,
-            'user_name'  => $this->pesan->user->name,
-            'user_role'  => $this->pesan->user->getRoleNames()->first(),
-            'pesan'      => $this->pesan->pesan,
+            'id' => $this->pesan->id,
+            'user_id' => $this->pesan->user_id,
+            'user_name' => $this->pesan->user->name,
+            'user_role' => $this->pesan->user->getRoleNames()->first(),
+            'pesan' => $this->pesan->pesan,
             'created_at' => $this->pesan->created_at->toISOString(),
         ];
     }

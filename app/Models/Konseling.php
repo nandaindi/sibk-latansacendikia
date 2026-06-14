@@ -22,6 +22,10 @@ class Konseling extends Model
         'rtl',
         'kesimpulan_siswa',
         'saran_siswa',
+        'kepuasan_penerimaan',
+        'kepuasan_kemudahan',
+        'kepuasan_kepercayaan',
+        'kepuasan_pelayanan',
         'is_read',
     ];
 

@@ -65,7 +65,7 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-2 mb-1">
                                 <span class="text-[0.75rem] font-bold uppercase tracking-wider {{ $isConseling ? 'text-[#1a9488]' : 'text-red-500' }}">
-                                    {{ $isConseling ? 'Konseling ' . ucfirst($notif->jenis) : 'Panggilan Pelanggaran' }}
+                                    {{ $isConseling ? 'Konseling ' . ucfirst($notif->jenis) : 'Panggil Siswa' }}
                                 </span>
                                 <span class="text-[0.7rem] text-[#aaa] font-medium whitespace-nowrap">
                                     {{ ($notif->updated_at ?? $notif->created_at)->diffForHumans() }}

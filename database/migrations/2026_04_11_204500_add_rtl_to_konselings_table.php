@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Migration to add 'rtl' (Rencana Tindak Lanjut) column to 'konselings' table.
  */

@@ -28,31 +28,28 @@ class SendSessionReminders extends Command
      */
     public function handle()
     {
-        // TARGET: Waktu saat ini ditambah 10 Menit (Gunakan objek datetime lengkap)
-        $targetDateTime = Carbon::now()->addMinutes(10);
-        
-        $targetDate = $targetDateTime->toDateString(); // Tanggal target (bisa hari ini / besok)
-        $targetTime = $targetDateTime->format('H:i');   // Jam target
 
-        // Cari sesi dengan TANGGAL dan JAM yang sesuai dengan target 10 menit ke depan
+        $targetDateTime = Carbon::now()->addMinutes(10);
+
+        $targetDate = $targetDateTime->toDateString();
+        $targetTime = $targetDateTime->format('H:i');
+
         $konselings = Konseling::where('status', 'disetujui')
             ->where('is_reminded', false)
             ->whereDate('tanggal', $targetDate)
-            ->where('waktu', 'like', $targetTime . '%')
+            ->where('waktu', 'like', $targetTime.'%')
             ->get();
 
         foreach ($konselings as $konseling) {
-            // Notif ke Anak
+
             if ($konseling->user) {
                 $konseling->user->notify(new SessionReminderNotification($konseling));
             }
-            
-            // Notif ke BK
+
             if ($konseling->bk) {
                 $konseling->bk->notify(new SessionReminderNotification($konseling));
             }
 
-            // Tandai sudah pernah diingatkan
             $konseling->is_reminded = true;
             $konseling->save();
 
