@@ -208,15 +208,15 @@
                 </div>
             </div>
 
-            <div class="relative group cursor-pointer" tabindex="0">
-                <div class="flex items-center gap-2 hover:bg-[#f8f9fa] py-2 px-3 rounded-xl transition-colors">
+            <div class="relative cursor-pointer" id="siswaProfileMenuContainer">
+                <div onclick="toggleSiswaProfileDropdown(event)" class="flex items-center gap-2 hover:bg-[#f8f9fa] py-2 px-3 rounded-xl transition-colors">
                     <div class="w-8 h-8 rounded-full border border-[#1a9488] overflow-hidden shrink-0 shadow-sm">
                         <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('img/default-profile.png') }}" alt="Avatar" class="w-full h-full object-cover">
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:stroke-[#1a9488] transition-colors"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg id="siswaProfileDropdownIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-all duration-300"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
 
-                <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right transform scale-95 group-hover:scale-100 focus-within:opacity-100 focus-within:visible focus-within:scale-100 z-50">
+                <div id="siswaProfileDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#eaeaea] opacity-0 invisible transition-all duration-200 origin-top-right transform scale-95 z-50">
                     <div class="p-1.5 flex flex-col">
                         <div class="px-3 py-2 text-xs font-semibold text-[#888] uppercase tracking-wider mb-1">Akun Saya</div>
                         @php
@@ -355,6 +355,40 @@
 </header>
 @if(auth()->check())
 <script>
+    function toggleSiswaProfileDropdown(event) {
+        if (event) event.stopPropagation();
+        const dropdown = document.getElementById('siswaProfileDropdown');
+        const icon = document.getElementById('siswaProfileDropdownIcon');
+        
+        if (dropdown) {
+            dropdown.classList.toggle('opacity-0');
+            dropdown.classList.toggle('invisible');
+            dropdown.classList.toggle('scale-95');
+            dropdown.classList.toggle('opacity-100');
+            dropdown.classList.toggle('visible');
+            dropdown.classList.toggle('scale-100');
+        }
+        
+        if (icon) {
+            icon.classList.toggle('rotate-180');
+        }
+    }
+
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('siswaProfileDropdown');
+        const container = document.getElementById('siswaProfileMenuContainer');
+        const icon = document.getElementById('siswaProfileDropdownIcon');
+        
+        if (dropdown && container && !container.contains(event.target)) {
+            dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+            dropdown.classList.remove('opacity-100', 'visible', 'scale-100');
+            
+            if (icon) {
+                icon.classList.remove('rotate-180');
+            }
+        }
+    });
+
     window.addEventListener('load', () => {
         if (window.Echo) {
             window.Echo.private('App.Models.User.' + {{ auth()->id() }})
