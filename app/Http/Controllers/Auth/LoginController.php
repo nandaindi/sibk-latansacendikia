@@ -48,23 +48,15 @@ class LoginController extends Controller
         ]);
 
         $remember = $request->boolean('remember');
+        $input    = $credentials['username'];
 
-        if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
+        // Deteksi field: pakai email jika ada '@', username jika tidak
+        $field = str_contains($input, '@') ? 'email' : 'username';
+
+        if (Auth::attempt([$field => $input, 'password' => $credentials['password']], $remember)) {
             $request->session()->regenerate();
             $user = Auth::user();
-            if ($user->hasRole('admin')) {
-                return redirect()->route('admin.dashboard')->with('login_success', true);
-            }
-            if ($user->hasRole('bk')) {
-                return redirect()->route('bk.dashboard')->with('login_success', true);
-            }
 
-            return redirect()->route('siswa.dashboard')->with('login_success', true);
-        }
-
-        if (Auth::attempt(['email' => $credentials['username'], 'password' => $credentials['password']], $remember)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
             if ($user->hasRole('admin')) {
                 return redirect()->route('admin.dashboard')->with('login_success', true);
             }

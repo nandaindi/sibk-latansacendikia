@@ -19,6 +19,7 @@
     "dependencies": {
         "install": "^0.13.0",
         "npm": "^11.12.1",
-        "pusher": "^5.3.3"
+        "pusher": "^5.3.3",
+        "sweetalert2": "^11.26.25"
     }
 }

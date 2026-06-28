@@ -84,3 +84,25 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const tanggal = document.querySelector('[name="tanggal"]').value;
+        const waktu   = document.querySelector('[name="waktu"]').value;
+        if (tanggal && waktu) {
+            const jadwal = new Date(tanggal + 'T' + waktu);
+            if (jadwal < new Date()) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Waktu yang dipilih sudah lewat. Silakan pilih jadwal yang akan datang.', confirmButtonColor: '#1a9488' });
+            }
+        }
+    });
+
+    @if(session('error'))
+    window.addEventListener('load', () => {
+        Swal.fire({ icon: 'error', title: 'Gagal!', text: '{{ session('error') }}', confirmButtonColor: '#1a9488' });
+    });
+    @endif
+</script>
+@endpush

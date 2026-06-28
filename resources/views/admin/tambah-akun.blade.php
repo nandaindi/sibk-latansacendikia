@@ -32,18 +32,8 @@
         </div>
 
 
-        <div class="border-[2px] border-[#1a9488] rounded-2xl bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all relative" id="roleDropdownWrapper">
-            <input type="hidden" name="role" id="roleInput" required>
-            <button type="button" onclick="toggleRoleDropdown()" id="roleButton"
-                    class="w-full px-5 py-4 border-none outline-none text-[1rem] text-[#aaa] bg-transparent font-medium flex justify-between items-center cursor-pointer">
-                <span id="roleText">Role</span>
-                <svg id="roleIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" class="transition-transform duration-200 text-[#777]" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-            <div id="roleMenu" class="absolute top-[calc(100%+8px)] left-0 right-0 bg-white border-[2px] border-[#1a9488] rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-50 overflow-hidden hidden flex-col">
-                <button type="button" onclick="selectRole('admin', 'Admin')" 
-                        class="text-left px-5 py-3 hover:bg-[#e0f5f3] hover:text-[#1a9488] transition-colors text-[1rem] font-medium text-[#1a1a1a] border-none bg-transparent cursor-pointer">Admin</button>
-            </div>
-        </div>
+        {{-- Role hardcoded sebagai Admin --}}
+        <input type="hidden" name="role" value="admin">
 
         {{-- Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
@@ -101,53 +91,7 @@
 
 @push('scripts')
 <script>
-let isRoleOpen = false;
-function toggleRoleDropdown() {
-    isRoleOpen = !isRoleOpen;
-    const menu = document.getElementById('roleMenu');
-    const icon = document.getElementById('roleIcon');
-    if (isRoleOpen) {
-        menu.classList.remove('hidden');
-        menu.classList.add('flex');
-        icon.classList.add('rotate-180');
-    } else {
-        menu.classList.add('hidden');
-        menu.classList.remove('flex');
-        icon.classList.remove('rotate-180');
-    }
-}
-
-function selectRole(val, label) {
-    document.getElementById('roleInput').value = val;
-    const textSpan = document.getElementById('roleText');
-    textSpan.innerText = label;
-    textSpan.classList.remove('text-[#aaa]');
-    textSpan.classList.add('text-[#1a1a1a]');
-    toggleRoleDropdown(); // close it
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-    const wrapper = document.getElementById('roleDropdownWrapper');
-    if (wrapper && !wrapper.contains(e.target)) {
-        if (isRoleOpen) toggleRoleDropdown();
-    }
-});
-
 function showConfirmModal() {
-    const roleInput = document.getElementById('roleInput');
-    const roleButton = document.getElementById('roleButton');
-    
-    // Check role manually since it's a hidden input
-    if (!roleInput.value) {
-        roleButton.classList.add('border-red-400', 'bg-red-50');
-        if (!isRoleOpen) toggleRoleDropdown();
-        return;
-    }
-    
-    roleButton.classList.remove('border-red-400', 'bg-red-50');
-
-    // Basic validation for other fields
     const form = document.getElementById('tambahAkunForm');
     if (form.checkValidity()) {
         document.getElementById('confirmModal').classList.remove('hidden');

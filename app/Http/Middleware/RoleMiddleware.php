@@ -21,17 +21,7 @@ class RoleMiddleware
         }
 
         if (! Auth::user()->hasRole($role)) {
-            $userRole = Auth::user()->getRoleNames()->first();
-            
-            if ($userRole === 'admin') {
-                return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak! Anda tidak dapat mengakses halaman tersebut.');
-            } elseif ($userRole === 'bk') {
-                return redirect()->route('bk.dashboard')->with('error', 'Akses ditolak! Anda tidak dapat mengakses halaman tersebut.');
-            } elseif ($userRole === 'siswa') {
-                return redirect()->route('siswa.dashboard')->with('error', 'Akses ditolak! Anda tidak dapat mengakses halaman tersebut.');
-            }
-
-            abort(403, 'Unauthorized access.');
+            abort(403, 'Akses ditolak! Anda tidak dapat mengakses halaman tersebut.');
         }
 
         return $next($request);

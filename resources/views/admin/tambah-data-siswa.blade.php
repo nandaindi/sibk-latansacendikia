@@ -95,10 +95,24 @@
             </div>
 
             {{-- Telepon Siswa --}}
-            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
                 <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">No. Telepon / WhatsApp Siswa</label>
                 <input type="text" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon') }}"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+            </div>
+
+            {{-- Email & Password (Login) --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+                    <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Email</label>
+                    <input type="email" name="email" placeholder="siswa@sekolah.com" value="{{ old('email') }}" required
+                           class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+                </div>
+                <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+                    <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password</label>
+                    <input type="password" name="password" placeholder="Minimal 6 karakter" required
+                           class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium"/>
+                </div>
             </div>
         </div>
 

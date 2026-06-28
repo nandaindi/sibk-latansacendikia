@@ -187,5 +187,11 @@
         }
     });
     @endif
+
+    @if(session('error'))
+    window.addEventListener('load', () => {
+        Swal.fire({ icon: 'error', title: 'Gagal!', text: '{{ session('error') }}', confirmButtonColor: '#1a9488' });
+    });
+    @endif
 </script>
 @endpush

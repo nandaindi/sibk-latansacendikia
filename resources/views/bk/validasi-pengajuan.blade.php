@@ -55,9 +55,9 @@
             </div>
 
             <!-- Tombol Setuju Langsung (Sekali Klik) -->
-            <form method="POST" action="{{ route('bk.setujui-langsung', $konseling->id) }}" class="w-full flex justify-center">
+            <form id="formSetujuLangsung" method="POST" action="{{ route('bk.setujui-langsung', $konseling->id) }}" class="w-full flex justify-center">
                 @csrf
-                <button type="submit"
+                <button type="button" onclick="submitSetuju()"
                     class="w-44 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold text-center shadow-[0_8px_20px_rgba(26,148,136,0.3)] hover:brightness-105 hover:-translate-y-0.5 transition-all">
                     SETUJU
                 </button>
@@ -101,6 +101,25 @@ function submitTolak() {
     }
     document.getElementById('hiddenAlasan').value = alasan;
     document.getElementById('formTolak').submit();
+}
+
+function submitSetuju() {
+    const tanggal = '{{ $konseling->tanggal }}';
+    const waktu   = '{{ $konseling->waktu ?? "23:59" }}';
+    const jadwal  = new Date(tanggal + 'T' + waktu);
+    if (jadwal < new Date()) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Jadwal Sudah Lewat!',
+            text: 'Jadwal usulan siswa sudah lewat. Gunakan tombol RESCHEDULE untuk memilih jadwal baru.',
+            confirmButtonColor: '#f59e0b',
+            confirmButtonText: 'Reschedule Sekarang'
+        }).then(() => {
+            window.location.href = '{{ route('bk.setujui-pengajuan', ['id' => $konseling->id]) }}';
+        });
+        return;
+    }
+    document.getElementById('formSetujuLangsung').submit();
 }
 </script>
 @endpush

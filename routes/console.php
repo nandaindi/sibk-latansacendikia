@@ -9,4 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('reminders:send')->everyMinute();
-Schedule::command('konseling:expire')->everyFifteenMinutes();
+Schedule::command('jadwal:tandai-kadaluarsa')->hourly();
+

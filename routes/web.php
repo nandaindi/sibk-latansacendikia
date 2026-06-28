@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
+        }
+        if ($user->hasRole('bk')) {
+            return redirect()->route('bk.dashboard');
+        }
         return redirect()->route('siswa.dashboard');
     }
 

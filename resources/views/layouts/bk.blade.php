@@ -7,6 +7,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="shortcut icon" href="{{ asset('img/latansaico.png') }}" type="image/x-icon">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -88,6 +90,26 @@
         }
     };
 </script>
+
+@if(session('error'))
+<script>
+    window.addEventListener('load', () => {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({ icon: 'error', title: 'Gagal!', text: '{!! session('error') !!}', confirmButtonColor: '#1a9488' });
+        }
+    });
+</script>
+@endif
+
+@if(session('sukses'))
+<script>
+    window.addEventListener('load', () => {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{!! session('sukses') !!}', confirmButtonColor: '#1a9488' });
+        }
+    });
+</script>
+@endif
 
 @stack('scripts')
 </body>

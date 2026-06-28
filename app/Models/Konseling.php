@@ -30,7 +30,7 @@ class Konseling extends Model
     ];
 
     protected $casts = [
-        'is_read' => 'boolean',
+        'is_read'    => 'boolean',
         'started_at' => 'datetime',
     ];
 
@@ -42,5 +42,23 @@ class Konseling extends Model
     public function bk()
     {
         return $this->belongsTo(User::class, 'bk_id');
+    }
+
+    public function laporan()
+    {
+        return $this->hasOne(Laporan::class, 'konseling_id');
+    }
+
+    /**
+     * Cek apakah ada bentrok jadwal dua arah (BK atau Siswa sudah terjadwal di slot yang sama).
+     */
+    public static function cekBentrok(string $tanggal, string $waktu, int $bkId, int $userId, ?int $ignoreId = null): bool
+    {
+        return self::when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->where('tanggal', $tanggal)
+            ->where('waktu', $waktu)
+            ->whereIn('status', ['disetujui', 'dipanggil'])
+            ->where(fn($q) => $q->where('bk_id', $bkId)->orWhere('user_id', $userId))
+            ->exists();
     }
 }

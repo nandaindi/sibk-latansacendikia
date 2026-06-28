@@ -72,6 +72,35 @@
             </div>
         </div>
 
+        {{-- Section: Kredensial Login --}}
+        <div class="mb-2">
+            <h3 class="text-[0.85rem] font-bold text-[#1a9488] uppercase tracking-wider mb-3 flex items-center gap-2 mt-4">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Kredensial Login
+            </h3>
+
+            {{-- Email --}}
+            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Email</label>
+                <input type="email" name="email" placeholder="contoh@sekolah.com" value="{{ old('email') }}" required
+                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+            </div>
+
+            {{-- Username --}}
+            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username</label>
+                <input type="text" name="username" placeholder="guru_bk" value="{{ old('username') }}" required
+                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+            </div>
+
+            {{-- Password --}}
+            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password</label>
+                <input type="password" name="password" placeholder="Minimal 6 karakter" required
+                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+            </div>
+        </div>
+
         {{-- Save Button --}}
         <div class="flex justify-end mt-2">
             <button type="button" onclick="showConfirmModal()"

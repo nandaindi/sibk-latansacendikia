@@ -162,5 +162,31 @@
             }
         });
     });
+
+    function submitForm(e) {
+        e.preventDefault();
+        const tanggal = document.querySelector('[name="tanggal"]').value;
+        const waktu   = document.querySelector('[name="waktu"]').value;
+        if (tanggal && waktu) {
+            const jadwal = new Date(tanggal + 'T' + waktu);
+            if (jadwal < new Date()) {
+                Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Waktu penjadwalan sudah lewat. Pilih tanggal/jam yang akan datang.', confirmButtonColor: '#1a9488' });
+                return;
+            }
+        }
+        document.getElementById('formPanggil').submit();
+    }
+
+    @if(session('sukses'))
+    window.addEventListener('load', () => {
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{{ session('sukses') }}', confirmButtonColor: '#1a9488' });
+    });
+    @endif
+
+    @if(session('error'))
+    window.addEventListener('load', () => {
+        Swal.fire({ icon: 'error', title: 'Gagal!', text: '{{ session('error') }}', confirmButtonColor: '#1a9488' });
+    });
+    @endif
 </script>
 @endpush

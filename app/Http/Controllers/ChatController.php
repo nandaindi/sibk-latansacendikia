@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Events\PesanChatTerkirim;
 use App\Models\Konseling;
-use App\Models\Laporan;
 use App\Models\PesanChat;
 use Illuminate\Http\Request;
 
@@ -17,22 +16,16 @@ class ChatController extends Controller
     {
         $request->validate([
             'konseling_id' => 'required|exists:konselings,id',
-            'pesan' => 'required|string|max:5000',
+            'pesan'        => 'required|string|max:5000',
         ]);
 
         $konseling = Konseling::findOrFail($request->konseling_id);
-        $user = auth()->user();
-        if ($user->hasRole('bk') && (int) $konseling->bk_id !== (int) $user->id) {
-            abort(403, 'Unauthorized BK');
-        }
-        if ($user->hasRole('siswa') && (int) $konseling->user_id !== (int) $user->id) {
-            abort(403, 'Unauthorized Siswa');
-        }
+        $this->authorizeKonseling($konseling);
 
         $pesan = PesanChat::create([
             'konseling_id' => $request->konseling_id,
-            'user_id' => auth()->id(),
-            'pesan' => $request->pesan,
+            'user_id'      => auth()->id(),
+            'pesan'        => $request->pesan,
         ]);
 
         $pesan->load('user');
@@ -40,13 +33,13 @@ class ChatController extends Controller
         broadcast(new PesanChatTerkirim($pesan))->toOthers();
 
         return response()->json([
-            'ok' => true,
+            'ok'    => true,
             'pesan' => [
-                'id' => $pesan->id,
-                'user_id' => $pesan->user_id,
-                'user_name' => $pesan->user->name,
-                'user_role' => $pesan->user->getRoleNames()->first(),
-                'pesan' => $pesan->pesan,
+                'id'         => $pesan->id,
+                'user_id'    => $pesan->user_id,
+                'user_name'  => $pesan->user->name,
+                'user_role'  => $pesan->user->getRoleNames()->first(),
+                'pesan'      => $pesan->pesan,
                 'created_at' => $pesan->created_at->toISOString(),
             ],
         ]);
@@ -61,27 +54,19 @@ class ChatController extends Controller
             'konseling_id' => 'required|exists:konselings,id',
         ]);
 
-        $user = auth()->user();
-        $konselingId = $request->konseling_id;
-
-        $konseling = Konseling::findOrFail($konselingId);
-        if ($user->hasRole('bk') && (int) $konseling->bk_id !== (int) $user->id) {
-            abort(403, 'Unauthorized BK');
-        }
-        if ($user->hasRole('siswa') && (int) $konseling->user_id !== (int) $user->id) {
-            abort(403, 'Unauthorized Siswa');
-        }
+        $konseling = Konseling::findOrFail($request->konseling_id);
+        $this->authorizeKonseling($konseling);
 
         $pesans = PesanChat::with('user')
-            ->where('konseling_id', $konselingId)
+            ->where('konseling_id', $konseling->id)
             ->orderBy('created_at')
             ->get()
             ->map(fn ($p) => [
-                'id' => $p->id,
-                'user_id' => $p->user_id,
-                'user_name' => $p->user->name,
-                'user_role' => $p->user->getRoleNames()->first(),
-                'pesan' => $p->pesan,
+                'id'         => $p->id,
+                'user_id'    => $p->user_id,
+                'user_name'  => $p->user->name,
+                'user_role'  => $p->user->getRoleNames()->first(),
+                'pesan'      => $p->pesan,
                 'created_at' => $p->created_at->toISOString(),
             ]);
 
@@ -89,7 +74,6 @@ class ChatController extends Controller
     }
 
     /**
-     * BK menyelesaikan sesi konseling → update status + buat laporan otomatis.
      * BK menyelesaikan sesi konseling → update status.
      */
     public function selesaiSesi(Request $request)
@@ -99,10 +83,7 @@ class ChatController extends Controller
         ]);
 
         $konseling = Konseling::with('user')->findOrFail($request->konseling_id);
-        $user = auth()->user();
-        if ($user->hasRole('bk') && (int) $konseling->bk_id !== (int) $user->id) {
-            abort(403, 'Unauthorized BK');
-        }
+        $this->authorizeKonseling($konseling, bkOnly: true);
 
         $konseling->update(['status' => 'selesai']);
 
@@ -110,5 +91,24 @@ class ChatController extends Controller
             'ok' => true,
             'id' => $konseling->id,
         ]);
+    }
+
+    // ─── Private Helpers ──────────────────────────────────────────────────────
+
+    /**
+     * Pastikan user yang sedang login adalah peserta yang sah dalam sesi ini.
+     * BK harus bk_id yang sesuai, siswa harus user_id yang sesuai.
+     */
+    private function authorizeKonseling(Konseling $konseling, bool $bkOnly = false): void
+    {
+        $user = auth()->user();
+
+        if ($user->hasRole('bk') && (int) $konseling->bk_id !== (int) $user->id) {
+            abort(403, 'Unauthorized BK');
+        }
+
+        if (! $bkOnly && $user->hasRole('siswa') && (int) $konseling->user_id !== (int) $user->id) {
+            abort(403, 'Unauthorized Siswa');
+        }
     }
 }

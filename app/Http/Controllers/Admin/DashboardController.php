@@ -27,14 +27,8 @@ class DashboardController extends Controller
     /** Kelola Akun - list akun */
     public function kelolaAkun(Request $request)
     {
-        $RoleFilter = $request->query('role');
-        $query = User::query();
-
-        if ($RoleFilter) {
-            $query->role($RoleFilter);
-        }
-
-        $akuns = $query->latest()->paginate(10);
+        // Hanya menampilkan Admin agar tidak tumpang tindih dengan menu Data Siswa & Data BK
+        $akuns = User::role('admin')->latest()->paginate(10);
 
         return view('admin.kelola-akun', compact('akuns'));
     }
@@ -50,27 +44,28 @@ class DashboardController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email',
+            'email'   => 'required|email|unique:users,email',
             'telepon' => 'nullable|string|max:20',
-            'role' => 'required|in:admin',
             'password' => 'required|string|min:6',
         ]);
 
-        $username = explode('@', $request->email)[0].rand(10, 99);
+        $emailPrefix = explode('@', $request->email)[0];
+        $username = $emailPrefix . substr(uniqid(), -4);
 
+        // Pastikan benar-benar unik (peluang tabrakan sangat kecil karena uniqid)
         while (User::where('username', $username)->exists()) {
-            $username = explode('@', $request->email)[0].rand(10, 99);
+            $username = $emailPrefix . substr(uniqid(), -4);
         }
 
         $user = User::create([
             'name' => $request->nama,
             'email' => $request->email,
             'telepon' => $request->telepon,
-            'password' => $request->password,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
             'username' => $username,
         ]);
 
-        $user->assignRole($request->role);
+        $user->assignRole('admin'); // selalu admin, tidak bergantung input
 
         return redirect()->route('admin.kelola-akun')->with('sukses_tambah', true);
     }
@@ -111,7 +106,7 @@ class DashboardController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = $request->password;
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
         }
 
         $user->update($data);
@@ -151,7 +146,7 @@ class DashboardController extends Controller
         $user->update([
             'username' => $request->username,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
         ]);
 
         return redirect()->route('admin.kelola-akun')->with('sukses_aktivasi', true);
@@ -193,7 +188,7 @@ class DashboardController extends Controller
             'name' => $request->nama,
             'email' => $request->email,
             'nis' => $request->nis,
-            'password' => $request->password,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
             'username' => $request->nis,
         ]);
 
@@ -229,7 +224,7 @@ class DashboardController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = $request->password;
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
         }
 
         $user->update($data);
@@ -258,38 +253,11 @@ class DashboardController extends Controller
     public function detailLaporan(Request $request)
     {
         $id = $request->query('id');
-        $laporan = Laporan::with('author')->findOrFail($id);
+        $laporan = Laporan::with(['author', 'konseling.user'])->findOrFail($id);
 
-        $items = collect();
-
-        if (str_starts_with($laporan->nama_laporan, 'Laporan Konseling: ')) {
-            $namaSiswa = trim(str_replace('Laporan Konseling:', '', $laporan->nama_laporan));
-
-            $userLaporans = Laporan::where('nama_laporan', $laporan->nama_laporan)
-                ->orderBy('id', 'asc')->get();
-
-            $index = $userLaporans->search(function ($item) use ($laporan) {
-                return $item->id == $laporan->id;
-            });
-
-            if ($index !== false) {
-
-                $konseling = Konseling::with('user')
-                    ->where('status', 'selesai')
-                    ->whereHas('user', function ($q) use ($namaSiswa) {
-                        $q->where('name', 'like', '%'.$namaSiswa.'%');
-                    })
-                    ->orderBy('id', 'asc')
-                    ->skip($index)->first();
-
-                if ($konseling) {
-                    $items = collect([$konseling]);
-                }
-            }
-        } else {
-
-            $items = Konseling::with('user')->where('status', 'selesai')->latest()->get();
-        }
+        $items = $laporan->konseling_id && $laporan->konseling
+            ? collect([$laporan->konseling])
+            : Konseling::with('user')->where('status', 'selesai')->latest()->get();
 
         return view('admin.detail-laporan', compact('laporan', 'items'));
     }
@@ -387,32 +355,36 @@ class DashboardController extends Controller
     public function storeDataSiswa(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'nis' => 'required|string|unique:users,nis',
-            'kelas' => 'nullable|string|max:20',
-            'jurusan' => 'nullable|string|max:50',
+            'nama'          => 'required|string|max:100',
+            'email'         => 'required|email|unique:users,email',
+            'password'      => 'required|string|min:6',
+            'nis'           => 'required|string|unique:users,nis|unique:users,username',
+            'kelas'         => 'nullable|string|max:20',
+            'jurusan'       => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'tempat_lahir' => 'nullable|string|max:100',
+            'tempat_lahir'  => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
-            'alamat' => 'nullable|string',
-            'telepon' => 'nullable|string|max:20',
-            'nama_ortu' => 'nullable|string|max:100',
-            'telepon_ortu' => 'nullable|string|max:20',
+            'alamat'        => 'nullable|string',
+            'telepon'       => 'nullable|string|max:20',
+            'nama_ortu'     => 'nullable|string|max:100',
+            'telepon_ortu'  => 'nullable|string|max:20',
         ]);
 
         $user = User::create([
-            'name' => $request->nama,
-            'nis' => $request->nis,
-            'username' => $request->nis,
-            'kelas' => $request->kelas,
-            'jurusan' => $request->jurusan,
+            'name'          => $request->nama,
+            'email'         => $request->email,
+            'password'      => \Illuminate\Support\Facades\Hash::make($request->password),
+            'nis'           => $request->nis,
+            'username'      => $request->nis, // NIS dijadikan default username
+            'kelas'         => $request->kelas,
+            'jurusan'       => $request->jurusan,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'tempat_lahir' => $request->tempat_lahir,
+            'tempat_lahir'  => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'alamat' => $request->alamat,
-            'telepon' => $request->telepon,
-            'nama_ortu' => $request->nama_ortu,
-            'telepon_ortu' => $request->telepon_ortu,
+            'alamat'        => $request->alamat,
+            'telepon'       => $request->telepon,
+            'nama_ortu'     => $request->nama_ortu,
+            'telepon_ortu'  => $request->telepon_ortu,
         ]);
 
         $user->assignRole('siswa');
@@ -442,32 +414,42 @@ class DashboardController extends Controller
         $user = User::role('siswa')->findOrFail($request->query('id'));
 
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'nis' => 'required|string|unique:users,nis,'.$user->id,
-            'kelas' => 'nullable|string|max:20',
-            'jurusan' => 'nullable|string|max:50',
+            'nama'          => 'required|string|max:100',
+            'email'         => 'required|email|unique:users,email,'.$user->id,
+            'password'      => 'nullable|string|min:6',
+            'nis'           => 'required|string|unique:users,nis,'.$user->id.'|unique:users,username,'.$user->id,
+            'kelas'         => 'nullable|string|max:20',
+            'jurusan'       => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'tempat_lahir' => 'nullable|string|max:100',
+            'tempat_lahir'  => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
-            'alamat' => 'nullable|string',
-            'telepon' => 'nullable|string|max:20',
-            'nama_ortu' => 'nullable|string|max:100',
-            'telepon_ortu' => 'nullable|string|max:20',
+            'alamat'        => 'nullable|string',
+            'telepon'       => 'nullable|string|max:20',
+            'nama_ortu'     => 'nullable|string|max:100',
+            'telepon_ortu'  => 'nullable|string|max:20',
         ]);
 
-        $user->update([
-            'name' => $request->nama,
-            'nis' => $request->nis,
-            'kelas' => $request->kelas,
-            'jurusan' => $request->jurusan,
+        $data = [
+            'name'          => $request->nama,
+            'email'         => $request->email,
+            'nis'           => $request->nis,
+            'username'      => $request->nis, // Update NIS berarti update username juga
+            'kelas'         => $request->kelas,
+            'jurusan'       => $request->jurusan,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'tempat_lahir' => $request->tempat_lahir,
+            'tempat_lahir'  => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
-            'alamat' => $request->alamat,
-            'telepon' => $request->telepon,
-            'nama_ortu' => $request->nama_ortu,
-            'telepon_ortu' => $request->telepon_ortu,
-        ]);
+            'alamat'        => $request->alamat,
+            'telepon'       => $request->telepon,
+            'nama_ortu'     => $request->nama_ortu,
+            'telepon_ortu'  => $request->telepon_ortu,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
+        }
+
+        $user->update($data);
 
         return redirect()->route('admin.data-siswa')->with('sukses_edit', true);
     }
@@ -510,21 +492,27 @@ class DashboardController extends Controller
     public function storeDataBk(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'nip' => 'nullable|string|max:30',
+            'nama'          => 'required|string|max:100',
+            'email'         => 'required|email|unique:users,email',
+            'username'      => 'required|string|max:50|unique:users,username',
+            'password'      => 'required|string|min:6',
+            'nip'           => 'nullable|string|max:30',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'alamat' => 'nullable|string',
-            'telepon' => 'nullable|string|max:20',
-            'jabatan' => 'nullable|string|max:100',
+            'alamat'        => 'nullable|string',
+            'telepon'       => 'nullable|string|max:20',
+            'jabatan'       => 'nullable|string|max:100',
         ]);
 
         $user = User::create([
-            'name' => $request->nama,
-            'nip' => $request->nip,
+            'name'          => $request->nama,
+            'email'         => $request->email,
+            'username'      => $request->username,
+            'password'      => \Illuminate\Support\Facades\Hash::make($request->password),
+            'nip'           => $request->nip,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-            'telepon' => $request->telepon,
-            'jabatan' => $request->jabatan,
+            'alamat'        => $request->alamat,
+            'telepon'       => $request->telepon,
+            'jabatan'       => $request->jabatan,
         ]);
 
         $user->assignRole('bk');
@@ -554,22 +542,33 @@ class DashboardController extends Controller
         $user = User::role('bk')->findOrFail($request->query('id'));
 
         $request->validate([
-            'nama' => 'required|string|max:100',
-            'nip' => 'nullable|string|max:30',
+            'nama'          => 'required|string|max:100',
+            'email'         => 'required|email|unique:users,email,'.$user->id,
+            'username'      => 'required|string|max:50|unique:users,username,'.$user->id,
+            'password'      => 'nullable|string|min:6',
+            'nip'           => 'nullable|string|max:30',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'alamat' => 'nullable|string',
-            'telepon' => 'nullable|string|max:20',
-            'jabatan' => 'nullable|string|max:100',
+            'alamat'        => 'nullable|string',
+            'telepon'       => 'nullable|string|max:20',
+            'jabatan'       => 'nullable|string|max:100',
         ]);
 
-        $user->update([
-            'name' => $request->nama,
-            'nip' => $request->nip,
+        $data = [
+            'name'          => $request->nama,
+            'email'         => $request->email,
+            'username'      => $request->username,
+            'nip'           => $request->nip,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-            'telepon' => $request->telepon,
-            'jabatan' => $request->jabatan,
-        ]);
+            'alamat'        => $request->alamat,
+            'telepon'       => $request->telepon,
+            'jabatan'       => $request->jabatan,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
+        }
+
+        $user->update($data);
 
         return redirect()->route('admin.data-bk')->with('sukses_edit', true);
     }

@@ -96,13 +96,15 @@
                 <span>Dashboard</span>
             </a>
 
+            {{-- [HIDDEN] Kelola Data Admin — aktifkan kembali jika diperlukan
             <a href="{{ route('admin.kelola-akun') }}"
                class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.kelola-akun*') || request()->routeIs('admin.detail-akun*') || request()->routeIs('admin.tambah-akun') || request()->routeIs('admin.edit-akun') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
-                <span>Kelola Akun</span>
+                <span>Kelola Data Admin</span>
             </a>
+            --}}
 
             <a href="{{ route('admin.data-siswa') }}"
                class="flex items-center gap-3 rounded-xl py-3 px-4 font-bold text-[0.95rem] transition-colors {{ request()->routeIs('admin.data-siswa*') ? 'bg-[#12635a] text-white shadow-inner' : 'text-white/80 hover:bg-[#157167] hover:text-white' }}">

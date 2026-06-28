@@ -39,21 +39,18 @@
         </div>
 
         {{-- Details --}}
-        <div class="flex flex-col gap-1.5 md:gap-2 text-[1.1rem] md:text-[1.2rem]">
-            <div class="flex items-start">
-                <span class="font-bold text-[#1a1a1a] w-[85px] shrink-0">Nama</span>
-                <span class="font-bold text-[#1a1a1a] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">{{ $laporan->nama_laporan }}</span>
+        <div class="flex flex-col gap-3 md:gap-4">
+            <div class="flex flex-col gap-0.5">
+                <span class="text-[0.72rem] font-bold text-[#1a9488] uppercase tracking-wider">Nama Laporan</span>
+                <span class="font-bold text-[#1a1a1a] text-[1.05rem] md:text-[1.15rem]">{{ $laporan->nama_laporan }}</span>
             </div>
-            <div class="flex items-start">
-                <span class="font-bold text-[#1a1a1a] w-[85px] shrink-0">Autor</span>
-                <span class="font-bold text-[#1a1a1a] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">{{ $laporan->author->name ?? 'Admin / BK' }}</span>
+            <div class="flex flex-col gap-0.5">
+                <span class="text-[0.72rem] font-bold text-[#1a9488] uppercase tracking-wider">Autor</span>
+                <span class="font-semibold text-[#1a1a1a] text-[0.95rem] md:text-[1rem]">{{ $laporan->author->name ?? 'Admin / BK' }}</span>
             </div>
-            <div class="flex items-start">
-                <span class="font-bold text-[#1a1a1a] w-[85px] shrink-0">Date</span>
-                <span class="font-bold text-[#1a1a1a] px-2">:</span>
-                <span class="font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
+            <div class="flex flex-col gap-0.5">
+                <span class="text-[0.72rem] font-bold text-[#1a9488] uppercase tracking-wider">Tanggal</span>
+                <span class="font-semibold text-[#1a1a1a] text-[0.95rem] md:text-[1rem]">{{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
             </div>
         </div>
     </div>
@@ -79,8 +76,8 @@
 
 </div>
 
-{{-- Area cetak – disiapkan statis dan hanya muncul saat window.print() --}}
-<div id="printArea">
+{{-- Area cetak – selalu ada di DOM, CSS yang sembunyikan/tampilkan --}}
+<div id="printWrap">
     <div class="pr-header">
         <h1>Detail Laporan Konseling</h1>
         <div class="pr-subtitle">Sistem Informasi Bimbingan Konseling &ndash; Latansa Cendekia</div>
@@ -88,7 +85,7 @@
     
     <div class="pr-section">
         <h2>Informasi Laporan</h2>
-        <div class="pr-field"><label>Nama Laporan</label><span>: {{ $laporan->nama_laporan }}</span></div>
+        <div class="pr-field"><label>Nama</label><span>: {{ $laporan->nama_laporan }}</span></div>
         <div class="pr-field"><label>Autor</label><span>: {{ $laporan->author->name ?? 'Admin / BK' }}</span></div>
         <div class="pr-field"><label>Tanggal Buat</label><span>: {{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span></div>
     </div>
@@ -123,8 +120,8 @@
 
 @push('styles')
 <style>
-/* Sembunyikan printArea saat normal */
-#printArea { display: none; }
+/* Sembunyikan printWrap saat tampilan normal */
+#printWrap { display: none; }
 
 @media print {
     /* Hide layout elements explicitly */
@@ -218,46 +215,14 @@
 
 @push('scripts')
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var today = new Date().toLocaleDateString('id-ID', {
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('printDate').innerText = new Date().toLocaleDateString('id-ID', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
-        document.getElementById('printDate').innerText = today;
     });
 
-function cetakLaporanAdmin() {
-    // Hide original body children
-    const children = Array.from(document.body.children);
-    children.forEach(child => {
-        if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
-            child.dataset.originalDisplay = child.style.display;
-            child.style.display = 'none';
-        }
-    });
-
-    // Create or get print container
-    let printWrap = document.getElementById('printWrap');
-    if(!printWrap) {
-        printWrap = document.createElement('div');
-        printWrap.id = 'printWrap';
-        document.body.appendChild(printWrap);
+    function cetakLaporanAdmin() {
+        window.print();
     }
-
-    // Assign content
-    printWrap.innerHTML = document.getElementById('printArea').innerHTML;
-    printWrap.style.display = 'block';
-
-    // Print
-    window.print();
-
-    // Restore
-    printWrap.style.display = 'none';
-    printWrap.innerHTML = '';
-    children.forEach(child => {
-        if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
-            child.style.display = child.dataset.originalDisplay || '';
-        }
-    });
-}
 </script>
 @endpush

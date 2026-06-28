@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Akun – Admin')
+@section('title', 'Data Admin – Admin')
 
 @section('content')
 
@@ -20,21 +20,21 @@
 
 <div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
     <div>
-        <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Daftar Akun</h2>
+        <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Data Admin</h2>
         <div class="mt-3">
             <a href="{{ route('admin.tambah-akun') }}"
                class="inline-flex items-center gap-1.5 px-5 py-2 bg-[#1a9488] text-white rounded-full text-[0.9rem] font-bold hover:brightness-105 transition-all no-underline shadow-[0_4px_12px_rgba(26,148,136,0.3)]">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
-                Admin
+                Tambah Admin
             </a>
         </div>
     </div>
 
     {{-- Search --}}
     <div class="flex flex-col items-end gap-1 w-full sm:w-auto">
-        <span class="text-[0.78rem] text-[#888] mr-1 hidden sm:block">kelola akun</span>
+        <span class="text-[0.78rem] text-[#888] mr-1 hidden sm:block">kelola data admin</span>
         <div class="flex items-center border-[2px] border-[#1a9488] rounded-full px-4 py-2 bg-white gap-2 w-full sm:w-52 focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -50,7 +50,6 @@
     <span class="w-[40px] shrink-0 text-center">No</span>
     <span class="flex-1 min-w-[120px]">Nama</span>
     <span class="flex-1 hidden sm:block">Email</span>
-    <span class="w-[90px] shrink-0 text-center hidden md:block">Role</span>
     <span class="w-[112px] shrink-0 text-center">Aksi</span>
 </div>
 
@@ -67,7 +66,6 @@
                 <span class="text-red-500 italic text-[0.8rem] font-bold uppercase tracking-tight">Akun Belum Aktif</span>
             @endif
         </span>
-        <span class="w-[90px] shrink-0 text-center hidden md:block"><span class="inline-block px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold uppercase {{ $akun->hasRole('admin') ? 'bg-purple-100 text-purple-700' : ($akun->hasRole('bk') ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700') }}">{{ $akun->getRoleNames()->first() }}</span></span>
         <div class="flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 w-[120px] sm:w-[130px]">
             @if(!$akun->email)
                 <a href="{{ route('admin.aktifkan-akun', ['id' => $akun->id]) }}" title="Aktifkan Akun" class="w-8 h-8 rounded-full bg-[#1a9488] text-white flex items-center justify-center hover:brightness-110 transition-all shadow-sm">
@@ -132,6 +130,7 @@
         </div>
     </div>
 </div>
+
 
 @endsection
 

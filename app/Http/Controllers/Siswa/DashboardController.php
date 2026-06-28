@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Artikel;
 use App\Models\Konseling;
 use App\Models\Pelanggaran;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class DashboardController extends Controller
 {
@@ -16,27 +16,6 @@ class DashboardController extends Controller
     public function index()
     {
         $userId = auth()->id();
-
-        Konseling::where('user_id', $userId)
-            ->where('status', 'disetujui')
-            ->get()
-            ->each(function ($sesi) {
-                $waktu = $sesi->waktu ?? '23:59';
-                $jadwal = Carbon::parse($sesi->tanggal.' '.$waktu)->addHours(2);
-                if (now()->greaterThan($jadwal) && now()->diffInHours($sesi->updated_at) >= 2) {
-                    $sesi->update(['status' => 'tidak_hadir']);
-                }
-            });
-
-        Pelanggaran::where('user_id', $userId)
-            ->where('status', 'menunggu')
-            ->get()
-            ->each(function ($panggilan) {
-                $jadwal = Carbon::parse($panggilan->tanggal.' '.($panggilan->waktu ?? '23:59'))->addDay();
-                if (now()->greaterThan($jadwal)) {
-                    $panggilan->update(['status' => 'tidak_hadir']);
-                }
-            });
 
         $activeKonselingCount = Konseling::where('user_id', $userId)
             ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
@@ -76,6 +55,7 @@ class DashboardController extends Controller
             'articles'
         ));
     }
+
 
     /** List panggilan/pelanggaran (dipanggil oleh BK) */
     public function panggilan()
@@ -130,6 +110,10 @@ class DashboardController extends Controller
         $waktu = now()->format('H:i');
         if ($request->jadwal) {
             $dt = Carbon::parse($request->jadwal);
+            // ponytail: tolak jika waktu sudah lewat
+            if ($dt->isPast()) {
+                return back()->with('error', 'Gagal! Waktu pengajuan tidak boleh di masa lalu.');
+            }
             $tanggal = $dt->format('Y-m-d');
             $waktu = $dt->format('H:i');
         }
@@ -169,6 +153,10 @@ class DashboardController extends Controller
         $waktu = now()->format('H:i');
         if ($request->jadwal) {
             $dt = Carbon::parse($request->jadwal);
+            // ponytail: tolak jika waktu sudah lewat
+            if ($dt->isPast()) {
+                return back()->with('error', 'Gagal! Waktu pengajuan tidak boleh di masa lalu.');
+            }
             $tanggal = $dt->format('Y-m-d');
             $waktu = $dt->format('H:i');
         }
