@@ -35,9 +35,6 @@
             <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden hover:shadow-[0_8px_30px_rgba(26,148,136,0.12)] hover:-translate-y-1 transition-all flex items-center p-5 gap-5">
                 <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0 relative">
                     <img src="{{ asset('img/Phone conversation with speech bubble.svg') }}" alt="Panggil Siswa" class="h-10 object-contain transition-transform group-hover:scale-110">
-                    @if($panggilanCount > 0)
-                    <div class="absolute -top-1.5 -right-1.5 w-6 h-6 bg-[#ef4444] text-white text-[0.75rem] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ $panggilanCount }}</div>
-                    @endif
                 </div>
                 <div>
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors mb-1">Panggil Siswa</div>
@@ -219,17 +216,31 @@
         <!-- Horizontal scroll on mobile, Grid on Web -->
         <div class="flex overflow-x-auto lg:grid lg:grid-cols-4 gap-4 md:gap-6 hide-scroll snap-x snap-mandatory pb-4">
             @forelse($articles as $artikel)
-            <a href="{{ route('bk.artikel.index') }}" class="bg-white rounded-[20px] p-4 flex flex-col gap-3 no-underline border border-[#edf2f1] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)] shadow-[0_4px_12px_rgba(0,0,0,0.02)] shrink-0 w-[240px] lg:w-auto snap-start cursor-pointer group">
-                @if($artikel->gambar)
-                    <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="h-[120px] w-full object-cover rounded-xl transition-transform group-hover:scale-105">
-                @else
-                    <div class="h-[120px] w-full bg-[#e0f5f3] flex items-center justify-center rounded-xl transition-transform group-hover:scale-105">
-                        <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="Artikel" class="h-[80px] object-contain opacity-50 animate-robot-float">
+            <a href="{{ route('bk.artikel.index') }}" class="bg-white rounded-[20px] flex flex-col no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.04)] shrink-0 w-[280px] lg:w-auto snap-start cursor-pointer group overflow-hidden">
+                {{-- Image Container --}}
+                <div class="w-full h-[140px] bg-[#f8fcfb] shrink-0 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black/5 z-10 group-hover:bg-transparent transition-colors duration-300"></div>
+                    @if($artikel->gambar)
+                        <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center p-6 transition-transform duration-500 group-hover:scale-105">
+                            <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="{{ $artikel->judul }}" class="w-full h-full object-contain opacity-70">
+                        </div>
+                    @endif
+                </div>
+                
+                {{-- Text Content --}}
+                <div class="flex flex-col flex-1 p-5">
+                    <h3 class="text-[1.05rem] font-bold text-[#1a1a1a] leading-snug line-clamp-2 mb-2 group-hover:text-[#1a9488] transition-colors" title="{{ $artikel->judul }}">{{ $artikel->judul }}</h3>
+                    <p class="text-[0.85rem] text-[#666] leading-relaxed line-clamp-2 mb-4 flex-1">{{ strip_tags($artikel->konten) }}</p>
+                    
+                    <div class="flex items-center justify-between mt-auto pt-4 border-t border-[#f5f5f5]">
+                        <span class="text-[0.75rem] font-bold text-[#1a9488] flex items-center gap-1">
+                            Baca Artikel
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </span>
+                        <span class="text-[0.7rem] text-[#888]">{{ $artikel->created_at->diffForHumans() }}</span>
                     </div>
-                @endif
-                <div>
-                    <div class="text-[1rem] font-bold text-[#1a1a1a] line-clamp-2 leading-tight" title="{{ $artikel->judul }}">{{ $artikel->judul }}</div>
-                    <div class="text-[0.8rem] text-[#777] mt-1">{{ $artikel->created_at->diffForHumans() }}</div>
                 </div>
             </a>
             @empty

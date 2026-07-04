@@ -22,6 +22,9 @@
             ->take(3)
             ->get();
         $hasNotification = $notifications->count() > 0;
+        $panggilanCount = \App\Models\Pelanggaran::where('status', 'menunggu')
+            ->where('bk_id', auth()->id())
+            ->count();
     } else {
         $konselingNotifs = \App\Models\Konseling::with('bk')
             ->where('user_id', auth()->id())
@@ -80,8 +83,16 @@
                Riwayat Konseling
             </a>
             <a href="{{ route('bk.riwayat-panggilan') }}"
-               class="{{ request()->routeIs('bk.riwayat-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors">
+               class="{{ request()->routeIs('bk.riwayat-panggilan') ? 'text-[#1a9488]' : 'text-[#555]' }} font-semibold text-[0.95rem] hover:text-[#1a9488] transition-colors relative inline-flex items-center">
                Riwayat Panggilan
+               @if(isset($panggilanCount) && $panggilanCount > 0)
+               <span class="ml-1.5 flex h-4 w-4 relative">
+                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                   <span class="relative inline-flex rounded-full h-4 w-4 bg-[#ef4444] text-white text-[0.6rem] font-bold items-center justify-center shadow-sm">
+                       {{ $panggilanCount }}
+                   </span>
+               </span>
+               @endif
             </a>
             @endif
 

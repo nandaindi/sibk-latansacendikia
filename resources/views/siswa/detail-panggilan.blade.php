@@ -49,7 +49,7 @@
         <form id="formTerima" method="POST" action="{{ route('siswa.terima-panggilan') }}" class="m-0">
             @csrf
             <input type="hidden" name="pelanggaran_id" value="{{ $panggilan->id }}">
-            <button type="submit" onclick="this.innerHTML='Memproses...'; this.classList.add('opacity-80', 'cursor-not-allowed')" class="bg-[#0F766E] hover:bg-[#0b534d] text-white font-bold py-3.5 px-10 rounded-full text-lg transition-transform hover:-translate-y-0.5 active:scale-95 shadow-[0_6px_20px_rgba(15,118,110,0.3)]">
+            <button type="submit" id="btnTerima" class="bg-[#0F766E] hover:bg-[#0b534d] text-white font-bold py-3.5 px-10 rounded-full text-lg transition-transform hover:-translate-y-0.5 active:scale-95 shadow-[0_6px_20px_rgba(15,118,110,0.3)]">
                 SAYA MENGERTI
             </button>
         </form>
@@ -63,7 +63,28 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('formTerima');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Terima Kasih',
+                    text: 'Silahkan datang ke ruang BK sesuai jadwal ya!',
+                    icon: 'success',
+                    confirmButtonColor: '#0F766E',
+                    confirmButtonText: 'Baik, Saya Mengerti'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('btnTerima').innerHTML = 'Memproses...';
+                        form.submit();
+                    }
+                });
+            });
+        }
+    });
     @if(session('terima_success'))
     window.addEventListener('load', () => {
         const toast = document.getElementById('toast');

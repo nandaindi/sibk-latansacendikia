@@ -92,26 +92,26 @@
                 </div>
             @elseif($alert->alert_type == 'pelanggaran')
                 {{-- 2. Kartu Panggil Siswa --}}
-                <div id="activePelanggaranCard" class="bg-white border border-red-200/60 rounded-2xl shadow-[0_16px_40px_rgba(239,68,68,0.15)] ring-1 ring-red-500/10 relative overflow-hidden w-full md:w-[360px]" style="display: none;">
+                <div id="activePelanggaranCard" class="bg-white border border-[#edf2f1] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] relative overflow-hidden w-full md:w-[360px]" style="display: none;">
 
                     {{-- Header Strip --}}
-                    <div class="flex items-center gap-2.5 px-4 pt-4 pb-3 border-b border-red-100/80 bg-red-50/60">
+                    <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 border-b border-[#edf2f1]">
                         {{-- Icon --}}
-                        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                            <svg width="16" height="16" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                        <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                            <svg width="20" height="20" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                         </div>
 
                         <div class="flex-1 min-w-0">
-                            <div class="font-black text-[0.82rem] text-red-700 leading-tight uppercase tracking-tight flex items-center gap-1.5">
+                            <div class="font-black text-[0.82rem] text-red-600 leading-tight uppercase tracking-tight flex items-center gap-1.5">
                                 Panggil Siswa
                                 <span class="inline-flex h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0"></span>
                             </div>
-                            <div class="text-[0.7rem] text-red-400 font-semibold mt-0.5">Perlu Tindakan Segera</div>
+                            <div class="text-[0.7rem] text-red-500 font-semibold mt-0.5">Perlu Tindakan Segera</div>
                         </div>
 
                         {{-- Close Button --}}
                         <button onclick="dismissNotif('pelanggaran', '{{ $alert->id }}')"
-                                class="w-6 h-6 flex items-center justify-center rounded-full border border-red-200 bg-white text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all cursor-pointer shrink-0"
+                                class="w-6 h-6 flex items-center justify-center rounded-full text-[#aaa] hover:text-[#555] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0"
                                 title="Tutup">
                             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         </button>
@@ -120,15 +120,15 @@
                     {{-- Body --}}
                     <div class="px-4 py-3">
                         {{-- Info Block --}}
-                        <div class="flex items-center gap-3 bg-red-50 rounded-xl px-3 py-2.5 mb-3">
+                        <div class="flex items-center gap-3 px-1 py-1 mb-4 mt-1">
                             <div class="flex-1 min-w-0">
-                                <div class="text-[0.7rem] text-red-400 font-semibold uppercase tracking-wide mb-0.5">Topik</div>
-                                <div class="text-[0.82rem] font-extrabold text-red-800 uppercase leading-tight line-clamp-2" title="{{ $alert->topik }}">{{ $alert->topik }}</div>
+                                <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Topik</div>
+                                <div class="text-[0.82rem] font-extrabold text-red-600 uppercase leading-tight line-clamp-2" title="{{ $alert->topik }}">{{ $alert->topik }}</div>
                             </div>
-                            <div class="w-px h-8 bg-red-200"></div>
+                            <div class="w-px h-8 bg-[#edf2f1]"></div>
                             <div class="flex-1 min-w-0">
-                                <div class="text-[0.7rem] text-red-400 font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
-                                <div class="text-[0.82rem] font-extrabold text-red-700">
+                                <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
+                                <div class="text-[0.82rem] font-extrabold text-red-600">
                                     {{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d F Y') }}, {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
                                 </div>
                             </div>
@@ -329,23 +329,31 @@
             <!-- Horizontal scroll on mobile, Grid on Web -->
             <div class="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 hide-scroll snap-x snap-mandatory pb-2 md:pb-0">
                 @forelse($articles as $artikel)
-                <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" class="bg-white rounded-[16px] p-4 flex flex-col gap-4 no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_30px_rgba(26,148,136,0.1)] shadow-[0_4px_12px_rgba(0,0,0,0.03)] h-full shrink-0 w-[260px] md:w-auto snap-start cursor-pointer group">
-                    {{-- Image Container (Fixed Aspect Ratio) --}}
-                    <div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#f8fcfb] shrink-0 relative">
+                <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" class="bg-white rounded-[20px] flex flex-col no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.04)] h-full shrink-0 w-[280px] md:w-auto snap-start cursor-pointer group overflow-hidden">
+                    {{-- Image Container --}}
+                    <div class="w-full h-[140px] bg-[#f8fcfb] shrink-0 relative overflow-hidden">
                         <div class="absolute inset-0 bg-black/5 z-10 group-hover:bg-transparent transition-colors duration-300"></div>
                         @if($artikel->gambar)
-                            <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('storage/' . $artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         @else
-                            <div class="w-full h-full flex items-center justify-center p-6">
-                                <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="{{ $artikel->judul }}" class="w-full h-full object-contain opacity-80">
+                            <div class="w-full h-full flex items-center justify-center p-6 transition-transform duration-500 group-hover:scale-105">
+                                <img src="{{ asset('img/flying delivery robot saluting.svg') }}" alt="{{ $artikel->judul }}" class="w-full h-full object-contain opacity-70">
                             </div>
                         @endif
                     </div>
                     
                     {{-- Text Content --}}
-                    <div class="flex flex-col flex-1">
-                        <h3 class="text-[1.05rem] md:text-[1.15rem] font-extrabold text-[#1a1a1a] leading-snug line-clamp-2 mb-2 group-hover:text-[#1a9488] transition-colors" title="{{ $artikel->judul }}">{{ $artikel->judul }}</h3>
-                        <p class="text-[0.85rem] md:text-[0.9rem] text-[#666] leading-relaxed line-clamp-3 mt-auto">{{ strip_tags($artikel->konten) }}</p>
+                    <div class="flex flex-col flex-1 p-5">
+                        <h3 class="text-[1.05rem] font-bold text-[#1a1a1a] leading-snug line-clamp-2 mb-2 group-hover:text-[#1a9488] transition-colors" title="{{ $artikel->judul }}">{{ $artikel->judul }}</h3>
+                        <p class="text-[0.85rem] text-[#666] leading-relaxed line-clamp-2 mb-4 flex-1">{{ strip_tags($artikel->konten) }}</p>
+                        
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-[#f5f5f5]">
+                            <span class="text-[0.75rem] font-bold text-[#1a9488] flex items-center gap-1">
+                                Baca Artikel
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                            <span class="text-[0.7rem] text-[#888]">{{ $artikel->created_at->diffForHumans() }}</span>
+                        </div>
                     </div>
                 </a>
                 @empty

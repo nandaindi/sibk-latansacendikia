@@ -8,7 +8,7 @@ use App\Models\Konseling;
 use App\Models\Pelanggaran;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -85,7 +85,16 @@ class DashboardController extends Controller
             'pelanggaran_id' => 'required|exists:pelanggarans,id',
         ]);
 
-        return redirect()->route('siswa.dashboard')->with('sukses', 'Silakan temui Guru BK sesuai jadwal panggilan.');
+        $pelanggaran = \App\Models\Pelanggaran::where('id', $request->pelanggaran_id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $pelanggaran->update([
+            'status' => 'diterima',
+            'is_read' => true
+        ]);
+
+        return redirect()->route('siswa.dashboard')->with('sukses', 'Terima kasih, silakan temui Guru BK sesuai jadwal panggilan.');
     }
 
     /** Pengajuan Online */
@@ -110,7 +119,6 @@ class DashboardController extends Controller
         $waktu = now()->format('H:i');
         if ($request->jadwal) {
             $dt = Carbon::parse($request->jadwal);
-            // ponytail: tolak jika waktu sudah lewat
             if ($dt->isPast()) {
                 return back()->with('error', 'Gagal! Waktu pengajuan tidak boleh di masa lalu.');
             }

@@ -5,7 +5,6 @@
 @push('styles')
 <style>
     .artikel-body {
-        text-align: justify;
     }
     .artikel-body h1, .artikel-body h2, .artikel-body h3,
     .artikel-body h4, .artikel-body h5, .artikel-body h6 {
@@ -17,8 +16,12 @@
     .artikel-body h3 { font-size: 1.15rem; color: #1a9488; }
     .artikel-body p {
         color: #2a2a2a; line-height: 1.85; margin-bottom: 1.4rem;
-        font-size: 1.05rem; text-align: justify;
+        font-size: 1.05rem;
     }
+    .artikel-body .ql-align-center { text-align: center; }
+    .artikel-body .ql-align-justify { text-align: justify; }
+    .artikel-body .ql-align-right { text-align: right; }
+    .artikel-body .ql-align-left { text-align: left; }
     .artikel-body ul, .artikel-body ol {
         margin: 1.25rem 0 1.5rem 1.5rem; color: #2a2a2a; line-height: 1.85;
     }

@@ -21,6 +21,10 @@
         margin-bottom: 1.2rem;
         font-size: 1.05rem;
     }
+    .artikel-body .ql-align-center { text-align: center; }
+    .artikel-body .ql-align-justify { text-align: justify; }
+    .artikel-body .ql-align-right { text-align: right; }
+    .artikel-body .ql-align-left { text-align: left; }
     .artikel-body ul, .artikel-body ol {
         margin: 1rem 0 1.2rem 1.5rem;
         color: #444;

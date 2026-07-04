@@ -104,17 +104,17 @@
 
                     @if($problem)
                     <div>
-                        <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block mb-1">Deskripsi Permasalahan</label>
-                        <div class="text-[0.9rem] text-[#444] leading-relaxed">{!! nl2br(e($problem)) !!}</div>
-                        <div class="flex flex-wrap gap-2 mt-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block m-0">Deskripsi Permasalahan</label>
                             @php
                                 $pType = $item->problem_type ?? 'umum';
                                 $typeLabels = ['akademik' => 'Akademik', 'sosial' => 'Sosial', 'keluarga' => 'Keluarga', 'karir' => 'Karir', 'lainnya' => 'Lainnya', 'umum' => 'Umum'];
                             @endphp
-                            <span class="px-3 py-1 bg-[#e0f5f3] text-[#1a9488] font-medium rounded-full text-[0.72rem] uppercase tracking-wider">
+                            <span class="px-2.5 py-0.5 bg-[#e0f5f3] text-[#1a9488] font-bold rounded-md text-[0.65rem] uppercase tracking-wider">
                                 {{ $typeLabels[$pType] ?? 'Umum' }}
                             </span>
                         </div>
+                        <div class="text-[0.9rem] text-[#444] leading-relaxed">{!! nl2br(e($problem)) !!}</div>
                     </div>
                     @endif
 
