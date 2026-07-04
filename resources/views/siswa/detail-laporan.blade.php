@@ -88,13 +88,13 @@
                                         <div class="flex items-center gap-1">
                                             @if($value == 'Sangat Memuaskan')
                                                 <span class="text-xl" title="Sangat Memuaskan">😊</span>
-                                                <span class="text-[0.65rem] font-bold text-green-600 uppercase tracking-tighter">Sangat</span>
+                                                <span class="text-[0.65rem] font-bold text-green-600 uppercase tracking-tighter">Sangat Memuaskan</span>
                                             @elseif($value == 'Memuaskan')
                                                 <span class="text-xl" title="Memuaskan">😐</span>
-                                                <span class="text-[0.65rem] font-bold text-yellow-600 uppercase tracking-tighter">Cukup</span>
+                                                <span class="text-[0.65rem] font-bold text-yellow-600 uppercase tracking-tighter">Memuaskan</span>
                                             @else
                                                 <span class="text-xl" title="Kurang Memuaskan">☹️</span>
-                                                <span class="text-[0.65rem] font-bold text-red-600 uppercase tracking-tighter">Kurang</span>
+                                                <span class="text-[0.65rem] font-bold text-red-600 uppercase tracking-tighter">Kurang Memuaskan</span>
                                             @endif
                                         </div>
                                     </div>
@@ -158,7 +158,7 @@
                                 <label for="{{ $name }}_kurang" class="text-3xl label-kurang" title="Kurang Memuaskan">
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                                 </label>
-                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter">Kurang</span>
+                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter text-center">Kurang Memuaskan</span>
                             </div>
                             <!-- Memuaskan -->
                             <div class="flex flex-col items-center gap-1">
@@ -166,7 +166,7 @@
                                 <label for="{{ $name }}_cukup" class="text-3xl label-cukup" title="Memuaskan">
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="15" x2="16" y2="15"></line><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                                 </label>
-                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter">Cukup</span>
+                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter text-center">Memuaskan</span>
                             </div>
                             <!-- Sangat Memuaskan -->
                             <div class="flex flex-col items-center gap-1">
@@ -174,7 +174,7 @@
                                 <label for="{{ $name }}_sangat" class="text-3xl label-sangat" title="Sangat Memuaskan">
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                                 </label>
-                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter">Sangat</span>
+                                <span class="text-[0.6rem] text-gray-500 font-bold uppercase tracking-tighter text-center">Sangat Memuaskan</span>
                             </div>
                         </div>
                     </div>
