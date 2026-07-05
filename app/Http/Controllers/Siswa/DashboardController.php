@@ -87,12 +87,22 @@ class DashboardController extends Controller
 
         $pelanggaran = \App\Models\Pelanggaran::where('id', $request->pelanggaran_id)
             ->where('user_id', auth()->id())
-            ->firstOrFail();
+            ->first();
 
-        $pelanggaran->update([
-            'status' => 'diterima',
-            'is_read' => true
-        ]);
+        if (! $pelanggaran) {
+            abort(404);
+        }
+
+        try {
+            $pelanggaran->update([
+                'status' => 'diterima',
+                'is_read' => true,
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->back()->with('error', 'Gagal memproses konfirmasi panggilan. Silakan coba lagi.');
+        }
 
         return redirect()->route('siswa.dashboard')->with('sukses', 'Terima kasih, silakan temui Guru BK sesuai jadwal panggilan.');
     }
