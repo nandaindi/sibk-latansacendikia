@@ -74,7 +74,7 @@
                         </form>
                         <form id="form-tidak-hadir-{{ $item->id }}" action="{{ route('bk.konseling-offline.tidak-hadir', $item->id) }}" method="POST">
                             @csrf
-                            <button type="button" onclick="confirmTidakHadir({{ $item->id }})" class="bg-white border-2 border-[#ff4d4d] text-[#ff4d4d] text-[0.8rem] font-bold px-3 py-2 rounded-xl hover:bg-[#ff4d4d] hover:text-white transition-all">
+                            <button type="button" onclick="confirmTidakHadir({{ $item->id }})" class="bg-red-500 border-2 border-white text-white text-[0.8rem] font-bold px-3 py-2 rounded-xl hover:bg-[#ff4d4d] hover:text-white transition-all">
                                 Tidak Hadir
                             </button>
                         </form>

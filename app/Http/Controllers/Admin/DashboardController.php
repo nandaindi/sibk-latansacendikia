@@ -65,7 +65,7 @@ class DashboardController extends Controller
             'username' => $username,
         ]);
 
-        $user->assignRole('admin'); // selalu admin, tidak bergantung input
+        $user->assignRole('admin');
 
         return redirect()->route('admin.kelola-akun')->with('sukses_tambah', true);
     }
