@@ -170,7 +170,7 @@ async function loadHistory(){
 }
 
 /* ───────────── SEND ───────────── */
-async function sendMessage(){
+window.sendMessage = async function(){
     const input = document.getElementById('chatInput');
     const text  = (input?.value || '').trim();
     if(!text) return;
@@ -186,7 +186,7 @@ async function sendMessage(){
 }
 
 /* ───────────── BAGIKAN LINK ───────────── */
-function bagikanLink(){
+window.bagikanLink = function(){
     if(!LINK_MEET){ 
         Swal.fire({
             icon: 'warning',
@@ -201,19 +201,19 @@ function bagikanLink(){
 }
 
 /* ───────────── MODAL SELESAI SESI ───────────── */
-function selesaiSesi(){
+window.selesaiSesi = function(){
     const m   = document.getElementById('modalSelesai');
     const box = document.getElementById('modalSelesaiBox');
     m.classList.remove('opacity-0','invisible');
     box.classList.remove('translate-y-4');
 }
-function tutupModalSelesai(){
+window.tutupModalSelesai = function(){
     const m   = document.getElementById('modalSelesai');
     const box = document.getElementById('modalSelesaiBox');
     m.classList.add('opacity-0','invisible');
     box.classList.add('translate-y-4');
 }
-async function konfirmasiSelesai(){
+window.konfirmasiSelesai = async function(){
     const btn = document.getElementById('btnKonfirmasiSelesai');
     if(btn){ btn.disabled=true; btn.textContent='Menyelesaikan…'; }
     try {
@@ -238,7 +238,7 @@ loadHistory();   // ← SELALU jalan, tidak bergantung Echo
 try {
     if(window.Echo){
         window.Echo.private(`chat.${KONSELING_ID}`)
-            .listen('PesanChatTerkirim', e => renderBubble(e));
+            .listen('.PesanChatTerkirim', e => renderBubble(e));
     }
 } catch(echoErr){
     console.warn('Echo setup gagal (chat tetap bisa kirim/terima via refresh):', echoErr);

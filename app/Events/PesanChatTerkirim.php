@@ -40,4 +40,9 @@ class PesanChatTerkirim implements ShouldBroadcastNow
             'created_at' => $this->pesan->created_at->toISOString(),
         ];
     }
+
+    public function broadcastAs(): string
+    {
+        return 'PesanChatTerkirim';
+    }
 }

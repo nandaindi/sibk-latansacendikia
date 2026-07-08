@@ -224,7 +224,7 @@ async function loadHistory(){
 }
 
 /* ───────────── SEND ───────────── */
-async function sendMessage(){
+window.sendMessage = async function(){
     const input = document.getElementById('chatInput');
     const text  = (input?.value || '').trim();
     if(!text) return;
@@ -246,7 +246,7 @@ loadHistory();   // ← JALAN PERTAMA, tidak bergantung Echo
 try {
     if(window.Echo){
         window.Echo.private(`chat.${KONSELING_ID}`)
-            .listen('PesanChatTerkirim', e => renderBubble(e));
+            .listen('.PesanChatTerkirim', e => renderBubble(e));
     }
 } catch(echoErr){
     console.warn('Echo setup gagal:', echoErr);
