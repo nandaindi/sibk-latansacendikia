@@ -9,12 +9,12 @@ Broadcast::channel('chat.{konselingId}', function ($user, $konselingId) {
         return false;
     }
 
-    if ($user->role === 'bk' && (int) $konseling->bk_id === (int) $user->id) {
-        return ['id' => $user->id, 'name' => $user->name, 'role' => $user->role];
+    if ($user->hasRole('bk') && (int) $konseling->bk_id === (int) $user->id) {
+        return ['id' => $user->id, 'name' => $user->name, 'role' => 'bk'];
     }
 
-    if ($user->role === 'siswa' && (int) $konseling->user_id === (int) $user->id) {
-        return ['id' => $user->id, 'name' => $user->name, 'role' => $user->role];
+    if ($user->hasRole('siswa') && (int) $konseling->user_id === (int) $user->id) {
+        return ['id' => $user->id, 'name' => $user->name, 'role' => 'siswa'];
     }
 
     return false;
