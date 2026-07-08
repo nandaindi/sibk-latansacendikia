@@ -108,7 +108,7 @@
 @endsection
 
 @push('scripts')
-<script>
+<script type="module">
 /* ───────────── CONFIG ───────────── */
 const KONSELING_ID = {{ $konseling->id }};
 const CURRENT_USER = {{ auth()->id() }};
