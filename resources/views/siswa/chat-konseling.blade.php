@@ -231,9 +231,17 @@ window.sendMessage = async function(){
     input.value = '';
     renderBubble({ user_id: CURRENT_USER, pesan: text, created_at: new Date().toISOString() });
     try {
+        const headers = {
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':CSRF
+        };
+        if (window.Echo && window.Echo.socketId()) {
+            headers['X-Socket-Id'] = window.Echo.socketId();
+        }
+        
         await fetch(SEND_URL, {
             method:'POST',
-            headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
+            headers: headers,
             body: JSON.stringify({ konseling_id: KONSELING_ID, pesan: text }),
         });
     } catch(e){ console.warn('send error:', e); }
