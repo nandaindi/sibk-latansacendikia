@@ -22,64 +22,74 @@
         </button>
     </div>
 
-    <!-- List Area -->
-    <div class="w-full px-4 md:px-6 py-5 flex flex-col gap-3">
+    <!-- Tables Area -->
+    <div class="w-full px-4 md:px-6 py-5 flex flex-col gap-5">
 
         <!-- Online Tab Content -->
-        <div id="contentOnline" class="flex flex-col gap-3">
-            @php $onlineCount = 0; @endphp
-            @foreach($riwayats as $item)
-                @if($item->jenis == 'online')
-                @php $onlineCount++; @endphp
-                <a href="{{ route('siswa.detail-laporan', $item->id) }}" class="bg-white border border-[#e5e7eb] rounded-2xl px-5 py-4 flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_14px_rgba(26,148,136,0.1)] transition-all no-underline cursor-pointer group">
-                    <div class="shrink-0 bg-[#e0f5f3] w-12 h-12 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#1a9488]">
-                        <svg width="24" height="24" fill="none" stroke="#1a9488" stroke-width="2" class="group-hover:stroke-white transition-colors" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-[0.97rem] font-bold text-[#1a1a1a] truncate">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</div>
-                        <div class="text-[0.82rem] text-[#888] mt-0.5 flex items-center gap-2">
-                            Laporan Konseling Online
-                        </div>
-                    </div>
-                    <div class="shrink-0 text-[#1a9488]">
-                        <svg width="20" height="20" fill="none" class="stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                    </div>
-                </a>
-                @endif
-            @endforeach
-            @if($onlineCount == 0)
-            <div class="text-center py-8 text-gray-500 font-medium bg-white rounded-2xl border border-[#edf2f1]">Belum ada riwayat laporan konseling online.</div>
-            @endif
+        <div id="contentOnline">
+            <div class="bg-white rounded-[24px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden">
+                <table id="riwayatOnlineTable" class="w-full text-left border-collapse display">
+                    <thead>
+                        <tr class="bg-[#f8fcfb] border-b border-[#edf2f1]">
+                            <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
+                            <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Keterangan</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#edf2f1]">
+                        @php $onlineNo = 1; @endphp
+                        @foreach($riwayats as $item)
+                            @if($item->jenis == 'online')
+                            <tr class="hover:bg-[#fcfdfd] transition-colors cursor-pointer group" data-url="{{ route('siswa.detail-laporan', $item->id) }}">
+                                <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $onlineNo++ }}</td>
+                                <td class="p-4 text-[0.95rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</td>
+                                <td class="hidden md:table-cell p-4 text-[0.9rem] text-[#555]">Laporan Konseling Online</td>
+                                <td class="p-4 text-right">
+                                    <span class="text-[#1a9488] transition-transform group-hover:translate-x-1 inline-block">
+                                        <svg width="20" height="20" fill="none" class="stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </span>
+                                </td>
+                            </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Offline Tab Content -->
-        <div id="contentOffline" class="flex-col gap-3 hidden">
-            @php $offlineCount = 0; @endphp
-            @foreach($riwayats as $item)
-                @if($item->jenis == 'offline')
-                @php $offlineCount++; @endphp
-                <a href="{{ route('siswa.detail-laporan', $item->id) }}" class="bg-white border border-[#e5e7eb] rounded-2xl px-5 py-4 flex items-center gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_14px_rgba(26,148,136,0.1)] transition-all no-underline cursor-pointer group">
-                    <div class="shrink-0 bg-[#e0f5f3] w-12 h-12 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#1a9488]">
-                        <svg width="24" height="24" fill="none" stroke="#1a9488" stroke-width="2" class="group-hover:stroke-white transition-colors" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-[0.97rem] font-bold text-[#1a1a1a] truncate">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</div>
-                        <div class="text-[0.82rem] text-[#888] mt-0.5 flex items-center gap-2">
-                            Laporan Konseling Offline
-                        </div>
-                    </div>
-                    <div class="shrink-0 text-[#1a9488]">
-                        <svg width="20" height="20" fill="none" class="stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-                    </div>
-                </a>
-                @endif
-            @endforeach
-            @if($offlineCount == 0)
-            <div class="text-center py-8 text-gray-500 font-medium bg-white rounded-2xl border border-[#edf2f1]">Belum ada riwayat laporan konseling offline.</div>
-            @endif
+        <div id="contentOffline" class="hidden">
+            <div class="bg-white rounded-[24px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden">
+                <table id="riwayatOfflineTable" class="w-full text-left border-collapse display">
+                    <thead>
+                        <tr class="bg-[#f8fcfb] border-b border-[#edf2f1]">
+                            <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
+                            <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Keterangan</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#edf2f1]">
+                        @php $offlineNo = 1; @endphp
+                        @foreach($riwayats as $item)
+                            @if($item->jenis == 'offline')
+                            <tr class="hover:bg-[#fcfdfd] transition-colors cursor-pointer group" data-url="{{ route('siswa.detail-laporan', $item->id) }}">
+                                <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $offlineNo++ }}</td>
+                                <td class="p-4 text-[0.95rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</td>
+                                <td class="hidden md:table-cell p-4 text-[0.9rem] text-[#555]">Laporan Konseling Offline</td>
+                                <td class="p-4 text-right">
+                                    <span class="text-[#1a9488] transition-transform group-hover:translate-x-1 inline-block">
+                                        <svg width="20" height="20" fill="none" class="stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </span>
+                                </td>
+                            </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <div class="mt-2">{{ $riwayats->links() }}</div>
 
     </div>
 </div>
@@ -87,6 +97,46 @@
 
 @push('scripts')
 <script>
+$(document).ready(function() {
+    var dtConfig = {
+        responsive: true,
+        scrollX: false,
+        autoWidth: false,
+        dom: '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>',
+        language: {
+            search: "",
+            searchPlaceholder: "Cari riwayat...",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            infoEmpty: "",
+            infoFiltered: "(filter dari _MAX_)",
+            zeroRecords: `<div class="flex flex-col items-center justify-center py-4 gap-3">
+                <svg width="42" height="42" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="text-[#888] font-medium text-[0.95rem]">Belum ada riwayat konseling.</span>
+            </div>`,
+            paginate: {
+                first: "Awal", last: "Akhir",
+                next: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
+                previous: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
+            }
+        },
+        columnDefs: [{ orderable: false, targets: [0, 3] }, { responsivePriority: 1, targets: 1 }]
+    };
+    $('#riwayatOnlineTable').DataTable(dtConfig);
+    $('#riwayatOfflineTable').DataTable(dtConfig);
+
+    // Smart Row Click: Redirects to detail page UNLESS the user clicked the DataTables '+' expand button
+    $('table.display tbody').on('click', 'tr', function(e) {
+        if ($(e.target).closest('td.dtr-control').length) {
+            return; // Do nothing, let DataTables expand/collapse the row
+        }
+        var url = $(this).data('url');
+        if (url) {
+            window.location.href = url;
+        }
+    });
+});
+
 function switchTab(tab) {
     const online  = document.getElementById('contentOnline');
     const offline = document.getElementById('contentOffline');
@@ -94,20 +144,22 @@ function switchTab(tab) {
     const tabOfflineBtn = document.getElementById('tabOffline');
 
     if (tab === 'online') {
-        online.classList.remove('hidden'); online.classList.add('flex');
-        offline.classList.add('hidden');   offline.classList.remove('flex');
+        online.classList.remove('hidden');
+        offline.classList.add('hidden');
         tabOnlineBtn.classList.add('border-white','text-white');
         tabOnlineBtn.classList.remove('text-white/70','border-transparent');
         tabOfflineBtn.classList.add('text-white/70','border-transparent');
         tabOfflineBtn.classList.remove('border-white','text-white');
     } else {
-        offline.classList.remove('hidden'); offline.classList.add('flex');
-        online.classList.add('hidden');     online.classList.remove('flex');
+        offline.classList.remove('hidden');
+        online.classList.add('hidden');
         tabOfflineBtn.classList.add('border-white','text-white');
         tabOfflineBtn.classList.remove('text-white/70','border-transparent');
         tabOnlineBtn.classList.add('text-white/70','border-transparent');
         tabOnlineBtn.classList.remove('border-white','text-white');
     }
+    // Recalculate DataTables width after tab switch
+    $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
 }
 </script>
 @endpush

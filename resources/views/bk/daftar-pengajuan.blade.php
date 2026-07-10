@@ -22,74 +22,74 @@
         </button>
     </div>
 
-    <!-- List -->
-    <div class="w-full px-4 md:px-6 py-5 flex flex-col gap-3">
+    <!-- Tables -->
+    <div class="w-full px-4 md:px-6 py-5 flex flex-col gap-5">
 
         <!-- Online Tab -->
-        <div id="contentOnline" class="flex flex-col gap-3">
-            @php $onlineCount = 0; @endphp
-            @foreach($pengajuans as $item)
-                @if($item->jenis == 'online')
-                @php $onlineCount++; @endphp
-                <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3.5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-                    <!-- Robot avatar -->
-                    <div class="w-12 h-12 shrink-0 border border-[#edf2f1] rounded-full overflow-hidden bg-[#e0f5f3]">
-                        @if($item->user->avatar)
-                            <img src="{{ Storage::url($item->user->avatar) }}" class="w-full h-full object-cover">
-                        @else
-                            @include('partials.bk.robot-avatar')
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-semibold text-[0.95rem] text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</div>
-                        <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }} <span class="text-[#1a9488] font-medium ml-2 uppercase text-xs px-2 py-0.5 bg-[#e0f5f3] rounded-full">{{ $item->jenis }}</span></div>
-                    </div>
-                    <a href="{{ route('bk.validasi-pengajuan', ['id' => $item->id]) }}" class="text-[#1a9488] text-[0.9rem] font-semibold shrink-0 no-underline hover:text-[#12635a] transition-colors">
-                        Detail
-                    </a>
-                </div>
-                @endif
-            @endforeach
-            @if($onlineCount == 0)
-                <div class="text-center py-6 text-gray-500 font-medium bg-white rounded-2xl border-[2px] border-[#edf2f1]">Belum ada pengajuan online.</div>
-            @endif
+        <div id="contentOnline">
+            <div class="bg-white rounded-[24px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden">
+                <table id="pengajuanOnlineTable" class="w-full text-left border-collapse display">
+                    <thead>
+                        <tr class="bg-[#f8fcfb] border-b border-[#edf2f1]">
+                            <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama Siswa</th>
+                            <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#edf2f1]">
+                        @php $onlineNo = 1; @endphp
+                        @foreach($pengajuans as $item)
+                            @if($item->jenis == 'online')
+                            <tr class="hover:bg-[#fcfdfd] transition-colors">
+                                <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $onlineNo++ }}</td>
+                                <td class="p-4 text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</td>
+                                <td class="hidden md:table-cell p-4 text-[0.85rem] text-[#888]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
+                                <td class="p-4 text-right">
+                                    <a href="{{ route('bk.validasi-pengajuan', ['id' => $item->id]) }}" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors inline-flex" title="Detail">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Offline Tab (hidden by default) -->
-        <div id="contentOffline" class="flex-col gap-3 hidden">
-            @php $offlineCount = 0; @endphp
-            @foreach($pengajuans as $item)
-                @if($item->jenis == 'offline')
-                @php $offlineCount++; @endphp
-                <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 py-3.5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 shrink-0 border border-[#edf2f1] rounded-full overflow-hidden bg-[#e0f5f3]">
-                        @if($item->user->avatar)
-                            <img src="{{ Storage::url($item->user->avatar) }}" class="w-full h-full object-cover">
-                        @else
-                            @include('partials.bk.robot-avatar')
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-semibold text-[0.95rem] text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</div>
-                        <div class="text-[0.82rem] text-[#888] mt-0.5">{{ \Carbon\Carbon::parse($item->tanggal)->format('l, d F Y') }} <span class="text-[#1a9488] font-medium ml-2 uppercase text-xs px-2 py-0.5 bg-[#e0f5f3] rounded-full">{{ $item->jenis }}</span></div>
-                    </div>
-                    <a href="{{ route('bk.validasi-pengajuan', ['id' => $item->id]) }}" class="text-[#1a9488] text-[0.9rem] font-semibold shrink-0 no-underline hover:text-[#12635a] transition-colors">
-                        Detail
-                    </a>
-                </div>
-                @endif
-            @endforeach
-            @if($offlineCount == 0)
-                <div class="text-center py-6 text-gray-500 font-medium bg-white rounded-2xl border-[2px] border-[#edf2f1]">Belum ada pengajuan offline.</div>
-            @endif
+        <div id="contentOffline" class="hidden">
+            <div class="bg-white rounded-[24px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden">
+                <table id="pengajuanOfflineTable" class="w-full text-left border-collapse display">
+                    <thead>
+                        <tr class="bg-[#f8fcfb] border-b border-[#edf2f1]">
+                            <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama Siswa</th>
+                            <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#edf2f1]">
+                        @php $offlineNo = 1; @endphp
+                        @foreach($pengajuans as $item)
+                            @if($item->jenis == 'offline')
+                            <tr class="hover:bg-[#fcfdfd] transition-colors">
+                                <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $offlineNo++ }}</td>
+                                <td class="p-4 text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</td>
+                                <td class="hidden md:table-cell p-4 text-[0.85rem] text-[#888]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
+                                <td class="p-4 text-right">
+                                    <a href="{{ route('bk.validasi-pengajuan', ['id' => $item->id]) }}" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors inline-flex" title="Detail">
+                                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-    </div>
-
-    {{-- Pagination Links --}}
-    <div class="mt-4 px-4 md:px-6">
-        {{ $pengajuans->appends(request()->query())->links() }}
-    </div>
 
     </div>
 
@@ -98,6 +98,35 @@
 
 @push('scripts')
 <script>
+$(document).ready(function() {
+    var dtConfig = {
+        responsive: true,
+        dom: '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>',
+        language: {
+            search: "",
+            searchPlaceholder: "Cari...",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            infoEmpty: "",
+            infoFiltered: "(filter dari _MAX_)",
+            zeroRecords: `<div class="flex flex-col items-center justify-center py-4 gap-3">
+                <svg width="42" height="42" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span class="text-[#888] font-medium text-[0.95rem]">Belum ada pengajuan.</span>
+            </div>`,
+            paginate: {
+                first: "Awal", last: "Akhir",
+                next: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
+                previous: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
+            }
+        },
+        columnDefs: [{ orderable: false, targets: [0, 3] }, { responsivePriority: 1, targets: 1 }],
+        scrollX: false,
+        autoWidth: false,
+    };
+    $('#pengajuanOnlineTable').DataTable(dtConfig);
+    $('#pengajuanOfflineTable').DataTable(dtConfig);
+});
+
 function switchTab(tab) {
     const online  = document.getElementById('contentOnline');
     const offline = document.getElementById('contentOffline');
@@ -105,20 +134,22 @@ function switchTab(tab) {
     const btnOff  = document.getElementById('tabOffline');
 
     if (tab === 'online') {
-        online.classList.remove('hidden'); online.classList.add('flex');
-        offline.classList.add('hidden');   offline.classList.remove('flex');
+        online.classList.remove('hidden');
+        offline.classList.add('hidden');
         btnOn.classList.add('border-white','text-white');
         btnOn.classList.remove('text-white/70','border-transparent');
         btnOff.classList.add('text-white/70','border-transparent');
         btnOff.classList.remove('border-white','text-white');
     } else {
-        offline.classList.remove('hidden'); offline.classList.add('flex');
-        online.classList.add('hidden');     online.classList.remove('flex');
+        offline.classList.remove('hidden');
+        online.classList.add('hidden');
         btnOff.classList.add('border-white','text-white');
         btnOff.classList.remove('text-white/70','border-transparent');
         btnOn.classList.add('text-white/70','border-transparent');
         btnOn.classList.remove('border-white','text-white');
     }
+    // Recalculate DataTables width after tab switch
+    $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
 }
 </script>
 @endpush

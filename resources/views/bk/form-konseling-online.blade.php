@@ -101,11 +101,11 @@
         }
     </script>
 
-    <!-- Save Button (right aligned) -->
+    <!-- Save Button (full-width on mobile, right-aligned on desktop) -->
     <div class="flex justify-end mt-8">
         <button
             onclick="document.getElementById('formKonselingOnline').submit()"
-            class="px-12 py-4 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.3)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer"
+            class="w-full md:w-auto px-12 py-4 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.3)] hover:brightness-105 hover:-translate-y-0.5 transition-all active:scale-95 border-none cursor-pointer"
         >
             Simpan & Buat Laporan
         </button>

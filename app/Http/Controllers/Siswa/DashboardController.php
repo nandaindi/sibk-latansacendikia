@@ -8,6 +8,8 @@ use App\Models\Konseling;
 use App\Models\Pelanggaran;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -115,6 +117,11 @@ class DashboardController extends Controller
 
     public function storePengajuanOnline(Request $request)
     {
+        $request->validate([
+            'jadwal' => 'required|date',
+            'problem_type' => 'required|string|max:100',
+            'note' => 'nullable|string|max:2000',
+        ]);
 
         $activeKonseling = Konseling::where('user_id', auth()->id())
             ->whereIn('status', ['pending', 'disetujui'])
@@ -136,15 +143,13 @@ class DashboardController extends Controller
             $waktu = $dt->format('H:i');
         }
 
-        Konseling::create([
-            'user_id' => auth()->id(),
-            'jenis' => 'online',
-            'problem_type' => $request->problem_type,
-            'tanggal' => $tanggal,
-            'waktu' => $waktu,
-            'status' => 'pending',
-            'catatan_siswa' => $request->note,
-        ]);
+        DB::transaction(function () use ($request, $tanggal, $waktu) {
+            \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
+            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
+                throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
+            }
+            Konseling::create(['user_id' => auth()->id(), 'jenis' => 'online', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
+        });
 
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
@@ -157,6 +162,11 @@ class DashboardController extends Controller
 
     public function storePengajuanOffline(Request $request)
     {
+        $request->validate([
+            'jadwal' => 'required|date',
+            'problem_type' => 'required|string|max:100',
+            'note' => 'nullable|string|max:2000',
+        ]);
 
         $activeKonseling = Konseling::where('user_id', auth()->id())
             ->whereIn('status', ['pending', 'disetujui'])
@@ -179,15 +189,13 @@ class DashboardController extends Controller
             $waktu = $dt->format('H:i');
         }
 
-        Konseling::create([
-            'user_id' => auth()->id(),
-            'jenis' => 'offline',
-            'problem_type' => $request->problem_type,
-            'tanggal' => $tanggal,
-            'waktu' => $waktu,
-            'status' => 'pending',
-            'catatan_siswa' => $request->note,
-        ]);
+        DB::transaction(function () use ($request, $tanggal, $waktu) {
+            \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
+            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
+                throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
+            }
+            Konseling::create(['user_id' => auth()->id(), 'jenis' => 'offline', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
+        });
 
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
@@ -280,6 +288,8 @@ class DashboardController extends Controller
         ]);
 
         $konseling = Konseling::where('user_id', auth()->id())
+            ->where('status', 'selesai')
+            ->whereNull('kesimpulan_siswa')
             ->findOrFail($request->konseling_id);
 
         $konseling->update([

@@ -126,7 +126,7 @@ class DashboardController extends Controller
     /** Validasi Pengajuan - detail pengajuan + tombol setujui/tolak */
     public function validasiPengajuan(Request $request)
     {
-        $konseling = Konseling::with('user')->findOrFail($request->id);
+        $konseling = Konseling::with('user')->where('status', 'pending')->findOrFail($request->id);
 
         return view('bk.validasi-pengajuan', compact('konseling'));
     }
@@ -134,7 +134,7 @@ class DashboardController extends Controller
     /** Setujui Pengajuan - form input jadwal */
     public function setujuiPengajuan(Request $request)
     {
-        $konseling = Konseling::with('user')->findOrFail($request->id);
+        $konseling = Konseling::with('user')->where('status', 'pending')->findOrFail($request->id);
 
         return view('bk.setujui-pengajuan', compact('konseling'));
     }
@@ -153,7 +153,7 @@ class DashboardController extends Controller
             return back()->with('error', 'Gagal! Waktu persetujuan tidak boleh di masa lalu.');
         }
 
-        $konseling = Konseling::findOrFail($request->konseling_id);
+        $konseling = Konseling::where('status', 'pending')->findOrFail($request->konseling_id);
 
         if (Konseling::cekBentrok($request->tanggal, $request->waktu, auth()->id(), $konseling->user_id, $konseling->id)) {
             return back()->with('error', 'Gagal! Anda atau Siswa tersebut sudah memiliki jadwal konseling lain di jam itu.');
@@ -177,7 +177,7 @@ class DashboardController extends Controller
     /** Setujui Langsung - Gunakan jadwal siswa tanpa pindah halaman */
     public function setujuiLangsung($id)
     {
-        $konseling = Konseling::findOrFail($id);
+        $konseling = Konseling::where('status', 'pending')->findOrFail($id);
 
         if (\Carbon\Carbon::parse($konseling->tanggal . ' ' . $konseling->waktu)->isPast()) {
             return back()->with('error', 'Gagal! Jadwal usulan siswa sudah lewat, silakan setujui dengan jadwal baru.');
@@ -207,7 +207,7 @@ class DashboardController extends Controller
             'alasan_tolak' => 'required|string|max:1000',
         ]);
 
-        $konseling = Konseling::findOrFail($request->konseling_id);
+        $konseling = Konseling::where('status', 'pending')->findOrFail($request->konseling_id);
         $konseling->update([
             'status'       => 'ditolak',
             'bk_id'        => auth()->id(),
@@ -236,7 +236,7 @@ class DashboardController extends Controller
     /** Detail Sesi Konseling */
     public function detailSesi(Request $request)
     {
-        $konseling = Konseling::with('user')->findOrFail($request->id);
+        $konseling = Konseling::with('user')->where('bk_id', auth()->id())->where('status', 'disetujui')->findOrFail($request->id);
 
         return view('bk.detail-sesi', compact('konseling'));
     }
@@ -244,7 +244,7 @@ class DashboardController extends Controller
     /** Konseling Online - halaman chat BK */
     public function konselingOnline(Request $request)
     {
-        $konseling = Konseling::with('user')->findOrFail($request->id);
+        $konseling = Konseling::with('user')->where('bk_id', auth()->id())->where('status', 'disetujui')->findOrFail($request->id);
 
         if (! $konseling->started_at) {
             $konseling->update(['started_at' => now()]);
@@ -256,7 +256,7 @@ class DashboardController extends Controller
     /** Form Konseling Offline - pencatatan hasil sesi offline */
     public function formKonselingOffline($id)
     {
-        $konseling = Konseling::with('user')->findOrFail($id);
+        $konseling = Konseling::with('user')->where('bk_id', auth()->id())->where('status', 'disetujui')->findOrFail($id);
 
         if (! $konseling->started_at) {
             $konseling->update(['started_at' => now()]);
@@ -268,7 +268,7 @@ class DashboardController extends Controller
     /** Mulai Sesi Offline - eksplisit klik mulai */
     public function mulaiSesiOffline($id)
     {
-        $konseling = Konseling::findOrFail($id);
+        $konseling = Konseling::where('bk_id', auth()->id())->where('status', 'disetujui')->findOrFail($id);
         if (! $konseling->started_at) {
             $konseling->update(['started_at' => now()]);
         }
@@ -279,7 +279,7 @@ class DashboardController extends Controller
     /** Tandai Tidak Hadir - Siswa tidak datang ke sesi offline */
     public function tidakHadirOffline($id)
     {
-        $konseling = Konseling::findOrFail($id);
+        $konseling = Konseling::where('bk_id', auth()->id())->where('status', 'disetujui')->findOrFail($id);
         $konseling->update(['status' => 'tidak_hadir']);
 
         return redirect()->route('bk.sesi-konseling')->with('sukses', 'Siswa ditandai tidak hadir.');
@@ -349,7 +349,7 @@ class DashboardController extends Controller
     public function detailLaporan(Request $request)
     {
         $id = $request->query('id');
-        $laporan = Laporan::with(['author', 'konseling.user'])->findOrFail($id);
+        $laporan = Laporan::with(['author', 'konseling.user'])->where('author_id', auth()->id())->findOrFail($id);
 
         $items = collect();
 
@@ -376,7 +376,9 @@ class DashboardController extends Controller
             'next_waktu'      => 'nullable|required_with:has_next_meeting',
         ]);
 
-        return Konseling::findOrFail($request->konseling_id);
+        return Konseling::where('bk_id', auth()->id())
+            ->whereIn('status', ['disetujui', 'selesai'])
+            ->findOrFail($request->konseling_id);
     }
 
     private function formatCatatan(Request $request): string
@@ -398,7 +400,7 @@ class DashboardController extends Controller
 
     private function buatLaporan(Konseling $konseling): void
     {
-        Laporan::create([
+        Laporan::firstOrCreate(['konseling_id' => $konseling->id], [
             'nama_laporan' => 'Laporan Konseling: '.$konseling->user->name,
             'author_id'    => auth()->id(),
             'user_id'      => $konseling->user_id,

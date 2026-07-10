@@ -41,6 +41,14 @@ class PemanggilanController extends Controller
             'catatan' => 'required|string|max:1000',
         ]);
 
+        if (! User::role('siswa')->whereKey($request->user_id)->exists()) {
+            return back()->withInput()->with('error', 'Siswa yang dipilih tidak valid.');
+        }
+
+        if (now()->gt(\Carbon\Carbon::parse($request->tanggal . ' ' . $request->waktu))) {
+            return back()->withInput()->with('error', 'Waktu panggilan tidak boleh di masa lalu.');
+        }
+
         Pelanggaran::create([
             'user_id' => $request->user_id,
             'bk_id' => auth()->id(),
@@ -57,7 +65,7 @@ class PemanggilanController extends Controller
     /** View detail / form to finish violation */
     public function detail($id)
     {
-        $pelanggaran = Pelanggaran::with('user')->findOrFail($id);
+        $pelanggaran = Pelanggaran::with('user')->where('bk_id', auth()->id())->findOrFail($id);
 
         return view('bk.detail-pelanggaran', compact('pelanggaran'));
     }
@@ -71,7 +79,7 @@ class PemanggilanController extends Controller
             'status' => 'required|in:selesai,tidak_hadir',
         ]);
 
-        $pelanggaran = Pelanggaran::findOrFail($id);
+        $pelanggaran = Pelanggaran::where('bk_id', auth()->id())->where('status', 'menunggu')->findOrFail($id);
         $pelanggaran->update([
             'status' => $request->status,
             'catatan_hasil' => $request->catatan_hasil,

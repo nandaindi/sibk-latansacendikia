@@ -213,10 +213,10 @@
             </h3>
         </div>
         
-        <!-- Horizontal scroll on mobile, Grid on Web -->
-        <div class="flex overflow-x-auto lg:grid lg:grid-cols-4 gap-4 md:gap-6 hide-scroll snap-x snap-mandatory pb-4">
+        <!-- Grid Layout (1 col mobile, 2 tablet, 4 desktop) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             @forelse($articles as $artikel)
-            <a href="{{ route('bk.artikel.index') }}" class="bg-white rounded-[20px] flex flex-col no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.04)] shrink-0 w-[280px] lg:w-auto snap-start cursor-pointer group overflow-hidden">
+            <a href="{{ route('bk.artikel.index') }}" class="bg-white rounded-[20px] flex flex-col no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.04)] h-full w-full cursor-pointer group overflow-hidden">
                 {{-- Image Container --}}
                 <div class="w-full h-[140px] bg-[#f8fcfb] shrink-0 relative overflow-hidden">
                     <div class="absolute inset-0 bg-black/5 z-10 group-hover:bg-transparent transition-colors duration-300"></div>

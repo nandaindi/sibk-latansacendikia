@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.tailwindcss.js"></script>
+</head>
+<body>
+<table id="example">
+    <thead><tr><th>A</th></tr></thead>
+    <tbody><tr><td>1</td></tr></tbody>
+</table>
+<script>
+    $('#example').DataTable();
+    setTimeout(() => {
+        console.log(document.body.innerHTML);
+    }, 1000);
+</script>
+</body>
+</html>

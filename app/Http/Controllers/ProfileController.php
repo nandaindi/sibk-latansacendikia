@@ -34,8 +34,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+        $rules = [
             'email' => [
                 'required',
                 'string',
@@ -45,9 +44,18 @@ class ProfileController extends Controller
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-        ]);
+        ];
 
-        $user->name = $validated['name'];
+        if ($user->hasRole('admin')) {
+            $rules['name'] = ['required', 'string', 'max:255'];
+        }
+
+        $validated = $request->validate($rules);
+
+        if ($user->hasRole('admin') && isset($validated['name'])) {
+            $user->name = $validated['name'];
+        }
+        
         $user->email = $validated['email'];
 
         if ($request->hasFile('avatar')) {

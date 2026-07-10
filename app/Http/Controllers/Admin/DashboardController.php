@@ -119,6 +119,9 @@ class DashboardController extends Controller
     public function destroyAkun(Request $request)
     {
         $user = User::findOrFail($request->query('id'));
+        if ($user->is(auth()->user())) {
+            return back()->with('error', 'Akun yang sedang digunakan tidak dapat dihapus.');
+        }
         $user->delete();
 
         return redirect()->route('admin.kelola-akun')->with('sukses_hapus', true);
@@ -458,6 +461,9 @@ class DashboardController extends Controller
     public function destroyDataSiswa(Request $request)
     {
         $user = User::role('siswa')->findOrFail($request->query('id'));
+        if ($user->konselings()->exists() || $user->pelanggarans()->exists()) {
+            return back()->with('error', 'Data siswa yang memiliki riwayat konseling atau panggilan tidak dapat dihapus.');
+        }
         $user->delete();
 
         return redirect()->route('admin.data-siswa')->with('sukses_hapus', true);
@@ -577,6 +583,12 @@ class DashboardController extends Controller
     public function destroyDataBk(Request $request)
     {
         $user = User::role('bk')->findOrFail($request->query('id'));
+        if ($user->is(auth()->user())) {
+            return back()->with('error', 'Akun yang sedang digunakan tidak dapat dihapus.');
+        }
+        if ($user->assignedKonselings()->exists() || $user->pelanggaransAsBk()->exists()) {
+            return back()->with('error', 'Data BK yang memiliki sesi atau panggilan terkait tidak dapat dihapus.');
+        }
         $user->delete();
 
         return redirect()->route('admin.data-bk')->with('sukses_hapus', true);

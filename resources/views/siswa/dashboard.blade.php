@@ -12,13 +12,13 @@
 @section('content')
     {{-- Notifikasi Status Pengajuan Aktif (Floating Pojok Kanan Atas - Dibawah Profile) --}}
     {{-- Hub Notifikasi Aktif (Floating Pojok Kanan Atas) --}}
-    <div id="alertsHub" class="fixed z-[9999] w-fit flex flex-col gap-4 animate-in fade-in slide-in-from-right-10 duration-700 ease-out" 
-         style="top: 100px; right: 24px; left: auto !important;">
+    <div id="alertsHub" class="fixed z-40 left-4 right-4 md:left-auto md:right-6 md:w-[360px] flex flex-col gap-4" 
+         style="top: max(88px, env(safe-area-inset-top));">
         
         @foreach($activeAlerts as $alert)
             @if($alert->alert_type == 'konseling')
                 {{-- 1. Kartu Konseling Aktif --}}
-                <div id="activeKonselingCard" class="bg-white border border-[#1a9488]/25 rounded-2xl shadow-[0_16px_40px_rgba(26,148,136,0.18)] ring-1 ring-black/5 relative overflow-hidden w-full md:w-[360px]" style="display: none;">
+                <div id="activeKonselingCard" class="bg-white border border-[#1a9488]/25 rounded-2xl shadow-[0_8px_16px_rgba(26,148,136,0.16)] ring-1 ring-black/5 relative overflow-hidden w-full" style="display: none;">
 
                     {{-- Header Strip --}}
                     <div class="flex items-center gap-2.5 px-4 pt-4 pb-3 border-b border-[#f0f7f6]">
@@ -92,7 +92,7 @@
                 </div>
             @elseif($alert->alert_type == 'pelanggaran')
                 {{-- 2. Kartu Panggil Siswa --}}
-                <div id="activePelanggaranCard" class="bg-white border border-[#edf2f1] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.06)] relative overflow-hidden w-full md:w-[360px]" style="display: none;">
+                <div id="activePelanggaranCard" class="bg-white border border-[#edf2f1] rounded-2xl shadow-[0_8px_16px_rgba(0,0,0,0.08)] relative overflow-hidden w-full" style="display: none;">
 
                     {{-- Header Strip --}}
                     <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 border-b border-[#edf2f1]">
@@ -279,7 +279,7 @@
                 @endif
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
                 @php
                     $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
                         ->where('status', 'menunggu')
@@ -287,8 +287,8 @@
                         ->count();
                 @endphp
                 
-                <!-- Card 1: Panggil Siswa -->
-                <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full relative group/card">
+                <!-- Card 1: Panggil Siswa (Full Width on Mobile) -->
+                <div class="col-span-2 md:col-span-1 bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full relative group/card">
                     {{-- Badge inside Card - Clean No Shadow --}}
                     @if($unreadPanggilanCount > 0)
                         <div class="absolute z-20 flex items-center justify-center animate-bounce-slow" style="top: 20px; right: 20px; background: transparent !important;">
@@ -302,19 +302,19 @@
                         <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggil Siswa" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110 animate-robot-wave">
                     </div>
                     
-                    <a href="{{ route('siswa.panggilan') }}" class="w-full @if($unreadPanggilanCount > 0) bg-[#ef4444] @else bg-[#1a9488] @endif text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:brightness-110 transition-all cursor-pointer flex items-center justify-center rounded-b-[32px]">
-                        Panggil Siswa
+                    <a href="{{ route('siswa.panggilan') }}" class="w-full @if($unreadPanggilanCount > 0) bg-[#ef4444] @else bg-[#1a9488] @endif text-white text-center text-[0.85rem] md:text-[1rem] font-black py-4 md:py-5 px-4 tracking-wider mt-auto no-underline hover:brightness-110 transition-all cursor-pointer flex items-center justify-center rounded-b-[32px]">
+                        PANGGIL SISWA
                     </a>
                 </div>
-                <!-- Card 2: Pengajuan Online -->
-                <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card2">
-                    <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card2:scale-110 animate-robot-float">
-                    <a href="{{ route('siswa.pengajuan-online') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[32px]">PENGAJUAN ONLINE</a>
+                <!-- Card 2: Pengajuan Online (Half Width on Mobile) -->
+                <div class="col-span-1 bg-white rounded-[24px] md:rounded-[32px] pt-6 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card2">
+                    <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-[80px] md:h-[160px] w-auto object-contain mb-6 md:mb-10 transition-transform duration-500 group-hover/card2:scale-110 animate-robot-float">
+                    <a href="{{ route('siswa.pengajuan-online') }}" class="w-full bg-[#1a9488] text-white text-center text-[0.7rem] md:text-[1rem] font-black py-3 md:py-5 px-2 md:px-4 tracking-wide md:tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[24px] md:rounded-b-[32px]">PENGAJUAN ONLINE</a>
                 </div>
-                <!-- Card 3: Pengajuan Offline -->
-                <div class="bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card3">
-                    <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-[120px] md:h-[160px] w-auto object-contain mb-10 transition-transform duration-500 group-hover/card3:scale-110 animate-robot-wave">
-                    <a href="{{ route('siswa.pengajuan-offline') }}" class="w-full bg-[#1a9488] text-white text-center text-sm md:text-[1rem] font-black py-5 px-4 tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[32px]">PENGAJUAN OFFLINE</a>
+                <!-- Card 3: Pengajuan Offline (Half Width on Mobile) -->
+                <div class="col-span-1 bg-white rounded-[24px] md:rounded-[32px] pt-6 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full group/card3">
+                    <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-[80px] md:h-[160px] w-auto object-contain mb-6 md:mb-10 transition-transform duration-500 group-hover/card3:scale-110 animate-robot-wave">
+                    <a href="{{ route('siswa.pengajuan-offline') }}" class="w-full bg-[#1a9488] text-white text-center text-[0.7rem] md:text-[1rem] font-black py-3 md:py-5 px-2 md:px-4 tracking-wide md:tracking-wider mt-auto no-underline hover:bg-[#157a70] transition-colors cursor-pointer flex items-center justify-center rounded-b-[24px] md:rounded-b-[32px]">PENGAJUAN OFFLINE</a>
                 </div>
             </div>
         </div>
@@ -326,10 +326,10 @@
                 <a href="{{ route('siswa.artikel.index') }}" class="text-sm md:text-[0.95rem] text-[#1a9488] font-semibold no-underline hover:text-[#12635a] transition-colors whitespace-nowrap ml-4">Selengkapnya</a>
             </div>
             
-            <!-- Horizontal scroll on mobile, Grid on Web -->
-            <div class="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 hide-scroll snap-x snap-mandatory pb-2 md:pb-0">
+            <!-- Grid Layout (1 col mobile, 2 tablet, 4 desktop) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 @forelse($articles as $artikel)
-                <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" class="bg-white rounded-[20px] flex flex-col no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.04)] h-full shrink-0 w-[280px] md:w-auto snap-start cursor-pointer group overflow-hidden">
+                <a href="{{ route('siswa.artikel.show', $artikel->slug) }}" class="bg-white rounded-[20px] flex flex-col no-underline border border-[#edf2f1] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(26,148,136,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.04)] h-full w-full cursor-pointer group overflow-hidden">
                     {{-- Image Container --}}
                     <div class="w-full h-[140px] bg-[#f8fcfb] shrink-0 relative overflow-hidden">
                         <div class="absolute inset-0 bg-black/5 z-10 group-hover:bg-transparent transition-colors duration-300"></div>

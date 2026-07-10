@@ -18,135 +18,117 @@
     <div class="mb-4 p-4 bg-[#e6f4f2] border border-[#1a9488] text-[#1a9488] rounded-xl">Akun berhasil diaktifkan.</div>
 @endif
 
-<div class="flex items-start justify-between mb-5 gap-4 flex-wrap">
-    <div>
-        <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Data Admin</h2>
-        <div class="mt-3">
-            <a href="{{ route('admin.tambah-akun') }}"
-               class="inline-flex items-center gap-1.5 px-5 py-2 bg-[#1a9488] text-white rounded-full text-[0.9rem] font-bold hover:brightness-105 transition-all no-underline shadow-[0_4px_12px_rgba(26,148,136,0.3)]">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                Tambah Admin
-            </a>
-        </div>
-    </div>
-
-    {{-- Search --}}
-    <div class="flex flex-col items-end gap-1 w-full sm:w-auto">
-        <span class="text-[0.78rem] text-[#888] mr-1 hidden sm:block">kelola data admin</span>
-        <div class="flex items-center border-[2px] border-[#1a9488] rounded-full px-4 py-2 bg-white gap-2 w-full sm:w-52 focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" id="searchInput" placeholder="Search" onkeyup="filterAkun()"
-                   class="border-none outline-none text-[0.9rem] text-[#1a1a1a] placeholder-[#bbb] bg-transparent font-medium w-full"/>
-        </div>
-    </div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+    <h2 class="text-[1.2rem] font-extrabold text-[#1a1a1a]">List Data Admin</h2>
+    <a href="{{ route('admin.tambah-akun') }}"
+       class="inline-flex items-center gap-1.5 px-5 py-2 bg-[#1a9488] text-white rounded-full text-[0.9rem] font-bold hover:brightness-105 transition-all no-underline shadow-[0_4px_12px_rgba(26,148,136,0.3)] shrink-0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah Admin
+    </a>
 </div>
 
-{{-- Table Header --}}
-<div class="hidden sm:flex items-center gap-4 bg-[#1a9488] text-white rounded-2xl px-5 py-3 mb-1 font-bold text-[0.85rem] tracking-wide uppercase">
-    <span class="w-[40px] shrink-0 text-center">No</span>
-    <span class="flex-1 min-w-[120px]">Nama</span>
-    <span class="flex-1 hidden sm:block">Email</span>
-    <span class="w-[112px] shrink-0 text-center">Aksi</span>
-</div>
-
-{{-- Account List --}}
-<div id="akunList" class="flex flex-col gap-3 w-full">
-    @forelse($akuns as $akun)
-    <div class="akun-item bg-white border-[2px] border-[#1a9488] rounded-2xl px-4 sm:px-5 py-3.5 flex items-center gap-3 sm:gap-4 shadow-sm hover:shadow-md transition-shadow">
-        <span class="w-[30px] sm:w-[40px] shrink-0 text-center text-[0.85rem] font-bold text-[#1a9488]">{{ $loop->iteration + ($akuns->currentPage() - 1) * $akuns->perPage() }}</span>
-        <span class="flex-1 text-[0.93rem] font-semibold text-[#1a1a1a] min-w-[100px] truncate">{{ $akun->name }}</span>
-        <span class="flex-1 text-[0.9rem] text-[#555] hidden sm:block truncate">
-            @if($akun->email)
-                {{ $akun->email }}
-            @else
-                <span class="text-red-500 italic text-[0.8rem] font-bold uppercase tracking-tight">Akun Belum Aktif</span>
-            @endif
-        </span>
-        <div class="flex items-center justify-center gap-1.5 sm:gap-2 shrink-0 w-[120px] sm:w-[130px]">
-            @if(!$akun->email)
-                <a href="{{ route('admin.aktifkan-akun', ['id' => $akun->id]) }}" title="Aktifkan Akun" class="w-8 h-8 rounded-full bg-[#1a9488] text-white flex items-center justify-center hover:brightness-110 transition-all shadow-sm">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </a>
-            @endif
-            <a href="{{ route('admin.detail-akun', ['id' => $akun->id]) }}" title="Detail" class="w-8 h-8 rounded-full bg-[#e6f4f2] text-[#1a9488] flex items-center justify-center hover:bg-[#1a9488] hover:text-white transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            </a>
-            <a href="{{ route('admin.edit-akun', ['id' => $akun->id]) }}" title="Edit" class="w-8 h-8 rounded-full bg-[#fff4e5] text-[#f59e0b] flex items-center justify-center hover:bg-[#f59e0b] hover:text-white transition-colors">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </a>
-            <button type="button" onclick="showDeleteModal({{ $akun->id }})" title="Hapus" class="w-8 h-8 rounded-full bg-[#fce8e8] text-[#ef4444] flex items-center justify-center hover:bg-[#ef4444] hover:text-white transition-colors border-none cursor-pointer">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            </button>
-        </div>
-    </div>
-    @empty
-    <div class="text-center py-6 text-gray-500 font-medium bg-white rounded-2xl border-[2px] border-[#edf2f1]">Belum ada data akun.</div>
-    @endforelse
-
-    {{-- Pagination Links --}}
-    <div class="mt-4">
-        {{ $akuns->appends(request()->query())->links() }}
-    </div>
+<div class="bg-white rounded-[24px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-x-hidden w-full">
+    <table id="akunTable" class="w-full text-left border-collapse display">
+        <thead>
+            <tr class="bg-[#f8fcfb] border-b border-[#edf2f1]">
+                <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Email</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-[#edf2f1]">
+            @foreach($akuns as $i => $akun)
+            <tr class="hover:bg-[#fcfdfd] transition-colors">
+                <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $i + 1 }}</td>
+                <td class="p-4 text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $akun->name }}</td>
+                <td class="p-4 text-[0.9rem] text-[#555]">
+                    @if($akun->email)
+                        {{ $akun->email }}
+                    @else
+                        <span class="text-red-500 italic text-[0.8rem] font-bold uppercase tracking-tight px-2.5 py-1 rounded-md bg-red-50 border border-red-200">Belum Aktif</span>
+                    @endif
+                </td>
+                <td class="p-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                        @if(!$akun->email)
+                            <a href="{{ route('admin.aktifkan-akun', ['id' => $akun->id]) }}" title="Aktifkan Akun" class="p-2 text-white bg-[#1a9488] hover:brightness-110 rounded-lg transition-colors inline-flex">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            </a>
+                        @endif
+                        <a href="{{ route('admin.detail-akun', ['id' => $akun->id]) }}" title="Detail" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors inline-flex">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </a>
+                        <a href="{{ route('admin.edit-akun', ['id' => $akun->id]) }}" title="Edit" class="p-2 text-[#f59e0b] hover:bg-[#fffbeb] rounded-lg transition-colors inline-flex">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </a>
+                        <button type="button" onclick="showDeleteModal({{ $akun->id }})" title="Hapus" class="p-2 text-[#ef4444] hover:bg-[#fef2f2] rounded-lg transition-colors border-none bg-transparent cursor-pointer inline-flex">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 
 {{-- ===== KONFIRMASI HAPUS AKUN MODAL ===== --}}
 <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
-    {{-- Backdrop --}}
     <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="hideDeleteModal()"></div>
-
-    {{-- Modal Box --}}
     <div class="relative bg-white rounded-2xl shadow-2xl w-[320px] md:w-[420px] p-8 md:p-10 flex flex-col items-center gap-6 z-10 border-[2px] border-[#1a9488]">
-        {{-- Illustration --}}
-        <div class="h-40 w-full">
-            <img src="{{ asset('img/question mark icon.svg') }}" alt="Question Mark" class="w-full h-full object-contain">
-        </div>
-
+        <div class="h-40 w-full"><img src="{{ asset('img/question mark icon.svg') }}" alt="Question Mark" class="w-full h-full object-contain"></div>
         <p class="text-[1.1rem] md:text-[1.2rem] font-semibold text-[#1a1a1a] text-center">Apakah anda yakin hapus akun?</p>
-
         <div class="flex gap-5 w-full justify-center mt-2">
-            {{-- Button OK (Hapus) --}}
             <form id="deleteForm" action="" method="POST">
                 @csrf
                 @method('DELETE')
-                <button type="submit"
-                        class="h-[48px] w-[90px] bg-[#1a9488] text-white rounded-full flex items-center justify-center hover:brightness-105 transition-all shadow-[0_4px_12px_rgba(26,148,136,0.3)] border-none cursor-pointer">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
-                    </svg>
+                <button type="submit" class="h-[48px] w-[90px] bg-[#1a9488] text-white rounded-full flex items-center justify-center hover:brightness-105 transition-all shadow-[0_4px_12px_rgba(26,148,136,0.3)] border-none cursor-pointer">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
                 </button>
             </form>
-
-            {{-- Button Cancel --}}
-            <button type="button" onclick="hideDeleteModal()"
-                    class="h-[48px] w-[90px] bg-[#b94040] text-white rounded-full flex items-center justify-center hover:brightness-110 transition-all shadow-[0_4px_12px_rgba(185,64,64,0.3)] border-none cursor-pointer">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
-                </svg>
+            <button type="button" onclick="hideDeleteModal()" class="h-[48px] w-[90px] bg-[#b94040] text-white rounded-full flex items-center justify-center hover:brightness-110 transition-all shadow-[0_4px_12px_rgba(185,64,64,0.3)] border-none cursor-pointer">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
             </button>
         </div>
     </div>
 </div>
-
 
 @endsection
 
 @push('scripts')
 <script>
-function filterAkun() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    document.querySelectorAll('.akun-item').forEach(el => {
-        const text = el.innerText.toLowerCase();
-        el.style.display = text.includes(q) ? '' : 'none';
+$(document).ready(function() {
+    $('#akunTable').DataTable({
+        responsive: true,
+        scrollX: false,
+        autoWidth: false,
+        dom: '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>',
+        language: {
+            search: "",
+            searchPlaceholder: "Cari admin...",
+            lengthMenu: "Tampilkan _MENU_ entri",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            infoEmpty: "Data kosong",
+            infoFiltered: "(filter dari _MAX_)",
+            zeroRecords: "Tidak ada data yang ditemukan",
+            paginate: {
+                first: "Awal",
+                last: "Akhir",
+                next: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
+                previous: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
+            }
+        },
+        columnDefs: [
+            { orderable: false, targets: [0, 3] },
+            { responsivePriority: 1, targets: 1 },
+            { responsivePriority: 2, targets: 3 }
+        ]
     });
-}
+});
 
 function showDeleteModal(id) {
-    const form = document.getElementById('deleteForm');
-    form.action = "{{ route('admin.detail-akun.destroy') }}?id=" + id;
+    document.getElementById('deleteForm').action = "{{ route('admin.detail-akun.destroy') }}?id=" + id;
     document.getElementById('deleteModal').classList.remove('hidden');
     document.getElementById('deleteModal').classList.add('flex');
 }

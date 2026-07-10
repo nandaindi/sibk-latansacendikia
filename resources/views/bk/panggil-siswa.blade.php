@@ -72,8 +72,8 @@
 
             <div class="flex justify-end mt-4">
                 <button onclick="submitForm(event)"
-                        class="px-10 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:bg-[#157a70] hover:-translate-y-0.5 transition-all active:scale-95">
-                    Send
+                        class="w-full md:w-auto px-10 py-3.5 bg-[#1a9488] text-white rounded-full text-[1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] hover:bg-[#157a70] hover:-translate-y-0.5 transition-all active:scale-95">
+                    Kirim Panggilan
                 </button>
             </div>
         </div>

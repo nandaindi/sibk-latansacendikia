@@ -32,8 +32,8 @@
         <h2 class="text-[1.4rem] md:text-[1.8rem] font-extrabold text-[#1a9488] mb-1">Pengajuan Online</h2>
         <p class="text-[0.95rem] md:text-[1.05rem] text-[#1a1a1a] mb-8 md:mb-10">Silahkan masukkan data yang diperlukan</p>
 
-        <!-- Robot illustration -->
-        <img src="{{ asset('img/gpt robot with speech bubble.svg') }}" alt="Robot" class="static transform-none w-[220px] mx-auto block mb-8 md:absolute md:right-[120px] lg:right-[200px] md:top-1/2 md:-translate-y-1/2 md:w-[380px] md:mb-0 md:opacity-95 z-10 drop-shadow-sm pointer-events-none animate-robot-float animate-robot-wave">
+        <!-- Robot illustration - Hidden on mobile to save space, visible on desktop -->
+        <img src="{{ asset('img/gpt robot with speech bubble.svg') }}" alt="Robot" class="hidden md:block absolute right-[120px] lg:right-[200px] top-1/2 -translate-y-1/2 w-[380px] opacity-95 z-10 drop-shadow-sm pointer-events-none animate-robot-float animate-robot-wave">
 
         <!-- Ensure form uses left side space in desktop view -->
         <div class="w-full md:w-[55%] lg:w-[48%] z-20 flex flex-col space-y-6 md:pt-4">

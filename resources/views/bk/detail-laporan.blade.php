@@ -175,38 +175,32 @@
                     <div class="border-t border-[#edf2f1] my-3"></div>
                     <div>
                         <div class="text-[0.75rem] font-bold text-[#888] uppercase tracking-wider mb-3">Kepuasan Siswa</div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full border-collapse text-left">
+                        <div class="overflow-hidden rounded-xl border border-[#edf2f1]">
+                            <table id="kepuasanTable" class="w-full border-collapse text-left display">
                                 <thead>
-                                    <tr class="border-b-2 border-[#edf2f1]">
-                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider w-8">No</th>
-                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider">Aspek yang Dinilai</th>
-                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider text-center whitespace-nowrap">Sangat</th>
-                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider text-center whitespace-nowrap">Memuaskan</th>
-                                        <th class="py-2 px-2 text-[0.7rem] font-bold text-[#888] uppercase tracking-wider text-center whitespace-nowrap">Kurang</th>
+                                    <tr class="bg-[#fcfdfd] border-b-2 border-[#edf2f1]">
+                                        <th class="py-3 px-4 text-[0.75rem] font-bold text-[#888] uppercase tracking-wider w-12">No</th>
+                                        <th class="py-3 px-4 text-[0.75rem] font-bold text-[#888] uppercase tracking-wider">Aspek yang Dinilai</th>
+                                        <th class="py-3 px-4 text-[0.75rem] font-bold text-[#888] uppercase tracking-wider text-center">Sangat Memuaskan</th>
+                                        <th class="py-3 px-4 text-[0.75rem] font-bold text-[#888] uppercase tracking-wider text-center">Memuaskan</th>
+                                        <th class="py-3 px-4 text-[0.75rem] font-bold text-[#888] uppercase tracking-wider text-center">Kurang Memuaskan</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="divide-y divide-[#edf2f1]">
                                     @php $no = 1; @endphp
                                     @foreach($kepuasanItems as $label => $value)
                                         @if($value)
-                                        <tr class="border-b border-[#f0f0f0]">
-                                            <td class="py-3 px-2 text-[0.85rem] text-[#888] font-semibold align-top">{{ $no }}</td>
-                                            <td class="py-3 px-2 text-[0.82rem] text-[#444] leading-snug align-top">{{ $label }}</td>
-                                            <td class="py-3 px-2 text-center align-top">
-                                                @if($value == 'Sangat Memuaskan')
-                                                    <span class="text-green-600 font-bold text-lg">✓</span>
-                                                @endif
+                                        <tr class="hover:bg-[#fcfdfd] transition-colors">
+                                            <td class="py-3 px-4 text-[0.9rem] text-[#555] font-semibold align-middle">{{ $no }}</td>
+                                            <td class="py-3 px-4 text-[0.9rem] font-medium text-[#1a1a1a] whitespace-normal min-w-[200px] leading-snug align-middle">{{ $label }}</td>
+                                            <td class="py-3 px-4 text-center align-middle">
+                                                @if($value == 'Sangat Memuaskan') <span class="text-[#16a34a] font-bold text-[1.2rem]">✓</span> @endif
                                             </td>
-                                            <td class="py-3 px-2 text-center align-top">
-                                                @if($value == 'Memuaskan')
-                                                    <span class="text-yellow-600 font-bold text-lg">✓</span>
-                                                @endif
+                                            <td class="py-3 px-4 text-center align-middle">
+                                                @if($value == 'Memuaskan') <span class="text-[#ca8a04] font-bold text-[1.2rem]">✓</span> @endif
                                             </td>
-                                            <td class="py-3 px-2 text-center align-top">
-                                                @if($value == 'Kurang Memuaskan')
-                                                    <span class="text-red-500 font-bold text-lg">✓</span>
-                                                @endif
+                                            <td class="py-3 px-4 text-center align-middle">
+                                                @if($value == 'Kurang Memuaskan') <span class="text-[#ef4444] font-bold text-[1.2rem]">✓</span> @endif
                                             </td>
                                         </tr>
                                         @php $no++; @endphp
@@ -545,6 +539,26 @@
 
 @push('scripts')
 <script>
+    $(document).ready(function() {
+        if ($.fn.DataTable.isDataTable('#kepuasanTable')) {
+            $('#kepuasanTable').DataTable().destroy();
+        }
+        $('#kepuasanTable').DataTable({
+            responsive: true,
+        scrollX: false,
+        autoWidth: false,
+            paging: false,
+            searching: false,
+            info: false,
+            ordering: false,
+            dom: 'rt', // Only show the table, no wrappers
+            columnDefs: [
+                { responsivePriority: 1, targets: 1 }, // Aspek
+                { responsivePriority: 2, targets: 0 }  // No
+            ]
+        });
+    });
+
     function cetakLaporan() {
         // Hide original body children
         const children = Array.from(document.body.children);

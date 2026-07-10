@@ -3,11 +3,11 @@
 @section('title', 'Konseling Online – BK')
 
 @section('content')
-<div class="flex flex-col flex-1 w-full pb-[80px] md:pb-0" style="height: calc(100vh - 72px);">
+<div class="flex flex-col flex-1 w-full pb-[80px] md:pb-0" style="height: calc(100dvh - 72px);">
 
     <!-- Header -->
     <div class="px-4 md:px-6 pt-4 pb-3 border-b border-[#e5e7eb] bg-white flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
+        <div class="flex items-end gap-3">
             <a href="{{ route('bk.detail-sesi', ['id' => $konseling->id]) }}" class="text-[#1a9488] hover:text-[#12635a] transition-colors mr-1">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </a>
@@ -56,13 +56,17 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.882v6.236a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             </a>
             @endif
-            <input id="chatInput" type="text" placeholder="Ketik pesan…"
-                class="flex-1 bg-transparent border-none outline-none text-[0.97rem] text-[#555] placeholder-[#90a8a6] font-medium"
-                onkeydown="if(event.key==='Enter') sendMessage()"/>
-            <button onclick="sendMessage()" class="text-[#1a9488] hover:text-[#12635a] transition-colors p-1">
+            <label for="chatInput" class="sr-only">Tulis pesan</label>
+            <textarea id="chatInput" rows="1" maxlength="5000" placeholder="Ketik pesan…"
+                aria-describedby="chatInputHint chatStatus"
+                class="flex-1 max-h-30 resize-none overflow-y-auto bg-transparent border-none outline-none text-[0.97rem] leading-6 text-[#333] placeholder-[#52716e] font-medium focus-visible:ring-2 focus-visible:ring-[#1a9488] focus-visible:ring-offset-2 rounded-md"></textarea>
+            <button id="chatSendButton" type="button" onclick="sendMessage()" aria-label="Kirim pesan"
+                class="min-w-11 min-h-11 inline-flex items-center justify-center text-[#1a9488] hover:text-[#12635a] disabled:cursor-not-allowed disabled:opacity-50 transition-colors border-none bg-transparent cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a9488] rounded-full">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
         </div>
+        <div id="chatInputHint" class="mt-1.5 text-[0.72rem] text-[#496763]">Enter untuk kirim · Shift + Enter untuk baris baru</div>
+        <div id="chatStatus" class="sr-only" role="status" aria-live="polite"></div>
     </div>
 
 </div>
@@ -119,10 +123,17 @@ const CSRF         = document.querySelector('meta[name="csrf-token"]')?.content 
 const LINK_MEET    = @json($konseling->link_meet ?? '');
 
 /* ───────────── HELPERS ───────────── */
-function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function linkify(t){ return escHtml(t).replace(/(https?:\/\/[^\s]+)/g, u=>`<a href="${u}" target="_blank" class="underline opacity-90 break-all">${u}</a>`); }
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+function linkify(t){ return escHtml(t).replace(/(https?:\/\/[^\s]+)/g, u=>`<a href="${u}" target="_blank" rel="noopener noreferrer" class="underline opacity-90 break-all">${u}</a>`); }
 function fmtTime(iso){ try{ return new Date(iso).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}); }catch(e){return '';} }
 function scrollBottom(){ const a=document.getElementById('chatArea'); if(a) a.scrollTop = a.scrollHeight; }
+function announce(message){ const status = document.getElementById('chatStatus'); if(status) status.textContent = message; }
+function resizeChatInput(){
+    const input = document.getElementById('chatInput');
+    if(!input) return;
+    input.style.height = 'auto';
+    input.style.height = `${Math.min(input.scrollHeight, 120)}px`;
+}
 
 /* ───────────── BUBBLE RENDER ───────────── */
 // BK (saya) → KANAN teal | Siswa → KIRI putih
@@ -143,6 +154,7 @@ function renderBubble(msg){
     }
     const area = document.getElementById('chatArea');
     if(area){ area.appendChild(bubble); scrollBottom(); }
+    return bubble;
 }
 
 /* ───────────── LOAD HISTORY  ← dipanggil PERTAMA ───────────── */
@@ -170,12 +182,18 @@ async function loadHistory(){
 }
 
 /* ───────────── SEND ───────────── */
+let isSending = false;
 window.sendMessage = async function(){
     const input = document.getElementById('chatInput');
+    const sendButton = document.getElementById('chatSendButton');
     const text  = (input?.value || '').trim();
-    if(!text) return;
+    if(!text || isSending) return;
+    isSending = true;
+    sendButton.disabled = true;
     input.value = '';
-    renderBubble({ user_id: CURRENT_USER, pesan: text, created_at: new Date().toISOString() });
+    resizeChatInput();
+    const pendingBubble = renderBubble({ user_id: CURRENT_USER, pesan: text, created_at: new Date().toISOString() });
+    announce('Mengirim pesan');
     try {
         const headers = {
             'Content-Type':'application/json',
@@ -185,13 +203,35 @@ window.sendMessage = async function(){
             headers['X-Socket-Id'] = window.Echo.socketId();
         }
         
-        await fetch(SEND_URL, {
+        const response = await fetch(SEND_URL, {
             method:'POST',
             headers: headers,
             body: JSON.stringify({ konseling_id: KONSELING_ID, pesan: text }),
         });
-    } catch(e){ console.warn('send error:', e); }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        announce('Pesan terkirim');
+    } catch(e){
+        console.warn('send error:', e);
+        pendingBubble?.remove();
+        input.value = text;
+        resizeChatInput();
+        input.focus();
+        announce('Pesan gagal dikirim. Pesan dikembalikan ke kolom penulisan.');
+        window.showToast('Pesan belum terkirim. Periksa koneksi lalu coba lagi.', 'error');
+    } finally {
+        isSending = false;
+        sendButton.disabled = false;
+    }
 }
+
+document.getElementById('chatInput')?.addEventListener('input', resizeChatInput);
+document.getElementById('chatInput')?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        window.sendMessage();
+    }
+});
+resizeChatInput();
 
 /* ───────────── BAGIKAN LINK ───────────── */
 window.bagikanLink = function(){

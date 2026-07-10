@@ -43,6 +43,21 @@ class User extends Authenticatable
         return $this->hasMany(Konseling::class);
     }
 
+    public function assignedKonselings()
+    {
+        return $this->hasMany(Konseling::class, 'bk_id');
+    }
+
+    public function pelanggarans()
+    {
+        return $this->hasMany(Pelanggaran::class);
+    }
+
+    public function pelanggaransAsBk()
+    {
+        return $this->hasMany(Pelanggaran::class, 'bk_id');
+    }
+
     public function laporans()
     {
         return $this->hasMany(Laporan::class, 'author_id');

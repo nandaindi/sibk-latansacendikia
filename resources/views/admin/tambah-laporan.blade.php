@@ -19,9 +19,14 @@
 
         {{-- Nama Laporan --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Laporan</label>
-            <input type="text" name="nama_laporan" placeholder="Nama Laporan" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Judul Laporan</label>
+            <input type="text" name="nama_laporan"
+                   placeholder="cth: Laporan Konseling – Sem. Ganjil 2025/2026" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+            <p class="text-[0.7rem] text-[#888] mt-1.5 leading-snug">
+                💡 Gunakan nama yang mendeskripsikan <strong>periode/cakupan</strong>, bukan nama siswa.
+                Contoh: <em>"Rekap Konseling – Jul 2026"</em> atau <em>"Lap. Sem. Genap 2024/2025"</em>
+            </p>
         </div>
 
         {{-- Date --}}
