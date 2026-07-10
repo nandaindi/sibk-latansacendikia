@@ -210,6 +210,21 @@ class DashboardController extends Controller
     /** Pengajuan Sedang Diproses */
     public function pengajuanProses()
     {
+        $konseling = Konseling::where('user_id', auth()->id())
+            ->whereIn('status', ['pending', 'disetujui', 'ditolak'])
+            ->latest()
+            ->first();
+
+        if ($konseling && $konseling->status === 'disetujui') {
+            return $konseling->jenis === 'online'
+                ? redirect()->route('siswa.mulai-konseling')
+                : redirect()->route('siswa.konseling-offline');
+        }
+
+        if ($konseling && $konseling->status === 'ditolak') {
+            return redirect()->route('siswa.pengajuan-ditolak');
+        }
+
         return view('siswa.pengajuan-proses');
     }
 

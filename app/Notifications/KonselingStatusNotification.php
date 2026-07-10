@@ -65,7 +65,7 @@ class KonselingStatusNotification extends Notification
             'konseling_id' => $this->konseling->id,
             'title' => 'Sesi Konseling Selesai',
             'message' => 'Laporan konseling untuk sesi tanggal '.Carbon::parse($this->konseling->tanggal)->format('d/m/Y').' sudah tersedia.',
-            'link' => route('siswa.detail-laporan', $this->konseling->id),
+            'link' => route('siswa.chat-konseling'),
             'event_type' => 'konseling_status',
         ];
     }

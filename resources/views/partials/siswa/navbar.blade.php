@@ -473,6 +473,14 @@
                     const reloadableTypes = ['konseling_status', 'pelanggaran_baru', 'pelanggaran_status'];
                     if (shouldAutoReload && reloadableTypes.includes(notification?.data?.event_type) && !window.__konselingNotifReloadScheduled) {
                         window.__konselingNotifReloadScheduled = true;
+                        const targetLink = notification?.data?.link;
+                        if (targetLink) {
+                            const targetUrl = new URL(targetLink, window.location.origin);
+                            if (targetUrl.pathname !== window.location.pathname || targetUrl.search !== window.location.search) {
+                                setTimeout(() => window.location.href = targetUrl.toString(), 250);
+                                return;
+                            }
+                        }
                         setTimeout(() => window.location.reload(), 600);
                     }
                 });
