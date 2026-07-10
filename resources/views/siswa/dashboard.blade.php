@@ -10,15 +10,30 @@
 @endpush
 
 @section('content')
-    {{-- Notifikasi Status Pengajuan Aktif (Floating Pojok Kanan Atas - Dibawah Profile) --}}
-    {{-- Hub Notifikasi Aktif (Floating Pojok Kanan Atas) --}}
-    <div id="alertsHub" class="fixed z-40 left-4 right-4 md:left-auto md:right-6 md:w-[360px] flex flex-col gap-4" 
+    {{-- Alert tetap berada di atas; di mobile detail dibuka hanya saat indikator disentuh. --}}
+    <div id="alertsHub" class="fixed z-40 left-auto right-4 w-[calc(100vw-2rem)] max-w-[360px] flex flex-col gap-3 md:right-6 md:w-[360px] md:gap-4"
          style="top: max(88px, env(safe-area-inset-top));">
+        @if($activeKonselingCount > 0 || $activePelanggaranCount > 0)
+            <button id="mobileAlertsToggle" type="button" class="md:hidden self-end inline-flex items-center gap-2 px-3 py-2 bg-white text-[#1a9488] rounded-full border border-[#1a9488]/20 shadow-[0_4px_8px_rgba(26,148,136,0.10)] transition-colors hover:bg-[#f0f9f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a9488] focus-visible:ring-offset-2" aria-expanded="false" aria-controls="mobileAlertsPanel">
+                <span class="relative flex h-2 w-2 shrink-0">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a9488] opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-[#1a9488]"></span>
+                </span>
+                <span class="text-[0.78rem] font-bold">Alert aktif</span>
+                <span class="relative flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1 text-[0.65rem] font-black text-white shrink-0">
+                    <span class="animate-badge-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-50"></span>
+                    <span class="relative">{{ $activeKonselingCount + $activePelanggaranCount }}</span>
+                </span>
+                <svg class="h-4 w-4 transition-transform duration-200" data-alert-chevron viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+            </button>
+        @endif
+
+        <div id="mobileAlertsPanel" class="hidden md:flex md:flex-col md:gap-4">
         
         @foreach($activeAlerts as $alert)
             @if($alert->alert_type == 'konseling')
                 {{-- 1. Kartu Konseling Aktif --}}
-                <div id="activeKonselingCard" class="bg-white border border-[#1a9488]/25 rounded-2xl shadow-[0_8px_16px_rgba(26,148,136,0.16)] ring-1 ring-black/5 relative overflow-hidden w-full" style="display: none;">
+                <div id="activeKonselingCard" data-alert-card class="bg-white border border-[#1a9488]/25 rounded-xl md:rounded-2xl shadow-[0_4px_10px_rgba(26,148,136,0.12)] md:shadow-[0_8px_16px_rgba(26,148,136,0.16)] ring-1 ring-black/5 relative overflow-hidden w-full" style="display: none;">
 
                     {{-- Header Strip --}}
                     <div class="flex items-center gap-2.5 px-4 pt-4 pb-3 border-b border-[#f0f7f6]">
@@ -58,7 +73,7 @@
                     </div>
 
                     {{-- Body --}}
-                    <div class="px-4 py-3">
+                    <div class="hidden md:block px-4 py-3">
                         @if($alert->status == 'disetujui')
                             {{-- Info Row --}}
                             <div class="flex items-center gap-3 bg-[#f4faf9] rounded-xl px-3 py-2.5 mb-3">
@@ -92,7 +107,7 @@
                 </div>
             @elseif($alert->alert_type == 'pelanggaran')
                 {{-- 2. Kartu Panggil Siswa --}}
-                <div id="activePelanggaranCard" class="bg-white border border-[#edf2f1] rounded-2xl shadow-[0_8px_16px_rgba(0,0,0,0.08)] relative overflow-hidden w-full" style="display: none;">
+                <div id="activePelanggaranCard" data-alert-card class="bg-white border border-[#edf2f1] rounded-xl md:rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.08)] md:shadow-[0_8px_16px_rgba(0,0,0,0.08)] relative overflow-hidden w-full" style="display: none;">
 
                     {{-- Header Strip --}}
                     <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 border-b border-[#edf2f1]">
@@ -102,7 +117,7 @@
                         </div>
 
                         <div class="flex-1 min-w-0">
-                            <div class="font-black text-[0.82rem] text-red-600 leading-tight uppercase tracking-tight flex items-center gap-1.5">
+                            <div class="font-black text-[0.82rem] text-black leading-tight uppercase tracking-tight flex items-center gap-1.5">
                                 Panggil Siswa
                                 <span class="inline-flex h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0"></span>
                             </div>
@@ -118,12 +133,12 @@
                     </div>
 
                     {{-- Body --}}
-                    <div class="px-4 py-3">
+                    <div class="hidden md:block px-4 py-3">
                         {{-- Info Block --}}
                         <div class="flex items-center gap-3 px-1 py-1 mb-4 mt-1">
                             <div class="flex-1 min-w-0">
                                 <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Topik</div>
-                                <div class="text-[0.82rem] font-extrabold text-red-600 uppercase leading-tight line-clamp-2" title="{{ $alert->topik }}">{{ $alert->topik }}</div>
+                                <div class="text-[0.82rem] font-extrabold text-black uppercase leading-tight line-clamp-2" title="{{ $alert->topik }}">{{ $alert->topik }}</div>
                             </div>
                             <div class="w-px h-8 bg-[#edf2f1]"></div>
                             <div class="flex-1 min-w-0">
@@ -143,6 +158,7 @@
                 </div>
             @endif
         @endforeach
+        </div>
     </div>
 
     <script>
@@ -166,6 +182,8 @@
             };
 
             function updateRestoreBtn() {
+                if (window.matchMedia('(max-width: 767px)').matches) return;
+
                 let anyDismissed = false;
                 @foreach($activeAlerts as $alert)
                     if (localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') === 'true') anyDismissed = true;
@@ -184,8 +202,27 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
+                const isMobile = window.matchMedia('(max-width: 767px)').matches;
+                const mobileToggle = document.getElementById('mobileAlertsToggle');
+                const mobilePanel = document.getElementById('mobileAlertsPanel');
+
+                if (mobileToggle && mobilePanel) {
+                    mobileToggle.addEventListener('click', () => {
+                        const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+                        mobileToggle.setAttribute('aria-expanded', String(!isExpanded));
+                        mobilePanel.classList.toggle('hidden', isExpanded);
+                        mobilePanel.classList.toggle('flex', !isExpanded);
+                        mobilePanel.classList.toggle('flex-col', !isExpanded);
+                        mobilePanel.classList.toggle('gap-3', !isExpanded);
+                        mobilePanel.querySelectorAll('[data-alert-card]').forEach((card) => {
+                            card.style.display = isExpanded ? 'none' : 'block';
+                        });
+                        mobileToggle.querySelector('[data-alert-chevron]')?.classList.toggle('rotate-180', !isExpanded);
+                    });
+                }
+
                 @foreach($activeAlerts as $alert)
-                    if (localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') !== 'true') {
+                    if (!isMobile && localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') !== 'true') {
                         const cardId = '{{ $alert->alert_type == 'konseling' ? "activeKonselingCard" : "activePelanggaranCard" }}';
                         const c = document.getElementById(cardId);
                         if (c) c.style.display = 'block';
@@ -261,14 +298,12 @@
                 <span class="text-xl md:text-[1.3rem] font-extrabold text-[#1a1a1a]">Menu Konseling</span>
                 
                 @if($activeKonselingCount > 0 || $activePelanggaranCount > 0)
-                <button id="restoreNotifBtn" title="Lihat jadwal aktif" onclick="restoreNotifs()" class="hidden items-center gap-3 px-5 py-2 bg-white text-[#1a9488] rounded-full hover:bg-[#f0f9f8] transition-all border border-[#1a9488]/20 cursor-pointer shadow-[0_6px_20px_rgba(26,148,136,0.12)] group">
+                <button id="restoreNotifBtn" title="Lihat jadwal aktif" onclick="restoreNotifs()" class="hidden md:items-center gap-3 px-5 py-2 bg-white text-[#1a9488] rounded-full hover:bg-[#f0f9f8] transition-all border border-[#1a9488]/20 cursor-pointer shadow-[0_6px_20px_rgba(26,148,136,0.12)] group">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a9488] opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-[#1a9488]"></span>
                     </span>
                     <span class="text-[0.8rem] font-bold tracking-tight">Jadwal Aktif</span>
-                    
-                    {{-- Badge with Animation --}}
                     <span class="relative flex items-center justify-center">
                         <span class="animate-badge-ping absolute inline-flex h-full w-full rounded-full bg-[#ef4444] opacity-50"></span>
                         <span class="relative flex items-center justify-center w-5 h-5 bg-[#ef4444] text-white text-[0.7rem] font-black rounded-full shadow-sm group-hover:scale-110 transition-transform animate-badge-pulse">
@@ -289,15 +324,6 @@
                 
                 <!-- Card 1: Panggil Siswa (Full Width on Mobile) -->
                 <div class="col-span-2 md:col-span-1 bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full relative group/card">
-                    {{-- Badge inside Card - Clean No Shadow --}}
-                    @if($unreadPanggilanCount > 0)
-                        <div class="absolute z-20 flex items-center justify-center animate-bounce-slow" style="top: 20px; right: 20px; background: transparent !important;">
-                            <span class="flex items-center justify-center min-w-[28px] h-[28px] px-2 bg-[#ef4444] text-white text-[0.75rem] font-black rounded-full border-2 border-white">
-                                {{ $unreadPanggilanCount }}
-                            </span>
-                        </div>
-                    @endif
-
                     <div class="px-6 mb-8">
                         <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggil Siswa" class="h-[120px] md:h-[160px] w-auto object-contain transition-transform duration-500 group-hover/card:scale-110 animate-robot-wave">
                     </div>
