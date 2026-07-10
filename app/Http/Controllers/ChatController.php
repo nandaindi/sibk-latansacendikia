@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PesanChatTerkirim;
 use App\Models\Konseling;
 use App\Models\PesanChat;
+use App\Notifications\KonselingStatusNotification;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
@@ -86,6 +87,10 @@ class ChatController extends Controller
         $this->authorizeKonseling($konseling, bkOnly: true);
 
         $konseling->update(['status' => 'selesai']);
+
+        if ($konseling->user) {
+            $konseling->user->notify(new KonselingStatusNotification($konseling, 'selesai'));
+        }
 
         return response()->json([
             'ok' => true,

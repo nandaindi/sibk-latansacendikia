@@ -5,7 +5,9 @@ namespace App\Http\Controllers\BK;
 use App\Http\Controllers\Controller;
 use App\Models\Pelanggaran;
 use App\Models\User;
+use App\Notifications\PelanggaranStatusNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class PemanggilanController extends Controller
 {
@@ -49,7 +51,7 @@ class PemanggilanController extends Controller
             return back()->withInput()->with('error', 'Waktu panggilan tidak boleh di masa lalu.');
         }
 
-        Pelanggaran::create([
+        $pelanggaran = Pelanggaran::create([
             'user_id' => $request->user_id,
             'bk_id' => auth()->id(),
             'topik' => $request->topik,
@@ -58,6 +60,15 @@ class PemanggilanController extends Controller
             'status' => 'menunggu',
             'catatan_pemanggilan' => $request->catatan,
         ]);
+
+        if ($pelanggaran->user) {
+            $pelanggaran->user->notify(new PelanggaranStatusNotification($pelanggaran->loadMissing('user'), 'pelanggaran_baru'));
+        } else {
+            Notification::send(
+                User::role('siswa')->whereKey($request->user_id)->get(),
+                new PelanggaranStatusNotification($pelanggaran->loadMissing('user'), 'pelanggaran_baru')
+            );
+        }
 
         return redirect()->route('bk.riwayat-panggilan')->with('sukses', 'Siswa berhasil dipanggil untuk kasus pelanggaran!');
     }
@@ -85,6 +96,10 @@ class PemanggilanController extends Controller
             'catatan_hasil' => $request->catatan_hasil,
             'catatan_tindak_lanjut' => $request->catatan_tindak_lanjut,
         ]);
+
+        if ($pelanggaran->user) {
+            $pelanggaran->user->notify(new PelanggaranStatusNotification($pelanggaran->loadMissing('user'), 'pelanggaran_status'));
+        }
 
         return redirect()->route('bk.riwayat-panggilan')->with('sukses', 'Status pelanggaran berhasil diperbarui!');
     }

@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Artikel;
 use App\Models\Konseling;
 use App\Models\Pelanggaran;
+use App\Models\User;
+use App\Notifications\KonselingPengajuanBaruNotification;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 
@@ -143,13 +146,15 @@ class DashboardController extends Controller
             $waktu = $dt->format('H:i');
         }
 
-        DB::transaction(function () use ($request, $tanggal, $waktu) {
+        $konseling = DB::transaction(function () use ($request, $tanggal, $waktu) {
             \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
             if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
                 throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
             }
-            Konseling::create(['user_id' => auth()->id(), 'jenis' => 'online', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
+            return Konseling::create(['user_id' => auth()->id(), 'jenis' => 'online', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
         });
+
+        $this->kirimNotifikasiPengajuanBaru($konseling);
 
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
@@ -189,13 +194,15 @@ class DashboardController extends Controller
             $waktu = $dt->format('H:i');
         }
 
-        DB::transaction(function () use ($request, $tanggal, $waktu) {
+        $konseling = DB::transaction(function () use ($request, $tanggal, $waktu) {
             \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
             if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
                 throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
             }
-            Konseling::create(['user_id' => auth()->id(), 'jenis' => 'offline', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
+            return Konseling::create(['user_id' => auth()->id(), 'jenis' => 'offline', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
         });
+
+        $this->kirimNotifikasiPengajuanBaru($konseling);
 
         return redirect()->route('siswa.pengajuan-proses')->with('pengajuan_sukses', true);
     }
@@ -380,5 +387,13 @@ class DashboardController extends Controller
         );
 
         return view('siswa.notifications-index', compact('notifications'));
+    }
+
+    private function kirimNotifikasiPengajuanBaru(Konseling $konseling): void
+    {
+        Notification::send(
+            User::role('bk')->get(),
+            new KonselingPengajuanBaruNotification($konseling->loadMissing('user'))
+        );
     }
 }

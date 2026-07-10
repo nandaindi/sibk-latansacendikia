@@ -397,6 +397,36 @@
 </script>
 @endif
 
+<script>
+    window.addEventListener('load', () => {
+        if (window.Echo) {
+            const canAutoReload = [
+                /^\/bk\/dashboard\/?$/,
+                /^\/bk\/daftar-pengajuan\/?$/,
+                /^\/bk\/sesi-konseling\/?$/,
+                /^\/bk\/riwayat-panggilan\/?$/,
+                /^\/bk\/laporan-konseling\/?$/,
+                /^\/bk\/konseling-online\/?$/,
+                /^\/bk\/panggil-siswa\/?$/
+            ];
+            const shouldAutoReload = canAutoReload.some((pattern) => pattern.test(window.location.pathname));
+
+            window.Echo.private('App.Models.User.' + {{ auth()->id() }})
+                .notification((notification) => {
+                    if (window.showToast) {
+                        window.showToast(notification.title || 'Notifikasi Baru', 'success', true);
+                    }
+
+                    const reloadableTypes = ['konseling_pengajuan_baru', 'konseling_status', 'pelanggaran_baru', 'pelanggaran_status'];
+                    if (shouldAutoReload && reloadableTypes.includes(notification?.data?.event_type) && !window.__bkNotifReloadScheduled) {
+                        window.__bkNotifReloadScheduled = true;
+                        setTimeout(() => window.location.reload(), 600);
+                    }
+                });
+        }
+    });
+</script>
+
 
 <!-- jQuery and DataTables -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

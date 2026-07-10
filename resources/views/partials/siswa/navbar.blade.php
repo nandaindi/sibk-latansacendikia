@@ -451,17 +451,30 @@
 
     window.addEventListener('load', () => {
         if (window.Echo) {
+            const canAutoReload = [
+                /^\/siswa\/dashboard\/?$/,
+                /^\/siswa\/notifications(\/)?(\?.*)?$/,
+                /^\/siswa\/riwayat-konseling\/?$/,
+                /^\/siswa\/panggilan\/?$/,
+                /^\/siswa\/mulai-konseling\/?$/,
+                /^\/siswa\/konseling-offline\/?$/,
+                /^\/siswa\/chat-konseling\/?$/,
+                /^\/siswa\/pengajuan-proses\/?$/,
+                /^\/siswa\/pengajuan-ditolak\/?$/
+            ];
+            const shouldAutoReload = canAutoReload.some((pattern) => pattern.test(window.location.pathname));
+
             window.Echo.private('App.Models.User.' + {{ auth()->id() }})
                 .notification((notification) => {
                     if (window.showToast) {
                         window.showToast(notification.title || 'Notifikasi Baru', 'success', true);
                     }
-                    
-                    document.querySelectorAll('button > svg').forEach(svg => {
-                        if (!svg.querySelector('circle[fill="#ef4444"]')) {
-                            svg.innerHTML += '<circle cx="19" cy="5" r="3.5" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>';
-                        }
-                    });
+
+                    const reloadableTypes = ['konseling_status', 'pelanggaran_baru', 'pelanggaran_status'];
+                    if (shouldAutoReload && reloadableTypes.includes(notification?.data?.event_type) && !window.__konselingNotifReloadScheduled) {
+                        window.__konselingNotifReloadScheduled = true;
+                        setTimeout(() => window.location.reload(), 600);
+                    }
                 });
         }
     });

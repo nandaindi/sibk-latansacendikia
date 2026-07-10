@@ -296,6 +296,10 @@ class DashboardController extends Controller
             'catatan_bk' => $this->formatCatatan($request),
         ]);
 
+        if ($konseling->user) {
+            $konseling->user->notify(new KonselingStatusNotification($konseling, 'selesai'));
+        }
+
         $this->buatLaporan($konseling);
         $this->buatPertemuanLanjutan($request, $konseling);
 

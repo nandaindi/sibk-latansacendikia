@@ -4,15 +4,10 @@ namespace App\Notifications;
 
 use App\Models\Konseling;
 use Carbon\Carbon;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class KonselingStatusNotification extends Notification implements ShouldQueue
+class KonselingStatusNotification extends Notification
 {
-    use Queueable;
-
     public $konseling;
 
     public $statusType;
@@ -33,37 +28,7 @@ class KonselingStatusNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database', 'broadcast'];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        $message = (new MailMessage)->greeting('Halo '.$notifiable->name.',');
-
-        if ($this->statusType === 'disetujui') {
-            $waktu = Carbon::parse($this->konseling->waktu)->format('H:i');
-            $tanggal = Carbon::parse($this->konseling->tanggal)->format('d F Y');
-
-            $message->subject('Hore! Pengajuan Konseling Anda Disetujui')
-                ->line('Guru BK telah menyetujui pengajuan sesi konseling Anda.')
-                ->line('Tanggal: '.$tanggal)
-                ->line('Waktu: '.$waktu)
-                ->line('Jenis: '.ucfirst($this->konseling->jenis));
-
-            if ($this->konseling->jenis === 'online' && $this->konseling->link_meet) {
-                $message->line('Link Pertemuan: '.$this->konseling->link_meet);
-            }
-        } elseif ($this->statusType === 'ditolak') {
-            $message->subject('Maaf, Pengajuan Konseling Anda Ditolak')
-                ->line('Guru BK tidak dapat menyetujui jadwal konseling yang Anda ajukan pada saat ini.')
-                ->line('Alasan penolakan: '.$this->konseling->alasan_tolak)
-                ->line('Jangan patah semangat, Anda dapat mencoba menjadwalkan ulang di hari lain.');
-        }
-
-        return $message->line('Terima kasih telah menggunakan layanan Bimbingan Konseling!');
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -75,20 +40,33 @@ class KonselingStatusNotification extends Notification implements ShouldQueue
     {
         if ($this->statusType === 'disetujui') {
             $waktu = Carbon::parse($this->konseling->waktu)->format('H:i');
+            $link = $this->konseling->jenis === 'online'
+                ? route('siswa.mulai-konseling')
+                : route('siswa.konseling-offline');
 
             return [
                 'konseling_id' => $this->konseling->id,
                 'title' => 'Pengajuan Disetujui!',
                 'message' => 'Pengajuan Anda disetujui untuk '.Carbon::parse($this->konseling->tanggal)->format('d/m/Y').' jam '.$waktu,
-                'link' => '#',
+                'link' => $link,
+                'event_type' => 'konseling_status',
             ];
-        } else {
+        } elseif ($this->statusType === 'ditolak') {
             return [
                 'konseling_id' => $this->konseling->id,
                 'title' => 'Pengajuan Ditolak',
                 'message' => 'Jadwal yang diajukan tidak dapat dipenuhi dengan alasan: '.$this->konseling->alasan_tolak,
-                'link' => '#',
+                'link' => route('siswa.pengajuan-ditolak'),
+                'event_type' => 'konseling_status',
             ];
         }
+
+        return [
+            'konseling_id' => $this->konseling->id,
+            'title' => 'Sesi Konseling Selesai',
+            'message' => 'Laporan konseling untuk sesi tanggal '.Carbon::parse($this->konseling->tanggal)->format('d/m/Y').' sudah tersedia.',
+            'link' => route('siswa.detail-laporan', $this->konseling->id),
+            'event_type' => 'konseling_status',
+        ];
     }
 }
