@@ -36,10 +36,11 @@
                 <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0 relative">
                     <img src="{{ asset('img/Phone conversation with speech bubble.svg') }}" alt="Panggil Siswa" class="h-10 object-contain transition-transform group-hover:scale-110">
                 </div>
-                <div>
+                <div class="min-w-0">
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors mb-1">Panggil Siswa</div>
                     <div class="text-[0.85rem] text-[#777]">Panggil siswa atas dasar kasus pelanggaran.</div>
                 </div>
+                <svg class="w-5 h-5 ml-auto shrink-0 text-[#1a9488] md:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </div>
         </a>
 
@@ -52,10 +53,11 @@
                     <div class="absolute -top-1.5 -right-1.5 w-6 h-6 bg-[#f59e0b] text-white text-[0.75rem] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ $pendingCount }}</div>
                     @endif
                 </div>
-                <div>
+                <div class="min-w-0">
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors mb-1">Daftar Pengajuan</div>
                     <div class="text-[0.85rem] text-[#777]">Tinjau dan proses permintaan siswa.</div>
                 </div>
+                <svg class="w-5 h-5 ml-auto shrink-0 text-[#1a9488] md:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </div>
         </a>
 
@@ -68,10 +70,11 @@
                     <div class="absolute -top-1.5 -right-1.5 w-6 h-6 bg-blue-500 text-white text-[0.75rem] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm">{{ $sesiAktifCount }}</div>
                     @endif
                 </div>
-                <div>
+                <div class="min-w-0">
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] group-hover:text-[#1a9488] transition-colors mb-1">Sesi Aktif</div>
                     <div class="text-[0.85rem] text-[#777]">Sesi konseling yang telah disetujui.</div>
                 </div>
+                <svg class="w-5 h-5 ml-auto shrink-0 text-[#1a9488] md:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
             </div>
         </a>
     </div>

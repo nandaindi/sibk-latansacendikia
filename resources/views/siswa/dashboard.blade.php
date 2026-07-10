@@ -314,14 +314,60 @@
                 @endif
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
-                @php
-                    $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
-                        ->where('status', 'menunggu')
-                        ->where('is_read', false)
-                        ->count();
-                @endphp
-                
+            @php
+                $unreadPanggilanCount = \App\Models\Pelanggaran::where('user_id', auth()->id())
+                    ->where('status', 'menunggu')
+                    ->where('is_read', false)
+                    ->count();
+            @endphp
+
+            {{-- Mobile: menu ringkas tanpa animasi, mengikuti pola kartu Guru BK. --}}
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                <a href="{{ route('siswa.panggilan') }}" class="no-underline">
+                    <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden flex items-center p-5 gap-5">
+                        <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0 relative">
+                            <img src="{{ asset('img/gpt robot calling on phone.svg') }}" alt="Panggil Siswa" class="h-10 w-auto object-contain">
+                            @if($unreadPanggilanCount > 0)
+                                <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#ef4444] border-2 border-white" aria-label="Ada panggilan baru"></span>
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-[1.1rem] font-bold text-[#1a1a1a] mb-1">Panggil Siswa</div>
+                            <div class="text-[0.85rem] text-[#777]">Lihat panggilan dari Guru BK.</div>
+                        </div>
+                        <svg class="w-5 h-5 ml-auto shrink-0 text-[#1a9488]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </div>
+                </a>
+
+                <a href="{{ route('siswa.pengajuan-online') }}" class="no-underline">
+                    <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden flex items-center p-5 gap-5">
+                        <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0">
+                            <img src="{{ asset('img/cute robot using laptop.svg') }}" alt="Pengajuan Online" class="h-10 w-auto object-contain">
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-[1.1rem] font-bold text-[#1a1a1a] mb-1">Pengajuan Online</div>
+                            <div class="text-[0.85rem] text-[#777]">Ajukan sesi konseling secara online.</div>
+                        </div>
+                        <svg class="w-5 h-5 ml-auto shrink-0 text-[#1a9488]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </div>
+                </a>
+
+                <a href="{{ route('siswa.pengajuan-offline') }}" class="no-underline">
+                    <div class="bg-white rounded-[20px] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden flex items-center p-5 gap-5">
+                        <div class="w-16 h-16 rounded-2xl bg-[#e0f5f3] flex items-center justify-center shrink-0">
+                            <img src="{{ asset('img/friendly cute robot.svg') }}" alt="Pengajuan Offline" class="h-10 w-auto object-contain">
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-[1.1rem] font-bold text-[#1a1a1a] mb-1">Pengajuan Offline</div>
+                            <div class="text-[0.85rem] text-[#777]">Ajukan sesi konseling tatap muka.</div>
+                        </div>
+                        <svg class="w-5 h-5 ml-auto shrink-0 text-[#1a9488]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </div>
+                </a>
+            </div>
+
+            {{-- Desktop: pertahankan tampilan kartu visual yang telah ada. --}}
+            <div class="hidden md:grid md:grid-cols-3 gap-6">
                 <!-- Card 1: Panggil Siswa (Full Width on Mobile) -->
                 <div class="col-span-2 md:col-span-1 bg-white rounded-[32px] pt-10 md:pt-12 flex flex-col items-center overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(26,148,136,0.12)] border border-[#edf2f1] shadow-[0_4px_12px_rgba(0,0,0,0.02)] h-full relative group/card">
                     <div class="px-6 mb-8">
