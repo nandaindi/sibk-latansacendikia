@@ -153,11 +153,27 @@
             font-size: 0.8rem !important;
             font-weight: 700 !important;
             cursor: pointer !important;
-            color: #555 !important;
-            background: #fff !important;
-            border: 2px solid #edf2f1 !important;
+            color: #fff !important;
+            background: #1a7a70 !important;
+            border: 2px solid #1a7a70 !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             user-select: none;
+            text-decoration: none !important;
+        }
+        .dataTables_paginate .paginate_button,
+        .dataTables_paginate .paginate_button:link,
+        .dataTables_paginate .paginate_button:visited,
+        .dataTables_paginate a.paginate_button,
+        .dataTables_paginate a.paginate_button:link,
+        .dataTables_paginate a.paginate_button:visited {
+            color: #fff !important;
+        }
+        /* Force white text on prev/next — DataTables CDN CSS override */
+        html body .dataTables_paginate a.paginate_button,
+        html body .dataTables_paginate span.paginate_button {
+            color: #fff !important;
+            background: #1a7a70 !important;
+            border: 2px solid #1a7a70 !important;
         }
         @media (min-width: 768px) {
             .dataTables_paginate .paginate_button {
@@ -170,21 +186,25 @@
             }
         }
         .dataTables_paginate .paginate_button:hover {
-            background: #f4f6f9 !important;
-            color: #1a9488 !important;
-            border-color: #d1e3e1 !important;
+            background: #1a9488 !important;
+            color: #fff !important;
+            border-color: #1a9488 !important;
         }
-        .dataTables_paginate .paginate_button.current {
+        .dataTables_paginate .paginate_button.current,
+        .dataTables_paginate .paginate_button.current:hover,
+        .dataTables_paginate span .paginate_button.current,
+        .dataTables_paginate span .paginate_button.current:hover {
             background: #1a9488 !important;
             color: #fff !important;
             border-color: #1a9488 !important;
             box-shadow: 0 4px 10px rgba(26,148,136,0.2) !important;
+            text-shadow: none !important;
         }
         .dataTables_paginate .paginate_button.disabled {
-            opacity: 0.5 !important;
+            opacity: 0.4 !important;
             cursor: not-allowed !important;
-            background: #f9f9f9 !important;
-            color: #aaa !important;
+            background: #1a7a70 !important;
+            color: #fff !important;
         }
         
         /* Table overrides */
@@ -441,6 +461,28 @@
     }
 </script>
 
+<script>
+// Global DataTable defaults — shared across all BK pages
+$.fn.dataTable.defaults.responsive = true;
+$.fn.dataTable.defaults.scrollX    = false;
+$.fn.dataTable.defaults.autoWidth  = false;
+$.fn.dataTable.defaults.dom        = '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>';
+$.extend(true, $.fn.dataTable.defaults, {
+    language: {
+        search: "",
+        lengthMenu:   "Tampilkan _MENU_ entri",
+        info:         "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+        infoEmpty:    "",
+        infoFiltered: "(filter dari _MAX_)",
+        paginate: {
+            first:    "Awal",
+            last:     "Akhir",
+            next:     '<svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
+            previous: '<svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
+        }
+    }
+});
+</script>
 @stack('scripts')
 </body>
 </html>

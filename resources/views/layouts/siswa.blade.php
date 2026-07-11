@@ -47,6 +47,11 @@
         }
         .animate-toast-in { animation: toast-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .toast-hide { opacity: 0; transform: translateY(-20px); transition: all 0.4s ease; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-toast-in { animation: none; opacity: 1; transform: none; }
+            .toast-hide { transition: opacity 0.2s ease; transform: none; }
+        }
     </style>
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -68,11 +73,16 @@
         .dataTables_info { font-size: 0.75rem; color: #888; font-weight: 600; white-space: nowrap; }
         @media (min-width: 768px) { .dataTables_info { font-size: 0.85rem; } }
         .dataTables_paginate { display: flex; align-items: center; justify-content: flex-end; gap: 0.25rem; flex-wrap: nowrap; }
-        .dataTables_paginate .paginate_button { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-width: 32px !important; height: 32px !important; padding: 0 6px !important; border-radius: 8px !important; font-size: 0.8rem !important; font-weight: 700 !important; cursor: pointer !important; color: #555 !important; background: #fff !important; border: 2px solid #edf2f1 !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important; user-select: none; }
+        .dataTables_paginate .paginate_button { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-width: 32px !important; height: 32px !important; padding: 0 6px !important; border-radius: 8px !important; font-size: 0.8rem !important; font-weight: 700 !important; cursor: pointer !important; color: #fff !important; background: #1a7a70 !important; border: 2px solid #1a7a70 !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important; user-select: none; text-decoration: none !important; }
+        .dataTables_paginate .paginate_button, .dataTables_paginate .paginate_button:link, .dataTables_paginate .paginate_button:visited, .dataTables_paginate a.paginate_button, .dataTables_paginate a.paginate_button:link, .dataTables_paginate a.paginate_button:visited { color: #fff !important; }
+        html body .dataTables_paginate a.paginate_button, html body .dataTables_paginate span.paginate_button { color: #fff !important; background: #1a7a70 !important; border: 2px solid #1a7a70 !important; }
         @media (min-width: 768px) { .dataTables_paginate .paginate_button { min-width: 36px !important; height: 36px !important; padding: 0 10px !important; font-size: 0.85rem !important; border-radius: 10px !important; } }
-        .dataTables_paginate .paginate_button:hover { background: #f4f6f9 !important; color: #1a9488 !important; border-color: #1a9488 !important; }
-        .dataTables_paginate .paginate_button.current, .dataTables_paginate .paginate_button.current:hover { background: #1a9488 !important; color: #fff !important; border-color: #1a9488 !important; }
-        .dataTables_paginate .paginate_button.disabled, .dataTables_paginate .paginate_button.disabled:hover { opacity: 0.35 !important; cursor: not-allowed !important; background: #fff !important; color: #aaa !important; border-color: #edf2f1 !important; }
+        .dataTables_paginate .paginate_button:hover { background: #1a9488 !important; color: #fff !important; border-color: #1a9488 !important; }
+        .dataTables_paginate .paginate_button.current,
+        .dataTables_paginate .paginate_button.current:hover,
+        .dataTables_paginate span .paginate_button.current,
+        .dataTables_paginate span .paginate_button.current:hover { background: #1a9488 !important; color: #fff !important; border-color: #1a9488 !important; text-shadow: none !important; box-shadow: none !important; }
+        .dataTables_paginate .paginate_button.disabled, .dataTables_paginate .paginate_button.disabled:hover { opacity: 0.4 !important; cursor: not-allowed !important; background: #1a7a70 !important; color: #fff !important; border-color: #1a7a70 !important; }
         table.dataTable thead th { padding: 12px 16px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #888; background: #f8fcfb; border-bottom: 2px solid #edf2f1 !important; white-space: nowrap; }
         table.dataTable tbody tr { transition: background 0.15s; }
         table.dataTable tbody tr:hover { background: #fcfdfd !important; }
@@ -209,7 +219,7 @@
 </head>
 <body class="bg-[#f4f6f9] min-h-screen text-[#1a1a1a]">
 
-<div id="toast-container" class="fixed top-5 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-[9999] pointer-events-none md:w-full md:max-w-sm flex flex-col items-center gap-3"></div>
+<div id="toast-container" class="fixed top-5 z-[9999] pointer-events-none flex flex-col items-center gap-2" style="left:50%;transform:translateX(-50%);width:max-content;max-width:min(320px,calc(100vw - 2rem));"></div>
 
 @include('partials.siswa.modals')
 
@@ -246,9 +256,9 @@
         const closeBtn = `<button onclick="closeToast('${id}')" class="ml-3 p-1 hover:bg-white/20 rounded-full transition-colors pointer-events-auto border-none bg-transparent text-white cursor-pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
 
         const toastHtml = `
-            <div id="${id}" class="animate-toast-in pointer-events-auto ${bgColor} text-white px-4 py-3 rounded-xl text-[0.9rem] font-bold shadow-[0_8px_16px_rgba(0,0,0,0.15)] flex items-start gap-3 w-full">
+            <div id="${id}" class="animate-toast-in pointer-events-auto ${bgColor} text-white px-5 py-2.5 rounded-full text-[0.85rem] font-semibold shadow-[0_8px_24px_rgba(0,0,0,0.18)] flex items-center gap-2.5 whitespace-nowrap">
                 ${icon}
-                <span class="min-w-0 break-words">${message}</span>
+                <span>${message}</span>
                 ${sticky ? closeBtn : ''}
             </div>
         `;
@@ -325,6 +335,28 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script>
+// Global DataTable defaults — shared across all Siswa pages
+$.fn.dataTable.defaults.responsive = true;
+$.fn.dataTable.defaults.scrollX    = false;
+$.fn.dataTable.defaults.autoWidth  = false;
+$.fn.dataTable.defaults.dom        = '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>';
+$.extend(true, $.fn.dataTable.defaults, {
+    language: {
+        search: "",
+        lengthMenu:   "Tampilkan _MENU_ entri",
+        info:         "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+        infoEmpty:    "",
+        infoFiltered: "(filter dari _MAX_)",
+        paginate: {
+            first:    "Awal",
+            last:     "Akhir",
+            next:     '<svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
+            previous: '<svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
+        }
+    }
+});
+</script>
 @stack('scripts')
 </body>
 </html>
