@@ -23,8 +23,8 @@ class PemanggilanController extends Controller
     {
         $status = $request->query('status');
 
-        $query = Pelanggaran::with('user')->where('bk_id', auth()->id());
-        if ($status && in_array($status, ['menunggu', 'selesai', 'tidak_hadir'])) {
+        $query = Pelanggaran::with('user', 'bk')->latest();
+        if ($status && in_array($status, ['menunggu', 'diterima', 'selesai', 'tidak_hadir'])) {
             $query->where('status', $status);
         }
         $riwayatPanggilan = $query->latest()->paginate(10)->withQueryString();
@@ -76,7 +76,7 @@ class PemanggilanController extends Controller
     /** View detail / form to finish violation */
     public function detail($id)
     {
-        $pelanggaran = Pelanggaran::with('user')->where('bk_id', auth()->id())->findOrFail($id);
+        $pelanggaran = Pelanggaran::with('user', 'bk')->findOrFail($id);
 
         return view('bk.detail-pelanggaran', compact('pelanggaran'));
     }
@@ -90,7 +90,7 @@ class PemanggilanController extends Controller
             'status' => 'required|in:selesai,tidak_hadir',
         ]);
 
-        $pelanggaran = Pelanggaran::where('bk_id', auth()->id())->where('status', 'menunggu')->findOrFail($id);
+        $pelanggaran = Pelanggaran::where('bk_id', auth()->id())->whereIn('status', ['menunggu', 'diterima'])->findOrFail($id);
         $pelanggaran->update([
             'status' => $request->status,
             'catatan_hasil' => $request->catatan_hasil,
