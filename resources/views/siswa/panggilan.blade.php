@@ -11,7 +11,7 @@
                 Panggilan Masuk
             </div>
 
-            @php $panggilanAktif = $panggilan->where('status', 'menunggu'); @endphp
+            @php $panggilanAktif = $panggilan->whereIn('status', ['menunggu', 'diterima']); @endphp
 
             @forelse($panggilanAktif as $item)
             @php $sudahDibaca = $item->is_read; @endphp
@@ -33,6 +33,8 @@
                 </div>
                 @if($sudahDibaca)
                     <span class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#f0f0f0] text-[#aaa] border border-[#e0e0e0] self-start md:self-center">Dilihat</span>
+                @elseif($item->status == 'diterima')
+                    <span class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#e0f5f3] text-[#1a9488] border border-[#c7ece8] self-start md:self-center">Harap Hadir</span>
                 @else
                     <span class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#fff3cd] text-[#c97a00] border border-[#ffeeba] self-start md:self-center">Baru</span>
                 @endif

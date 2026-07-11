@@ -10,11 +10,14 @@
 @endpush
 
 @section('content')
-    {{-- Alert tetap berada di atas; di mobile detail dibuka hanya saat indikator disentuh. --}}
-    <div id="alertsHub" class="fixed z-40 left-auto right-4 w-[calc(100vw-2rem)] max-w-[360px] flex flex-col gap-3 md:right-6 md:w-[360px] md:gap-4"
-         style="top: max(88px, env(safe-area-inset-top));">
+    {{-- Alert Hub: dropdown notifikasi pojok kanan atas --}}
+    <div id="alertsHub" class="fixed z-50 right-4 md:right-6 flex flex-col items-end"
+         style="top: max(88px, calc(env(safe-area-inset-top, 0px) + 88px));">
         @if($activeKonselingCount > 0 || $activePelanggaranCount > 0)
-            <button id="mobileAlertsToggle" type="button" class="md:hidden self-end inline-flex items-center gap-2 px-3 py-2 bg-white text-[#1a9488] rounded-full border border-[#1a9488]/20 shadow-[0_4px_8px_rgba(26,148,136,0.10)] transition-colors hover:bg-[#f0f9f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a9488] focus-visible:ring-offset-2" aria-expanded="false" aria-controls="mobileAlertsPanel">
+            <button id="mobileAlertsToggle" type="button"
+                    class="inline-flex items-center gap-2 px-3 py-2 bg-white text-[#1a9488] rounded-full border border-[#1a9488]/20 shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-all hover:bg-[#f0f9f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a9488] focus-visible:ring-offset-2 cursor-pointer"
+                    aria-expanded="false" aria-controls="mobileAlertsPanel"
+                    aria-label="Lihat alert aktif">
                 <span class="relative flex h-2 w-2 shrink-0">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1a9488] opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-[#1a9488]"></span>
@@ -26,152 +29,149 @@
                 </span>
                 <svg class="h-4 w-4 transition-transform duration-200" data-alert-chevron viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
             </button>
-        @endif
 
-        <div id="mobileAlertsPanel" class="hidden md:flex md:flex-col md:gap-4">
+            <div id="mobileAlertsPanel"
+                 class="hidden mt-2 w-[320px] max-w-[calc(100vw-2rem)] flex-col gap-3 overflow-y-auto overscroll-contain"
+                 style="max-height: min(70dvh, 500px);"
+                 aria-live="polite">
         
         @foreach($activeAlerts as $alert)
             @if($alert->alert_type == 'konseling')
-                {{-- 1. Kartu Konseling Aktif --}}
-                <div id="activeKonselingCard" data-alert-card class="bg-white border border-[#1a9488]/25 rounded-xl md:rounded-2xl shadow-[0_4px_10px_rgba(26,148,136,0.12)] md:shadow-[0_8px_16px_rgba(26,148,136,0.16)] ring-1 ring-black/5 relative overflow-hidden w-full" style="display: none;">
-
-                    {{-- Header Strip --}}
-                    <div class="flex items-center gap-2.5 px-4 pt-4 pb-3 border-b border-[#f0f7f6]">
-                        {{-- Icon Status --}}
-                        @if($alert->status == 'disetujui')
-                            <div class="w-8 h-8 rounded-full bg-[#e6f7f5] flex items-center justify-center shrink-0">
-                                <svg width="16" height="16" fill="none" stroke="#1a9488" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-black text-[0.82rem] text-[#1a1a1a] leading-tight uppercase tracking-tight">Jadwal Konseling Aktif</div>
-                                <div class="text-[0.7rem] text-[#1a9488] font-semibold mt-0.5">Terkonfirmasi</div>
-                            </div>
-                        @elseif($alert->status == 'dipanggil')
-                            <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
-                                <svg width="16" height="16" fill="none" stroke="#d97706" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-black text-[0.82rem] text-[#1a1a1a] leading-tight uppercase tracking-tight">Kamu Dipanggil Guru BK</div>
-                                <div class="text-[0.7rem] text-amber-600 font-semibold mt-0.5">Segera Hadir</div>
-                            </div>
-                        @else
-                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                                <svg width="16" height="16" fill="none" stroke="#64748b" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="font-black text-[0.82rem] text-[#1a1a1a] leading-tight uppercase tracking-tight">Menunggu Persetujuan</div>
-                                <div class="text-[0.7rem] text-slate-500 font-semibold mt-0.5">Sedang Diproses</div>
-                            </div>
-                        @endif
-
-                        {{-- Close Button --}}
-                        <button onclick="dismissNotif('konseling', '{{ $alert->id }}')"
-                                class="w-6 h-6 flex items-center justify-center rounded-full border border-red-100 bg-white text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all cursor-pointer shrink-0"
-                                title="Tutup">
-                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-
-                    {{-- Body --}}
-                    <div class="hidden md:block px-4 py-3">
-                        @if($alert->status == 'disetujui')
-                            {{-- Info Row --}}
-                            <div class="flex items-center gap-3 bg-[#f4faf9] rounded-xl px-3 py-2.5 mb-3">
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Jenis Sesi</div>
-                                    <div class="text-[0.82rem] font-extrabold text-[#1a1a1a] capitalize">{{ $alert->jenis }}</div>
-                                </div>
-                                <div class="w-px h-8 bg-[#d6eeec]"></div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
-                                    <div class="text-[0.82rem] font-extrabold text-[#1a9488]">
-                                        {{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d F Y') }}, {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
+                {{-- Kartu Konseling Aktif --}}
+                <div id="activeKonselingCard" data-alert-card class="bg-white rounded-2xl overflow-hidden w-full shadow-[0_4px_20px_rgba(0,0,0,0.08)]" style="display:none;">
+                    @if($alert->status == 'disetujui')
+                    <div class="px-4 py-3.5">
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-[#e6f7f5] flex items-center justify-center shrink-0">
+                                        <svg width="15" height="15" fill="none" stroke="#1a9488" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
+                                    <div>
+                                        <div class="font-bold text-[0.85rem] text-[#1a1a1a] leading-tight">Jadwal Konseling</div>
+                                        <div class="text-[0.7rem] text-[#1a9488] font-semibold mt-0.5">Terkonfirmasi</div>
+                                    </div>
+                                </div>
+                                <button onclick="dismissNotif('konseling', '{{ $alert->id }}')"
+                                        class="w-7 h-7 flex items-center justify-center rounded-full text-[#ccc] hover:text-[#888] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0"
+                                        aria-label="Tutup">
+                                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                            <div class="bg-[#f4faf9] rounded-xl px-3 py-2.5 mb-3 flex items-center gap-3">
+                                <div>
+                                    <div class="text-[0.72rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d M Y') }}</div>
+                                    <div class="text-[0.7rem] text-[#666]">{{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }} · {{ ucfirst($alert->jenis) }}</div>
                                 </div>
                             </div>
                             <a href="{{ $alert->jenis == 'online' ? route('siswa.mulai-konseling') : route('siswa.konseling-offline') }}"
-                               class="flex items-center justify-center gap-2 w-full py-2.5 bg-[#1a9488] text-white text-[0.78rem] font-black rounded-xl hover:bg-[#157a70] transition-all no-underline shadow-sm tracking-wide">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                MULAI SESI SEKARANG
+                               class="flex items-center justify-center gap-2 w-full py-2.5 bg-[#1a9488] text-white text-[0.78rem] font-bold rounded-xl hover:bg-[#157a70] active:scale-[0.98] transition-all no-underline">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Mulai Sesi Sekarang
                             </a>
-                        @elseif($alert->status == 'dipanggil')
-                            <p class="text-[0.8rem] text-[#555] font-medium leading-relaxed">
-                                Segera ke ruang BK hari ini sesuai instruksi Guru BK.
-                            </p>
-                        @else
-                            <p class="text-[0.8rem] text-[#555] font-medium leading-relaxed">
-                                Pengajuan <span class="font-bold text-[#1a1a1a]">{{ $alert->jenis }}</span> sedang diproses oleh Guru BK.
-                            </p>
-                        @endif
                     </div>
+                    @elseif($alert->status == 'dipanggil')
+                    <div class="px-4 py-3.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
+                                        <svg width="15" height="15" fill="none" stroke="#d97706" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-[0.85rem] text-[#1a1a1a]">Dipanggil Guru BK</div>
+                                        <div class="text-[0.7rem] text-amber-600 font-semibold mt-0.5">Segera hadir ke ruang BK</div>
+                                    </div>
+                                </div>
+                                <button onclick="dismissNotif('konseling', '{{ $alert->id }}')" class="w-7 h-7 flex items-center justify-center rounded-full text-[#ccc] hover:text-[#888] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0" aria-label="Tutup">
+                                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                    </div>
+                    @else
+                    <div class="px-4 py-3.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                                        <svg width="15" height="15" fill="none" stroke="#64748b" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-[0.85rem] text-[#1a1a1a]">Menunggu Konfirmasi</div>
+                                        <div class="text-[0.7rem] text-slate-500 font-semibold mt-0.5">Pengajuan {{ $alert->jenis }} diproses</div>
+                                    </div>
+                                </div>
+                                <button onclick="dismissNotif('konseling', '{{ $alert->id }}')" class="w-7 h-7 flex items-center justify-center rounded-full text-[#ccc] hover:text-[#888] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0" aria-label="Tutup">
+                                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                    </div>
+                    @endif
                 </div>
             @elseif($alert->alert_type == 'pelanggaran')
-                {{-- 2. Kartu Panggil Siswa --}}
-                <div id="activePelanggaranCard" data-alert-card class="bg-white border border-[#edf2f1] rounded-xl md:rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.08)] md:shadow-[0_8px_16px_rgba(0,0,0,0.08)] relative overflow-hidden w-full" style="display: none;">
-
-                    {{-- Header Strip --}}
-                    <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 border-b border-[#edf2f1]">
-                        {{-- Icon --}}
-                        <div class="w-8 h-8 flex items-center justify-center shrink-0">
-                            <svg width="20" height="20" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-                        </div>
-
-                        <div class="flex-1 min-w-0">
-                            <div class="font-black text-[0.82rem] text-black leading-tight uppercase tracking-tight flex items-center gap-1.5">
-                                Panggil Siswa
-                                <span class="inline-flex h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse shrink-0"></span>
-                            </div>
-                            <div class="text-[0.7rem] text-red-500 font-semibold mt-0.5">Perlu Tindakan Segera</div>
-                        </div>
-
-                        {{-- Close Button --}}
-                        <button onclick="dismissNotif('pelanggaran', '{{ $alert->id }}')"
-                                class="w-6 h-6 flex items-center justify-center rounded-full text-[#aaa] hover:text-[#555] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0"
-                                title="Tutup">
-                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-
-                    {{-- Body --}}
-                    <div class="hidden md:block px-4 py-3">
-                        {{-- Info Block --}}
-                        <div class="flex items-center gap-3 px-1 py-1 mb-4 mt-1">
-                            <div class="flex-1 min-w-0">
-                                <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Topik</div>
-                                <div class="text-[0.82rem] font-extrabold text-black uppercase leading-tight line-clamp-2" title="{{ $alert->topik }}">{{ $alert->topik }}</div>
-                            </div>
-                            <div class="w-px h-8 bg-[#edf2f1]"></div>
-                            <div class="flex-1 min-w-0">
-                                <div class="text-[0.7rem] text-[#888] font-semibold uppercase tracking-wide mb-0.5">Waktu</div>
-                                <div class="text-[0.82rem] font-extrabold text-red-600">
-                                    {{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d F Y') }}, {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}
+                {{-- Kartu Panggil Siswa --}}
+                <div id="activePelanggaranCard" data-alert-card class="bg-white rounded-2xl overflow-hidden w-full shadow-[0_4px_20px_rgba(0,0,0,0.08)]" style="display:none;">
+                    <div class="px-4 py-3.5">
+                            <div class="flex items-start justify-between gap-2 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+                                        <svg width="15" height="15" fill="none" stroke="#dc2626" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-[0.85rem] text-[#1a1a1a]">Panggil Siswa</div>
+                                        <div class="text-[0.7rem] text-red-500 font-semibold mt-0.5">Perlu tindakan segera</div>
+                                    </div>
                                 </div>
+                                <button onclick="dismissNotif('pelanggaran', '{{ $alert->id }}')"
+                                        class="w-7 h-7 flex items-center justify-center rounded-full text-[#ccc] hover:text-[#888] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0"
+                                        aria-label="Tutup notifikasi panggilan siswa">
+                                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
                             </div>
-                        </div>
-
-                        <a href="{{ route('siswa.panggilan') }}"
-                           class="flex items-center justify-center gap-2 w-full py-2.5 bg-red-600 text-white text-[0.78rem] font-black rounded-xl hover:bg-red-700 transition-all no-underline shadow-sm tracking-wide active:scale-[0.98]">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            BACA DETAIL
-                        </a>
+                            <div class="bg-red-50 rounded-xl px-3 py-2.5 mb-3">
+                                <div class="text-[0.72rem] font-bold text-[#1a1a1a] line-clamp-1">{{ $alert->topik }}</div>
+                                <div class="text-[0.7rem] text-[#666] mt-0.5">{{ \Carbon\Carbon::parse($alert->tanggal)->translatedFormat('d M Y') }}, {{ \Carbon\Carbon::parse($alert->waktu)->format('H:i') }}</div>
+                            </div>
+                            <a href="{{ route('siswa.panggilan') }}"
+                               class="flex items-center justify-center gap-2 w-full py-2.5 bg-red-600 text-white text-[0.78rem] font-bold rounded-xl hover:bg-red-700 active:scale-[0.98] transition-all no-underline">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Baca Detail
+                            </a>
                     </div>
                 </div>
             @endif
         @endforeach
-        </div>
+            </div>
+        @endif
     </div>
+
+    {{-- Backdrop: tap di luar untuk tutup panel --}}
+    <div id="alertsBackdrop" class="hidden fixed inset-0 z-40" aria-hidden="true" onclick="closeAlertsPanel()"></div>
 
     <script>
         (function() {
             window.dismissNotif = function(type, id) {
                 const cardId = type === 'konseling' ? 'activeKonselingCard' : 'activePelanggaranCard';
-                const storageKey = `dismissed_${type}_notif_${id}`;
                 const card = document.getElementById(cardId);
                 if (card) {
                     card.style.display = 'none';
-                    localStorage.setItem(storageKey, 'true');
+                    localStorage.setItem(`dismissed_${type}_notif_${id}`, 'true');
                     updateRestoreBtn();
+                    // close panel if all cards dismissed
+                    const panel = document.getElementById('mobileAlertsPanel');
+                    const hasVisible = panel && [...panel.querySelectorAll('[data-alert-card]')].some(c => c.style.display !== 'none');
+                    if (!hasVisible) closeAlertsPanel();
                 }
+            };
+
+            window.closeAlertsPanel = function() {
+                const toggle = document.getElementById('mobileAlertsToggle');
+                const panel = document.getElementById('mobileAlertsPanel');
+                const backdrop = document.getElementById('alertsBackdrop');
+                if (!toggle || !panel) return;
+                toggle.setAttribute('aria-expanded', 'false');
+                panel.classList.add('hidden');
+                panel.classList.remove('flex', 'flex-col', 'gap-3');
+                panel.querySelectorAll('[data-alert-card]').forEach(c => { c.style.display = 'none'; });
+                toggle.querySelector('[data-alert-chevron]')?.classList.remove('rotate-180');
+                if (backdrop) backdrop.classList.add('hidden');
             };
 
             window.restoreNotifs = function() {
@@ -202,27 +202,38 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
-                const isMobile = window.matchMedia('(max-width: 767px)').matches;
                 const mobileToggle = document.getElementById('mobileAlertsToggle');
                 const mobilePanel = document.getElementById('mobileAlertsPanel');
 
                 if (mobileToggle && mobilePanel) {
+                    const backdrop = document.getElementById('alertsBackdrop');
+
                     mobileToggle.addEventListener('click', () => {
                         const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
-                        mobileToggle.setAttribute('aria-expanded', String(!isExpanded));
-                        mobilePanel.classList.toggle('hidden', isExpanded);
-                        mobilePanel.classList.toggle('flex', !isExpanded);
-                        mobilePanel.classList.toggle('flex-col', !isExpanded);
-                        mobilePanel.classList.toggle('gap-3', !isExpanded);
-                        mobilePanel.querySelectorAll('[data-alert-card]').forEach((card) => {
-                            card.style.display = isExpanded ? 'none' : 'block';
+                        if (isExpanded) {
+                            closeAlertsPanel();
+                            return;
+                        }
+                        mobileToggle.setAttribute('aria-expanded', 'true');
+                        mobilePanel.classList.remove('hidden');
+                        mobilePanel.classList.add('flex', 'flex-col', 'gap-3');
+                        mobilePanel.querySelectorAll('[data-alert-card]').forEach(card => {
+                            const type = card.id.includes('Konseling') ? 'konseling' : 'pelanggaran';
+                            @foreach($activeAlerts as $alert)
+                            if (card.id === '{{ $alert->alert_type == 'konseling' ? 'activeKonselingCard' : 'activePelanggaranCard' }}') {
+                                if (localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') !== 'true') {
+                                    card.style.display = 'block';
+                                }
+                            }
+                            @endforeach
                         });
-                        mobileToggle.querySelector('[data-alert-chevron]')?.classList.toggle('rotate-180', !isExpanded);
+                        mobileToggle.querySelector('[data-alert-chevron]')?.classList.add('rotate-180');
+                        if (backdrop) backdrop.classList.remove('hidden');
                     });
                 }
 
                 @foreach($activeAlerts as $alert)
-                    if (!isMobile && localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') !== 'true') {
+                    if (localStorage.getItem('dismissed_{{ $alert->alert_type }}_notif_{{ $alert->id }}') !== 'true') {
                         const cardId = '{{ $alert->alert_type == 'konseling' ? "activeKonselingCard" : "activePelanggaranCard" }}';
                         const c = document.getElementById(cardId);
                         if (c) c.style.display = 'block';
@@ -251,6 +262,15 @@
         .animate-badge-pulse {
             animation: badge-pulse 2s ease-in-out infinite;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-ping,
+            .animate-badge-ping,
+            .animate-badge-pulse,
+            .animate-pulse {
+                animation: none;
+            }
+        }
     </style>
     @endpush
 
@@ -271,7 +291,7 @@
         @endif
 
         <!-- Hero Banner -->
-        <div class="bg-gradient-to-br from-[#14736a] via-[#1a9488] to-[#22c5b0] rounded-3xl px-8 py-10 md:px-14 md:py-12 flex flex-col md:flex-row items-center justify-between relative shadow-[0_12px_40px_rgba(26,148,136,0.28)] text-center md:text-left overflow-hidden">
+        <div class="mt-8 md:mt-4 mb-4 md:mb-0 bg-gradient-to-br from-[#14736a] via-[#1a9488] to-[#22c5b0] rounded-3xl px-8 py-10 md:px-14 md:py-12 flex flex-col md:flex-row items-center justify-between relative shadow-[0_12px_40px_rgba(26,148,136,0.28)] text-center md:text-left overflow-hidden">
 
             {{-- Decorative blobs --}}
             <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>

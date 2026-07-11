@@ -66,7 +66,7 @@ class DashboardController extends Controller
     public function panggilan()
     {
         $panggilan = Pelanggaran::where('user_id', auth()->id())
-            ->where('status', 'menunggu')
+            ->whereIn('status', ['menunggu', 'diterima'])
             ->latest()
             ->get();
 
@@ -127,7 +127,7 @@ class DashboardController extends Controller
         ]);
 
         $activeKonseling = Konseling::where('user_id', auth()->id())
-            ->whereIn('status', ['pending', 'disetujui'])
+            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
             ->first();
 
         if ($activeKonseling) {
@@ -148,7 +148,7 @@ class DashboardController extends Controller
 
         $konseling = DB::transaction(function () use ($request, $tanggal, $waktu) {
             \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
-            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
+            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui', 'dipanggil'])->exists()) {
                 throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
             }
             return Konseling::create(['user_id' => auth()->id(), 'jenis' => 'online', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
@@ -174,7 +174,7 @@ class DashboardController extends Controller
         ]);
 
         $activeKonseling = Konseling::where('user_id', auth()->id())
-            ->whereIn('status', ['pending', 'disetujui'])
+            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
             ->first();
 
         if ($activeKonseling) {
@@ -196,7 +196,7 @@ class DashboardController extends Controller
 
         $konseling = DB::transaction(function () use ($request, $tanggal, $waktu) {
             \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
-            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
+            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui', 'dipanggil'])->exists()) {
                 throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
             }
             return Konseling::create(['user_id' => auth()->id(), 'jenis' => 'offline', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
@@ -211,7 +211,7 @@ class DashboardController extends Controller
     public function pengajuanProses()
     {
         $konseling = Konseling::where('user_id', auth()->id())
-            ->whereIn('status', ['pending', 'disetujui', 'ditolak'])
+            ->whereIn('status', ['pending', 'disetujui', 'dipanggil', 'ditolak'])
             ->latest()
             ->first();
 
@@ -263,6 +263,20 @@ class DashboardController extends Controller
             ->where('jenis', 'online')
             ->latest()->first();
 
+        // Auto-expire: jika jadwal sudah lewat lebih dari 2 jam
+        if ($konseling) {
+            $jadwal = \Carbon\Carbon::parse($konseling->tanggal . ' ' . ($konseling->waktu ?? '23:59'));
+            if (now()->greaterThan($jadwal->addHours(2))) {
+                $konseling->update(['status' => 'tidak_hadir']);
+                $konseling = null;
+            }
+        }
+
+        if (! $konseling) {
+            return redirect()->route('siswa.dashboard')
+                ->with('warning', 'Tidak ada sesi konseling online yang aktif saat ini.');
+        }
+
         return view('siswa.mulai-konseling', compact('konseling'));
     }
 
@@ -273,6 +287,20 @@ class DashboardController extends Controller
             ->where('status', 'disetujui')
             ->where('jenis', 'offline')
             ->latest()->first();
+
+        // Auto-expire: jika jadwal sudah lewat lebih dari 2 jam, tandai tidak_hadir
+        if ($konseling) {
+            $jadwal = \Carbon\Carbon::parse($konseling->tanggal . ' ' . ($konseling->waktu ?? '23:59'));
+            if (now()->greaterThan($jadwal->addHours(2))) {
+                $konseling->update(['status' => 'tidak_hadir']);
+                $konseling = null;
+            }
+        }
+
+        if (! $konseling) {
+            return redirect()->route('siswa.dashboard')
+                ->with('warning', 'Tidak ada sesi konseling offline yang aktif saat ini.');
+        }
 
         return view('siswa.konseling-offline', compact('konseling'));
     }
