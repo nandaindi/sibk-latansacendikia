@@ -27,11 +27,13 @@ class Konseling extends Model
         'kepuasan_kepercayaan',
         'kepuasan_pelayanan',
         'is_read',
+        'is_reminded',
     ];
 
     protected $casts = [
-        'is_read'    => 'boolean',
-        'started_at' => 'datetime',
+        'is_read'     => 'boolean',
+        'is_reminded' => 'boolean',
+        'started_at'  => 'datetime',
     ];
 
     public function user()

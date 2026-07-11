@@ -309,7 +309,9 @@ class DashboardController extends Controller
     /** Form Konseling Online - pencatatan hasil sesi online */
     public function formKonselingOnline($id)
     {
-        $konseling = Konseling::with('user')->findOrFail($id);
+        $konseling = Konseling::with('user')
+            ->where('bk_id', auth()->id())
+            ->findOrFail($id);
 
         return view('bk.form-konseling-online', compact('konseling'));
     }
@@ -320,9 +322,14 @@ class DashboardController extends Controller
         $konseling = $this->validateAndGetKonseling($request);
 
         $konseling->update([
+            'status'     => 'selesai',
             'durasi'     => $this->hitungDurasi($konseling),
             'catatan_bk' => $this->formatCatatan($request),
         ]);
+
+        if ($konseling->user) {
+            $konseling->user->notify(new KonselingStatusNotification($konseling, 'selesai'));
+        }
 
         $this->buatLaporan($konseling);
         $this->buatPertemuanLanjutan($request, $konseling);

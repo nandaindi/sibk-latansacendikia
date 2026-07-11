@@ -22,8 +22,8 @@ class TandaiJadwalKadaluarsa extends Command
             }
         });
 
-        // Panggilan (Pelanggaran) menunggu yang sudah melewati hari-nya → tidak_hadir
-        Pelanggaran::where('status', 'menunggu')->get()->each(function ($panggilan) {
+        // Panggilan (Pelanggaran) menunggu/diterima yang sudah melewati hari-nya → tidak_hadir
+        Pelanggaran::whereIn('status', ['menunggu', 'diterima'])->get()->each(function ($panggilan) {
             $jadwal = Carbon::parse($panggilan->tanggal.' '.($panggilan->waktu ?? '23:59'))->addDay();
             if (now()->greaterThan($jadwal)) {
                 $panggilan->update(['status' => 'tidak_hadir']);

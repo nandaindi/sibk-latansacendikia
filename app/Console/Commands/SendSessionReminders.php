@@ -29,7 +29,7 @@ class SendSessionReminders extends Command
     public function handle()
     {
 
-        $targetDateTime = Carbon::now()->addMinutes(10);
+        $targetDateTime = Carbon::now(config('app.timezone'))->addMinutes(10);
 
         $targetDate = $targetDateTime->toDateString();
         $targetTime = $targetDateTime->format('H:i');
