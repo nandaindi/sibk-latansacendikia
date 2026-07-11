@@ -90,25 +90,7 @@
 <script>
 $(document).ready(function() {
     $('#bkTable').DataTable({
-        responsive: true,
-        scrollX: false,
-        autoWidth: false,
-        dom: '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>',
-        language: {
-            search: "",
-            searchPlaceholder: "Cari guru BK...",
-            lengthMenu: "Tampilkan _MENU_ entri",
-            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-            infoEmpty: "Data kosong",
-            infoFiltered: "(filter dari _MAX_)",
-            zeroRecords: "Tidak ada data yang ditemukan",
-            paginate: {
-                first: "Awal",
-                last: "Akhir",
-                next: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
-                previous: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
-            }
-        },
+        language: { searchPlaceholder: "Cari guru BK..." },
         columnDefs: [
             { orderable: false, targets: [0, 5] },
             { responsivePriority: 1, targets: 1 },

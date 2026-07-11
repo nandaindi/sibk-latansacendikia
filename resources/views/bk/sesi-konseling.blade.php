@@ -163,28 +163,14 @@ $(document).ready(function() {
     }
 
     var dtConfig = {
-        responsive: true,
-        dom: '<"dt-top-wrapper"lf>rt<"dt-bottom-wrapper"ip>',
         language: {
-            search: "",
             searchPlaceholder: "Cari...",
-            lengthMenu: "Tampilkan _MENU_ entri",
-            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-            infoEmpty: "",
-            infoFiltered: "(filter dari _MAX_)",
             zeroRecords: `<div class="flex flex-col items-center justify-center py-4 gap-3">
                 <svg width="42" height="42" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M3 9h18"/></svg>
                 <span class="text-[#888] font-medium text-[0.95rem]">Belum ada sesi konseling.</span>
-            </div>`,
-            paginate: {
-                first: "Awal", last: "Akhir",
-                next: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
-                previous: '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>'
-            }
+            </div>`
         },
         columnDefs: [{ orderable: false, targets: [0, 3] }, { responsivePriority: 1, targets: 1 }],
-        scrollX: false,
-        autoWidth: false,
     };
     $('#sesiOnlineTable').DataTable(dtConfig);
     $('#sesiOfflineTable').DataTable(dtConfig);
