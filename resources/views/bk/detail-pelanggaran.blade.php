@@ -113,7 +113,13 @@
 
             {{-- RIGHT: Form / Status --}}
             <div class="lg:col-span-2 lg:sticky lg:top-4">
-                @if(in_array($pelanggaran->status, ['menunggu', 'diterima']))
+                @if($pelanggaran->bk_id !== auth()->id())
+                <div class="bg-white border-[2px] border-orange-400 rounded-2xl px-5 py-8 shadow-sm text-center">
+                    <div class="text-orange-500 font-bold text-[0.85rem] uppercase tracking-wider">Akses Terbatas</div>
+                    <p class="text-[0.85rem] text-[#888] mt-2">Pemanggilan ini ditangani oleh Guru BK: <br><strong class="text-gray-700">{{ $pelanggaran->bk->name }}</strong>.</p>
+                    <p class="text-[0.75rem] text-gray-500 mt-1">Hanya beliau yang dapat memproses status panggilan ini.</p>
+                </div>
+                @elseif(in_array($pelanggaran->status, ['menunggu', 'diterima']))
                 <div class="bg-white border-[2px] border-[#1a9488] rounded-2xl px-5 py-5 shadow-sm">
                     <h3 class="font-bold text-[1rem] text-[#1a1a1a] mb-4">Proses Panggilan</h3>
 
@@ -150,6 +156,28 @@
                                       class="w-full border-2 border-[#edf2f1] rounded-xl px-4 py-3 bg-white outline-none font-medium text-[0.9rem] focus:border-[#1a9488] transition-all placeholder:text-[#bbb] resize-none"></textarea>
                         </div>
 
+                        {{-- Jadwal Pertemuan Selanjutnya --}}
+                        <div class="border border-[#edf2f1] rounded-xl p-4 bg-[#fcfdfd]">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" name="has_next_meeting" id="hasNextMeeting" value="1" class="w-5 h-5 text-[#1a9488] rounded border-gray-300 focus:ring-[#1a9488]">
+                                <span class="text-[0.85rem] font-bold text-[#1a1a1a]">Jadwalkan pertemuan selanjutnya</span>
+                            </label>
+
+                            <div id="nextMeetingInputs" class="hidden mt-4 pt-4 border-t border-[#edf2f1]">
+                                <div class="flex gap-3">
+                                    <div class="flex-1">
+                                        <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block mb-1">Tanggal</label>
+                                        <input type="date" name="next_tanggal" class="w-full border-2 border-[#edf2f1] rounded-xl px-3 py-2.5 bg-white outline-none font-medium text-[0.85rem] focus:border-[#1a9488]">
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="text-[0.7rem] font-bold text-[#888] uppercase tracking-wider block mb-1">Jam</label>
+                                        <input type="time" name="next_waktu" class="w-full border-2 border-[#edf2f1] rounded-xl px-3 py-2.5 bg-white outline-none font-medium text-[0.85rem] focus:border-[#1a9488]">
+                                    </div>
+                                </div>
+                                <p class="text-[0.75rem] text-[#888] mt-2 italic">* Sistem akan otomatis membuat panggilan siswa baru untuk jadwal ini.</p>
+                            </div>
+                        </div>
+
                         <button type="submit" class="w-full py-3.5 bg-[#1a9488] text-white rounded-xl font-bold text-[0.9rem] hover:bg-[#157a70] transition-colors">
                             Simpan
                         </button>
@@ -169,3 +197,28 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('hasNextMeeting');
+        const inputs = document.getElementById('nextMeetingInputs');
+        const tanggalInput = document.querySelector('input[name="next_tanggal"]');
+        const waktuInput = document.querySelector('input[name="next_waktu"]');
+
+        if(checkbox) {
+            checkbox.addEventListener('change', function() {
+                if(this.checked) {
+                    inputs.classList.remove('hidden');
+                    tanggalInput.required = true;
+                    waktuInput.required = true;
+                } else {
+                    inputs.classList.add('hidden');
+                    tanggalInput.required = false;
+                    waktuInput.required = false;
+                }
+            });
+        }
+    });
+</script>
+@endpush

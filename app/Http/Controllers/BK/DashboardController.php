@@ -31,7 +31,7 @@ class DashboardController extends Controller
             });
 
         $panggilanHariIni = Pelanggaran::with('user')
-            ->where('status', 'menunggu')
+            ->whereIn('status', ['menunggu', 'diterima'])
             ->where('bk_id', $bkId)
             ->whereDate('tanggal', $today)
             ->get()
@@ -51,7 +51,7 @@ class DashboardController extends Controller
             ->where('bk_id', $bkId)
             ->count();
 
-        $panggilanCount = Pelanggaran::where('status', 'menunggu')
+        $panggilanCount = Pelanggaran::whereIn('status', ['menunggu', 'diterima'])
             ->where('bk_id', $bkId)
             ->count();
 
@@ -424,15 +424,24 @@ class DashboardController extends Controller
     private function buatPertemuanLanjutan(Request $request, Konseling $konseling): void
     {
         if ($request->has('has_next_meeting') && $request->next_tanggal && $request->next_waktu) {
-            Konseling::create([
-                'user_id'    => $konseling->user_id,
-                'bk_id'      => auth()->id(),
-                'jenis'      => 'offline',
-                'tanggal'    => $request->next_tanggal,
-                'waktu'      => $request->next_waktu,
-                'status'     => 'dipanggil',
-                'catatan_bk' => 'Topik: Tindak Lanjut Sesi Sebelumnya',
+            $pelanggaran = \App\Models\Pelanggaran::create([
+                'user_id'             => $konseling->user_id,
+                'bk_id'               => auth()->id(),
+                'topik'               => 'Tindak Lanjut Konseling',
+                'tanggal'             => $request->next_tanggal,
+                'waktu'               => $request->next_waktu,
+                'status'              => 'menunggu',
+                'catatan_pemanggilan' => 'Pertemuan lanjutan dari sesi konseling sebelumnya.',
             ]);
+
+            if ($pelanggaran->user) {
+                $pelanggaran->user->notify(new \App\Notifications\PelanggaranStatusNotification($pelanggaran->loadMissing('user'), 'pelanggaran_baru'));
+            } else {
+                \Illuminate\Support\Facades\Notification::send(
+                    \App\Models\User::role('siswa')->whereKey($konseling->user_id)->get(),
+                    new \App\Notifications\PelanggaranStatusNotification($pelanggaran->loadMissing('user'), 'pelanggaran_baru')
+                );
+            }
         }
     }
 }

@@ -401,7 +401,7 @@
 <script>
     window.addEventListener('load', () => {
         if (typeof Swal !== 'undefined') {
-            Swal.fire({ icon: 'error', title: 'Gagal!', text: '{!! session('error') !!}', confirmButtonColor: '#1a9488' });
+            Swal.fire({ icon: 'error', title: 'Gagal!', text: {!! json_encode(session('error')) !!}, confirmButtonColor: '#1a9488' });
         }
     });
 </script>
@@ -411,7 +411,7 @@
 <script>
     window.addEventListener('load', () => {
         if (typeof Swal !== 'undefined') {
-            Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{!! session('sukses') !!}', confirmButtonColor: '#1a9488' });
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: {!! json_encode(session('sukses')) !!}, confirmButtonColor: '#1a9488' });
         }
     });
 </script>

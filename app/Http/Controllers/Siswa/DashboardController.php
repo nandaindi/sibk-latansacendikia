@@ -32,11 +32,11 @@ class DashboardController extends Controller
             ->first();
 
         $activePelanggaranCount = Pelanggaran::where('user_id', $userId)
-            ->where('status', 'menunggu')
+            ->whereIn('status', ['menunggu', 'diterima'])
             ->count();
 
         $activePelanggaran = Pelanggaran::where('user_id', $userId)
-            ->where('status', 'menunggu')
+            ->whereIn('status', ['menunggu', 'diterima'])
             ->latest()
             ->first();
 

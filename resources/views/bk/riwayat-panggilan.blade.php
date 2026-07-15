@@ -22,6 +22,11 @@
                   {{ $status == 'menunggu' ? 'border-white' : 'border-transparent text-white/70 hover:text-white' }}">
             Menunggu
         </a>
+        <a href="{{ route('bk.riwayat-panggilan', ['status' => 'diterima']) }}"
+           class="flex-none px-6 py-3.5 text-white font-bold text-[0.9rem] border-b-[3px] transition-all no-underline
+                  {{ $status == 'diterima' ? 'border-white' : 'border-transparent text-white/70 hover:text-white' }}">
+            Diterima
+        </a>
         <a href="{{ route('bk.riwayat-panggilan', ['status' => 'selesai']) }}"
            class="flex-none px-6 py-3.5 text-white font-bold text-[0.9rem] border-b-[3px] transition-all no-underline
                   {{ $status == 'selesai' ? 'border-white' : 'border-transparent text-white/70 hover:text-white' }}">

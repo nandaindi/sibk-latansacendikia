@@ -88,6 +88,9 @@ class PemanggilanController extends Controller
             'catatan_hasil' => 'required|string|max:2000',
             'catatan_tindak_lanjut' => 'required|string|max:2000',
             'status' => 'required|in:selesai,tidak_hadir',
+            'has_next_meeting' => 'nullable',
+            'next_tanggal'    => 'nullable|required_with:has_next_meeting|date',
+            'next_waktu'      => 'nullable|required_with:has_next_meeting',
         ]);
 
         $pelanggaran = Pelanggaran::where('bk_id', auth()->id())->whereIn('status', ['menunggu', 'diterima'])->findOrFail($id);
@@ -99,6 +102,27 @@ class PemanggilanController extends Controller
 
         if ($pelanggaran->user) {
             $pelanggaran->user->notify(new PelanggaranStatusNotification($pelanggaran->loadMissing('user'), 'pelanggaran_status'));
+        }
+
+        if ($request->has('has_next_meeting') && $request->next_tanggal && $request->next_waktu) {
+            $nextPelanggaran = Pelanggaran::create([
+                'user_id' => $pelanggaran->user_id,
+                'bk_id'   => auth()->id(),
+                'topik'   => 'Tindak Lanjut: ' . $pelanggaran->topik,
+                'tanggal' => $request->next_tanggal,
+                'waktu'   => $request->next_waktu,
+                'status'  => 'menunggu',
+                'catatan_pemanggilan' => 'Pertemuan lanjutan dari sesi sebelumnya.',
+            ]);
+            
+            if ($nextPelanggaran->user) {
+                $nextPelanggaran->user->notify(new PelanggaranStatusNotification($nextPelanggaran->loadMissing('user'), 'pelanggaran_baru'));
+            } else {
+                Notification::send(
+                    User::role('siswa')->whereKey($nextPelanggaran->user_id)->get(),
+                    new PelanggaranStatusNotification($nextPelanggaran->loadMissing('user'), 'pelanggaran_baru')
+                );
+            }
         }
 
         return redirect()->route('bk.riwayat-panggilan')->with('sukses', 'Status pelanggaran berhasil diperbarui!');
