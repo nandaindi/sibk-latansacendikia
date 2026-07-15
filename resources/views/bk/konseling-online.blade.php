@@ -49,21 +49,25 @@
 
     <!-- Input Bar -->
     <div class="sticky bottom-0 md:relative px-4 md:px-6 py-3 bg-[#d4e9e7] border-t border-[#c5dbd9]">
-        <div class="flex items-center gap-3">
+        <div class="flex items-end gap-2">
             @if($konseling->link_meet)
             <a href="{{ $konseling->link_meet }}" target="_blank"
-               class="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-600 shrink-0" title="Buka Meeting">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.882v6.236a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+               class="md:hidden flex items-center justify-center w-11 h-11 mb-1 rounded-full bg-white shadow-sm border border-[#c5dbd9] text-[#1a9488] shrink-0" title="Buka Meeting">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0121 8.882v6.236a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             </a>
             @endif
-            <label for="chatInput" class="sr-only">Tulis pesan</label>
-            <textarea id="chatInput" rows="1" maxlength="5000" placeholder="Ketik pesan…"
-                aria-describedby="chatInputHint chatStatus"
-                class="flex-1 max-h-30 resize-none overflow-y-auto bg-transparent border-none outline-none text-[0.97rem] leading-6 text-[#333] placeholder-[#52716e] font-medium focus-visible:ring-2 focus-visible:ring-[#1a9488] focus-visible:ring-offset-2 rounded-md"></textarea>
-            <button id="chatSendButton" type="button" onclick="sendMessage()" aria-label="Kirim pesan"
-                class="min-w-11 min-h-11 inline-flex items-center justify-center text-[#1a9488] hover:text-[#12635a] disabled:cursor-not-allowed disabled:opacity-50 transition-colors border-none bg-transparent cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a9488] rounded-full">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
+            
+            <div class="flex-1 flex items-end bg-white rounded-[1.5rem] border border-[#b8d1ce] shadow-sm px-1.5 py-1.5 transition-all focus-within:border-[#1a9488] focus-within:ring-4 focus-within:ring-[#1a9488]/10">
+                <label for="chatInput" class="sr-only">Tulis pesan</label>
+                <textarea id="chatInput" rows="1" maxlength="5000" placeholder="Ketik pesan…"
+                    aria-describedby="chatInputHint chatStatus"
+                    class="flex-1 max-h-32 resize-none overflow-y-auto bg-transparent border-none outline-none text-[0.95rem] leading-[1.5] text-[#333] placeholder-[#8da8a5] px-4 py-2.5 focus:ring-0"></textarea>
+                
+                <button id="chatSendButton" type="button" onclick="sendMessage()" aria-label="Kirim pesan"
+                    class="w-10 h-10 shrink-0 inline-flex items-center justify-center text-white bg-[#1a9488] hover:bg-[#12635a] shadow-md hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[#a5c7c4] disabled:shadow-none transition-all duration-200 border-none cursor-pointer rounded-full">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="translate-x-[-1px] translate-y-[1px]"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </div>
         </div>
         <div id="chatInputHint" class="mt-1.5 text-[0.72rem] text-[#496763]">Enter untuk kirim · Shift + Enter untuk baris baru</div>
         <div id="chatStatus" class="sr-only" role="status" aria-live="polite"></div>
