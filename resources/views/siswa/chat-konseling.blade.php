@@ -48,14 +48,14 @@
         @if($konseling->status === 'disetujui')
             {{-- Baris Input Chat --}}
             <div class="flex items-end gap-2">
-                <div class="flex-1 flex items-end bg-white rounded-[1.5rem] border border-[#b8d1ce] shadow-sm px-1.5 py-1.5 transition-all focus-within:border-[#1a9488] focus-within:ring-4 focus-within:ring-[#1a9488]/10">
+                <div class="flex-1 flex items-end bg-white rounded-3xl border border-[#c5dbd9] shadow-sm px-2 py-1.5 transition-all focus-within:border-[#1a9488] focus-within:ring-2 focus-within:ring-[#1a9488]/20">
                     <label for="chatInput" class="sr-only">Tulis pesan</label>
                     <textarea id="chatInput" rows="1" maxlength="5000" placeholder="Ketik pesan…"
                         aria-describedby="chatInputHint chatStatus"
-                        class="flex-1 max-h-32 resize-none overflow-y-auto bg-transparent border-none outline-none text-[0.95rem] leading-[1.5] text-[#333] placeholder-[#8da8a5] px-4 py-2.5 focus:ring-0"></textarea>
+                        class="flex-1 max-h-32 resize-none overflow-y-auto bg-transparent border-none outline-none text-[0.95rem] leading-[1.5] text-[#333] placeholder-[#8da8a5] px-3 py-2 focus:ring-0"></textarea>
                     
                     <button id="chatSendButton" type="button" onclick="sendMessage()" aria-label="Kirim pesan"
-                        class="w-10 h-10 shrink-0 inline-flex items-center justify-center text-white bg-[#1a9488] hover:bg-[#12635a] shadow-md hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[#a5c7c4] disabled:shadow-none transition-all duration-200 border-none cursor-pointer rounded-full">
+                        class="w-10 h-10 shrink-0 inline-flex items-center justify-center text-white bg-[#1a9488] hover:bg-[#12635a] shadow-sm disabled:cursor-not-allowed disabled:opacity-50 transition-colors border-none cursor-pointer rounded-full mb-0.5 mr-0.5">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="translate-x-[-1px] translate-y-[1px]"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </button>
                 </div>
