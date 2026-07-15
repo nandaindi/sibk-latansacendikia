@@ -69,23 +69,7 @@
                                 Mulai Sesi Sekarang
                             </a>
                     </div>
-                    @elseif($alert->status == 'dipanggil')
-                    <div class="px-4 py-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
-                                        <svg width="15" height="15" fill="none" stroke="#d97706" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                    </div>
-                                    <div>
-                                        <div class="font-bold text-[0.85rem] text-[#1a1a1a]">Dipanggil Guru BK</div>
-                                        <div class="text-[0.7rem] text-amber-600 font-semibold mt-0.5">Segera hadir ke ruang BK</div>
-                                    </div>
-                                </div>
-                                <button onclick="dismissNotif('konseling', '{{ $alert->id }}')" class="w-7 h-7 flex items-center justify-center rounded-full text-[#ccc] hover:text-[#888] hover:bg-[#f5f5f5] transition-all cursor-pointer shrink-0" aria-label="Tutup">
-                                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
-                            </div>
-                    </div>
+
                     @else
                     <div class="px-4 py-3.5">
                             <div class="flex items-center justify-between gap-2">

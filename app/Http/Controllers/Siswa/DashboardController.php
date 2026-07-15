@@ -23,11 +23,11 @@ class DashboardController extends Controller
         $userId = auth()->id();
 
         $activeKonselingCount = Konseling::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->count();
 
         $activeKonseling = Konseling::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->latest()
             ->first();
 
@@ -127,7 +127,7 @@ class DashboardController extends Controller
         ]);
 
         $activeKonseling = Konseling::where('user_id', auth()->id())
-            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->first();
 
         if ($activeKonseling) {
@@ -148,7 +148,7 @@ class DashboardController extends Controller
 
         $konseling = DB::transaction(function () use ($request, $tanggal, $waktu) {
             \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
-            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui', 'dipanggil'])->exists()) {
+            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
                 throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
             }
             return Konseling::create(['user_id' => auth()->id(), 'jenis' => 'online', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
@@ -174,7 +174,7 @@ class DashboardController extends Controller
         ]);
 
         $activeKonseling = Konseling::where('user_id', auth()->id())
-            ->whereIn('status', ['pending', 'disetujui', 'dipanggil'])
+            ->whereIn('status', ['pending', 'disetujui'])
             ->first();
 
         if ($activeKonseling) {
@@ -196,7 +196,7 @@ class DashboardController extends Controller
 
         $konseling = DB::transaction(function () use ($request, $tanggal, $waktu) {
             \App\Models\User::whereKey(auth()->id())->lockForUpdate()->firstOrFail();
-            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui', 'dipanggil'])->exists()) {
+            if (Konseling::where('user_id', auth()->id())->whereIn('status', ['pending', 'disetujui'])->exists()) {
                 throw ValidationException::withMessages(['jadwal' => 'Kamu sudah memiliki pengajuan konseling aktif.']);
             }
             return Konseling::create(['user_id' => auth()->id(), 'jenis' => 'offline', 'problem_type' => $request->problem_type, 'tanggal' => $tanggal, 'waktu' => $waktu, 'status' => 'pending', 'catatan_siswa' => $request->note]);
@@ -211,7 +211,7 @@ class DashboardController extends Controller
     public function pengajuanProses()
     {
         $konseling = Konseling::where('user_id', auth()->id())
-            ->whereIn('status', ['pending', 'disetujui', 'dipanggil', 'ditolak'])
+            ->whereIn('status', ['pending', 'disetujui', 'ditolak'])
             ->latest()
             ->first();
 

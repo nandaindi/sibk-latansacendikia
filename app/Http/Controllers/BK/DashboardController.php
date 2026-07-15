@@ -62,55 +62,6 @@ class DashboardController extends Controller
         ));
     }
 
-    /** Panggil Siswa - form & list */
-    public function panggilSiswa()
-    {
-        $siswas = User::role('siswa')->orderBy('name')->get();
-
-        $riwayatPanggilan = Konseling::with('user')
-            ->where('bk_id', auth()->id())
-            ->whereIn('status', ['dipanggil', 'selesai', 'tidak_hadir'])
-            ->where('jenis', 'offline')
-            ->latest()
-            ->take(10)
-            ->get();
-
-        return view('bk.panggil-siswa', compact('siswas', 'riwayatPanggilan'));
-    }
-
-    /** Store panggilan siswa — buat record konseling ber-status 'dipanggil' */
-    public function storePanggilSiswa(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'topik'   => 'required|string|max:200',
-            'tanggal' => 'required|date',
-            'waktu'   => 'required',
-            'catatan' => 'nullable|string|max:1000',
-        ]);
-
-        if (\Carbon\Carbon::parse($request->tanggal . ' ' . $request->waktu)->isPast()) {
-            return back()->with('error', 'Gagal! Waktu penjadwalan sudah lewat.');
-        }
-
-        if (Konseling::cekBentrok($request->tanggal, $request->waktu, auth()->id(), $request->user_id)) {
-            return back()->with('error', 'Gagal! Anda atau Siswa tersebut sudah memiliki jadwal konseling di jam itu.');
-        }
-
-        $catatanLengkap = 'Topik: '.$request->topik."\n\nCatatan: ".($request->catatan ?? '-');
-
-        Konseling::create([
-            'user_id'    => $request->user_id,
-            'bk_id'      => auth()->id(),
-            'jenis'      => 'offline',
-            'tanggal'    => $request->tanggal,
-            'waktu'      => $request->waktu,
-            'status'     => 'dipanggil',
-            'catatan_bk' => $catatanLengkap,
-        ]);
-
-        return redirect()->route('bk.panggil-siswa')->with('sukses', 'Siswa berhasil dipanggil!');
-    }
 
     /** Daftar Pengajuan Konseling (pending) */
     public function daftarPengajuan()
