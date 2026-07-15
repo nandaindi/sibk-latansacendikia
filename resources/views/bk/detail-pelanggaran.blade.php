@@ -113,7 +113,7 @@
 
             {{-- RIGHT: Form / Status --}}
             <div class="lg:col-span-2 lg:sticky lg:top-4">
-                @if($pelanggaran->bk_id !== auth()->id())
+                @if((int) $pelanggaran->bk_id !== (int) auth()->id())
                 <div class="bg-white border-[2px] border-orange-400 rounded-2xl px-5 py-8 shadow-sm text-center">
                     <div class="text-orange-500 font-bold text-[0.85rem] uppercase tracking-wider">Akses Terbatas</div>
                     <p class="text-[0.85rem] text-[#888] mt-2">Pemanggilan ini ditangani oleh Guru BK: <br><strong class="text-gray-700">{{ $pelanggaran->bk->name }}</strong>.</p>
