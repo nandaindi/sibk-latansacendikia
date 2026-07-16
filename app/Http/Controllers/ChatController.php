@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\PesanChatTerkirim;
+use App\Events\SesiKonselingSelesai;
 use App\Models\Konseling;
 use App\Models\PesanChat;
 use App\Notifications\KonselingStatusNotification;
@@ -91,6 +92,8 @@ class ChatController extends Controller
         if ($konseling->user) {
             $konseling->user->notify(new KonselingStatusNotification($konseling, 'selesai'));
         }
+        
+        broadcast(new SesiKonselingSelesai($konseling))->toOthers();
 
         return response()->json([
             'ok' => true,

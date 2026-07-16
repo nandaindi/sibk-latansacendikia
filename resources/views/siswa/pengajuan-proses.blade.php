@@ -10,9 +10,16 @@
         <img src="{{ asset('img/hourglass-animated.svg') }}" alt="Pengajuan Diproses" class="w-full h-full object-contain">
     </div>
 
-    <h2 class="text-[1.3rem] md:text-[1.6rem] font-extrabold text-[#1a1a1a] mb-3">Pengajuan Sedang Progres...</h2>
-    <p class="text-[0.95rem] md:text-[1.05rem] text-[#666] leading-relaxed max-w-[500px] mb-12">Silahkan ditunggu pengajuan sedang divalidasi</p>
+    <h2 class="text-[1.3rem] md:text-[1.6rem] font-extrabold text-[#1a1a1a] mb-3 flex items-center justify-center gap-2">
+        Pengajuan Sedang Progres
+        <span class="flex gap-1">
+            <span class="w-1.5 h-1.5 bg-[#1a9488] rounded-full animate-bounce" style="animation-delay: 0s;"></span>
+            <span class="w-1.5 h-1.5 bg-[#1a9488] rounded-full animate-bounce" style="animation-delay: 0.2s;"></span>
+            <span class="w-1.5 h-1.5 bg-[#1a9488] rounded-full animate-bounce" style="animation-delay: 0.4s;"></span>
+        </span>
+    </h2>
+    <p class="text-[0.95rem] md:text-[1.05rem] text-[#666] leading-relaxed max-w-[500px] mb-12 animate-pulse">Silahkan ditunggu pengajuan sedang divalidasi</p>
 
-    <a href="{{ route('siswa.dashboard') }}" class="px-12 md:px-16 py-3.5 md:py-4 bg-[#1a9488] text-white rounded-full text-[1rem] md:text-[1.1rem] font-bold shadow-[0_4px_16px_rgba(26,148,136,0.35)] transition-all duration-150 ease-out hover:brightness-105 hover:-translate-y-0.5 font-sans no-underline inline-block">Home</a>
+    <a href="{{ route('siswa.dashboard') }}" class="px-12 md:px-16 py-3 md:py-3.5 bg-white text-[#1a9488] border-2 border-[#1a9488]/30 rounded-full text-[0.95rem] md:text-[1rem] font-bold shadow-sm transition-all duration-150 ease-out hover:bg-gray-50 hover:border-[#1a9488]/60 font-sans no-underline inline-block">Kembali ke Home</a>
 </main>
 @endsection

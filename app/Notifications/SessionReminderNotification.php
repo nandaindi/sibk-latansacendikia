@@ -5,8 +5,10 @@ namespace App\Notifications;
 use App\Models\Konseling;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class SessionReminderNotification extends Notification
+class SessionReminderNotification extends Notification implements ShouldBroadcastNow
 {
     public $konseling;
 
@@ -44,5 +46,10 @@ class SessionReminderNotification extends Notification
             'link' => '#',
             'event_type' => 'konseling_reminder',
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return (new BroadcastMessage($this->toArray($notifiable)))->onConnection('sync');
     }
 }

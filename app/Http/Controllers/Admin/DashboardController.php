@@ -369,8 +369,6 @@ class DashboardController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'alamat'        => 'nullable|string',
             'telepon'       => 'nullable|string|max:20',
-            'nama_ortu'     => 'nullable|string|max:100',
-            'telepon_ortu'  => 'nullable|string|max:20',
         ]);
 
         $user = User::create([
@@ -386,8 +384,6 @@ class DashboardController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'alamat'        => $request->alamat,
             'telepon'       => $request->telepon,
-            'nama_ortu'     => $request->nama_ortu,
-            'telepon_ortu'  => $request->telepon_ortu,
         ]);
 
         $user->assignRole('siswa');
@@ -428,8 +424,6 @@ class DashboardController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'alamat'        => 'nullable|string',
             'telepon'       => 'nullable|string|max:20',
-            'nama_ortu'     => 'nullable|string|max:100',
-            'telepon_ortu'  => 'nullable|string|max:20',
         ]);
 
         $data = [
@@ -444,8 +438,6 @@ class DashboardController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
             'alamat'        => $request->alamat,
             'telepon'       => $request->telepon,
-            'nama_ortu'     => $request->nama_ortu,
-            'telepon_ortu'  => $request->telepon_ortu,
         ];
 
         if ($request->filled('password')) {

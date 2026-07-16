@@ -80,13 +80,15 @@
     <div id="modalSelesaiBox" class="relative w-full max-w-[400px] translate-y-4 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
         <!-- Header Floating -->
         <div class="flex items-center gap-3 mb-2 pl-2">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="#fcd34d" class="drop-shadow-md">
-                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-            </svg>
+            <div class="w-8 h-8 rounded-full bg-emerald-400 flex items-center justify-center shadow-sm">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
             <h3 class="text-[1.1rem] font-extrabold text-white tracking-wide uppercase drop-shadow-md">SELESAIKAN SESI</h3>
         </div>
         <!-- White Box -->
-        <div class="bg-white rounded-[10px] border-[2px] border-[#0F766E] w-full p-5 md:p-6 relative shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+        <div class="bg-white rounded-[10px] border border-[#e5e7eb] w-full p-5 md:p-6 relative shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
             <!-- Close (X) -->
             <button onclick="tutupModalSelesai()" class="absolute -top-4 -right-4 w-9 h-9 bg-white rounded-full border-[3px] border-red-600 flex items-center justify-center text-red-600 hover:bg-red-50 transition-colors focus:outline-none z-10">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="stroke-current stroke-[3]" stroke-linecap="round" stroke-linejoin="round">
@@ -146,15 +148,15 @@ function renderBubble(msg){
     const bubble = document.createElement('div');
     const t = msg.created_at ? `<div class="text-[0.65rem] mt-0.5 opacity-55 text-right">${fmtTime(msg.created_at)}</div>` : '';
     if(isMine){
-        bubble.className = 'flex justify-end';
+        bubble.className = 'flex justify-end mb-2';
         bubble.innerHTML = `<div class="bg-[#1a9488] text-white px-4 py-2.5 rounded-[18px] rounded-tr-[4px] text-[0.93rem] max-w-[72%] shadow-sm">${linkify(msg.pesan)}${t}</div>`;
     } else {
-        bubble.className = 'flex items-end gap-2';
+        bubble.className = 'flex items-end gap-2 mb-2';
         bubble.innerHTML = `
-            <div class="w-7 h-7 rounded-full border-2 border-[#1a9488] flex items-center justify-center shrink-0 mb-0.5 bg-white">
+            <div class="w-7 h-7 rounded-full border border-[#1a9488]/30 flex items-center justify-center shrink-0 mb-0.5 bg-white shadow-sm">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
-            <div class="bg-white border border-[#e0e0e0] text-[#1a1a1a] px-4 py-2.5 rounded-[18px] rounded-tl-[4px] text-[0.93rem] max-w-[72%] shadow-sm">${linkify(msg.pesan)}<div class="text-[0.65rem] mt-0.5 opacity-55">${fmtTime(msg.created_at??'')}</div></div>`;
+            <div class="bg-white border border-[#eaeaea] text-[#1a1a1a] px-4 py-2.5 rounded-[18px] rounded-tl-[4px] text-[0.93rem] max-w-[72%] shadow-sm">${linkify(msg.pesan)}<div class="text-[0.65rem] mt-0.5 opacity-55 text-left">${fmtTime(msg.created_at??'')}</div></div>`;
     }
     const area = document.getElementById('chatArea');
     if(area){ area.appendChild(bubble); scrollBottom(); }

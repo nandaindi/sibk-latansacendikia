@@ -61,6 +61,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
 
     Route::get('/riwayat-konseling', [DashboardController::class, 'riwayatKonseling'])->name('riwayat-konseling');
     Route::get('/laporan/{id}', [DashboardController::class, 'detailLaporan'])->name('detail-laporan');
+    Route::get('/konseling/feedback/{id}', [DashboardController::class, 'formFeedback'])->name('konseling.form-feedback');
     Route::post('/konseling/feedback', [DashboardController::class, 'storeFeedback'])->name('konseling.feedback');
 
     Route::post('/chat/send', [ChatController::class, 'sendPesan'])->name('chat.send');

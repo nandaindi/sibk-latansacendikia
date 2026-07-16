@@ -9,6 +9,7 @@ use App\Models\Laporan;
 use App\Models\Pelanggaran;
 use App\Models\User;
 use App\Notifications\KonselingStatusNotification;
+use App\Events\SesiKonselingSelesai;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -280,6 +281,10 @@ class DashboardController extends Controller
 
         if ($konseling->user) {
             $konseling->user->notify(new KonselingStatusNotification($konseling, 'selesai'));
+        }
+
+        if ($konseling->jenis === 'online') {
+            broadcast(new SesiKonselingSelesai($konseling))->toOthers();
         }
 
         $this->buatLaporan($konseling);

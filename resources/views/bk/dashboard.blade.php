@@ -94,10 +94,25 @@
 
             <div class="flex flex-col gap-3">
                 @forelse($jadwalHariIni as $jadwal)
-                <div class="p-4 rounded-xl border border-[#eee] bg-[#fcfdfd] hover:border-[#1a9488] transition-colors">
-                    <div class="flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-4 flex-1 min-w-0">
-                            <div class="w-12 h-12 rounded-full overflow-hidden bg-[#e0f5f3] border-2 border-[#1a9488] shrink-0">
+                <div class="p-4 rounded-xl border border-[#eee] bg-[#fcfdfd] hover:border-[#1a9488] transition-colors flex flex-col gap-3">
+                    
+                    {{-- Bagian Atas: Badge Topik --}}
+                    <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+                        @if($jadwal->entry_type == 'konseling')
+                            <span class="inline-block px-2 py-0.5 rounded text-[0.65rem] font-bold capitalize tracking-wider {{ $jadwal->jenis == 'online' ? 'bg-[#e0eff5] text-[#1a7394]' : 'bg-[#f5e0ef] text-[#941a73]' }}">
+                                {{ $jadwal->jenis }}
+                            </span>
+                        @else
+                            <span class="inline-block px-2 py-0.5 rounded text-[0.65rem] font-bold uppercase tracking-wider bg-red-100 text-red-600">
+                                Panggilan
+                            </span>
+                        @endif
+                    </div>
+
+                    {{-- Bagian Utama: Identitas & Aksi --}}
+                    <div class="flex flex-row items-center justify-between gap-3">
+                        <div class="flex items-start sm:items-center gap-3 min-w-0">
+                            <div class="w-12 h-12 rounded-full overflow-hidden bg-[#e0f5f3] border border-[#1a9488]/30 shrink-0">
                                 @if($jadwal->user->avatar)
                                     <img src="{{ asset('storage/' . $jadwal->user->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
                                 @else
@@ -106,43 +121,36 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="min-w-0">
-                                <div class="font-bold text-[#1a1a1a] text-[1rem] truncate">{{ $jadwal->user->name }}</div>
-                                <div class="text-[0.82rem] text-[#777]">{{ $jadwal->user->kelas ?? '-' }} {{ $jadwal->user->jurusan ?? '' }}</div>
-                                <div class="flex items-center gap-2 mt-1">
-                                    @if($jadwal->entry_type == 'konseling')
-                                        <span class="inline-block px-2 py-0.5 rounded-full text-[0.72rem] font-bold capitalize {{ $jadwal->jenis == 'online' ? 'bg-[#e0eff5] text-[#1a7394]' : 'bg-[#f5e0ef] text-[#941a73]' }}">
-                                            {{ $jadwal->jenis }}
-                                        </span>
-                                    @else
-                                        <span class="inline-block px-2 py-0.5 rounded-full text-[0.72rem] font-bold uppercase bg-red-100 text-red-600">
-                                            Panggilan
-                                        </span>
-                                    @endif
-                                    <span class="text-[0.82rem] font-semibold text-[#1a1a1a]">{{ $jadwal->waktu ? \Carbon\Carbon::parse($jadwal->waktu)->format('H:i') . ' WIB' : 'TBA' }}</span>
+                            <div class="min-w-0 flex flex-col justify-center">
+                                <div class="font-bold text-[#1a1a1a] text-[0.95rem] sm:text-[1rem] truncate mb-0.5">{{ $jadwal->user->name }}</div>
+                                <div class="text-[0.8rem] text-[#777]">{{ $jadwal->user->kelas ?? '-' }} {{ $jadwal->user->jurusan ?? '' }}</div>
+                                <div class="text-[0.75rem] font-medium text-[#888] flex items-center gap-1 mt-1">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    {{ $jadwal->waktu ? \Carbon\Carbon::parse($jadwal->waktu)->format('H:i') . ' WIB' : 'TBA' }}
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-row items-center gap-2 shrink-0">
+                        
+                        <div class="flex items-center shrink-0">
                             @if($jadwal->entry_type == 'konseling')
                                 <a href="{{ route('bk.detail-sesi', ['id' => $jadwal->id]) }}" 
-                                   class="px-3 py-1.5 bg-[#e0f5f3] text-[#1a9488] text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors no-underline whitespace-nowrap">
-                                    Lihat Detail
+                                   class="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#e0f5f3] text-[#1a9488] text-[0.75rem] sm:text-[0.8rem] font-bold rounded-lg hover:bg-[#1a9488] hover:text-white transition-colors no-underline whitespace-nowrap hidden sm:block mr-2">
+                                    Detail
                                 </a>
                                 @if($jadwal->jenis == 'online')
                                 <a href="{{ route('bk.konseling-online', ['id' => $jadwal->id]) }}" 
-                                   class="px-3 py-1.5 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap">
-                                    Mulai Sesi
+                                   class="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#1a9488] text-white text-[0.75rem] sm:text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap shadow-sm shadow-[#1a9488]/30">
+                                    Mulai
                                 </a>
                                 @else
                                 <a href="{{ route('bk.form-konseling-offline', $jadwal->id) }}" 
-                                   class="px-3 py-1.5 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap">
-                                    Catat Offline
+                                   class="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#1a9488] text-white text-[0.75rem] sm:text-[0.8rem] font-bold rounded-lg hover:brightness-110 transition-colors no-underline whitespace-nowrap shadow-sm shadow-[#1a9488]/30">
+                                    Catat
                                 </a>
                                 @endif
                             @else
                                 <a href="{{ route('bk.panggil-siswa.detail', $jadwal->id) }}" 
-                                   class="px-3 py-1.5 bg-red-50 text-red-600 text-[0.8rem] font-bold rounded-lg hover:bg-red-600 hover:text-white transition-colors no-underline whitespace-nowrap">
+                                   class="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white text-[0.75rem] sm:text-[0.8rem] font-bold rounded-lg hover:bg-red-700 transition-colors no-underline whitespace-nowrap shadow-sm shadow-red-600/30">
                                     Proses Panggilan
                                 </a>
                             @endif

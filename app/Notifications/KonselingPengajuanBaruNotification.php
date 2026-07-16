@@ -5,8 +5,10 @@ namespace App\Notifications;
 use App\Models\Konseling;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class KonselingPengajuanBaruNotification extends Notification
+class KonselingPengajuanBaruNotification extends Notification implements ShouldBroadcastNow
 {
     public function __construct(public Konseling $konseling) {}
 
@@ -24,5 +26,10 @@ class KonselingPengajuanBaruNotification extends Notification
             'link' => route('bk.validasi-pengajuan', ['id' => $this->konseling->id]),
             'event_type' => 'konseling_pengajuan_baru',
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return (new BroadcastMessage($this->toArray($notifiable)))->onConnection('sync');
     }
 }

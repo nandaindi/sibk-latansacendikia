@@ -68,21 +68,7 @@
             </div>
         </div>
 
-        {{-- Data Orang Tua --}}
-        <h4 class="text-[0.85rem] font-bold text-[#1a9488] uppercase tracking-wider mt-6 mb-3 flex items-center gap-2">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            Data Orang Tua / Wali
-        </h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-[#f8fffe] rounded-xl p-4 border border-[#e0f5f3]">
-                <p class="text-[0.75rem] font-bold text-[#1a9488] uppercase tracking-wide mb-1">Nama Orang Tua / Wali</p>
-                <p class="text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $user->nama_ortu ?? '-' }}</p>
-            </div>
-            <div class="bg-[#f8fffe] rounded-xl p-4 border border-[#e0f5f3]">
-                <p class="text-[0.75rem] font-bold text-[#1a9488] uppercase tracking-wide mb-1">No. Telepon Orang Tua</p>
-                <p class="text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $user->telepon_ortu ?? '-' }}</p>
-            </div>
-        </div>
+
 
         {{-- Action Buttons --}}
         <div class="flex gap-3 mt-6">

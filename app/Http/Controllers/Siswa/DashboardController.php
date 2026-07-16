@@ -7,7 +7,9 @@ use App\Models\Artikel;
 use App\Models\Konseling;
 use App\Models\Pelanggaran;
 use App\Models\User;
+use App\Notifications\KonselingFeedbackNotification;
 use App\Notifications\KonselingPengajuanBaruNotification;
+use App\Notifications\PanggilanDiterimaNotification;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +105,10 @@ class DashboardController extends Controller
                 'status' => 'diterima',
                 'is_read' => true,
             ]);
+
+            if ($pelanggaran->bk) {
+                $pelanggaran->bk->notify(new PanggilanDiterimaNotification($pelanggaran->loadMissing('user')));
+            }
         } catch (\Throwable $e) {
             report($e);
 
@@ -305,7 +311,7 @@ class DashboardController extends Controller
         return view('siswa.konseling-offline', compact('konseling'));
     }
 
-    /** Chat Konseling - saat konseling berlangsung atau baru selesai meminta feedback */
+    /** Chat Konseling - hanya saat konseling berlangsung (disetujui) */
     public function chatKonseling()
     {
         $userId = auth()->id();
@@ -321,7 +327,23 @@ class DashboardController extends Controller
             ->where('jenis', 'online')
             ->latest()->first();
 
+        // Jika konseling sudah selesai tapi belum mengisi feedback, langsung alihkan ke form feedback
+        if ($konseling && $konseling->status === 'selesai' && is_null($konseling->kesimpulan_siswa)) {
+            return redirect()->route('siswa.konseling.form-feedback', $konseling->id);
+        }
+
         return view('siswa.chat-konseling', compact('konseling'));
+    }
+
+    /** Tampilkan halaman khusus form feedback setelah konseling selesai */
+    public function formFeedback($id)
+    {
+        $konseling = Konseling::where('user_id', auth()->id())
+            ->where('status', 'selesai')
+            ->whereNull('kesimpulan_siswa')
+            ->findOrFail($id);
+
+        return view('siswa.form-feedback', compact('konseling'));
     }
 
     /** Simpan feedback siswa (kesimpulan & saran) */
@@ -350,6 +372,10 @@ class DashboardController extends Controller
             'kepuasan_kepercayaan' => $request->kepuasan_kepercayaan,
             'kepuasan_pelayanan' => $request->kepuasan_pelayanan,
         ]);
+
+        if ($konseling->bk) {
+            $konseling->bk->notify(new KonselingFeedbackNotification($konseling->loadMissing('user')));
+        }
 
         return redirect()->route('siswa.dashboard')->with('sukses', 'Terima kasih atas kesimpulan dan saran yang telah kamu berikan.');
     }

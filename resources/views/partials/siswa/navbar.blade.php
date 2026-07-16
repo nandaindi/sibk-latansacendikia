@@ -449,42 +449,23 @@
         }
     });
 
-    window.addEventListener('load', () => {
-        if (window.Echo) {
-            const canAutoReload = [
-                /^\/siswa\/dashboard\/?$/,
-                /^\/siswa\/notifications(\/)?(\?.*)?$/,
-                /^\/siswa\/riwayat-konseling\/?$/,
-                /^\/siswa\/panggilan\/?$/,
-                /^\/siswa\/mulai-konseling\/?$/,
-                /^\/siswa\/konseling-offline\/?$/,
-                /^\/siswa\/chat-konseling\/?$/,
-                /^\/siswa\/pengajuan-proses\/?$/,
-                /^\/siswa\/pengajuan-ditolak\/?$/
-            ];
-            const shouldAutoReload = canAutoReload.some((pattern) => pattern.test(window.location.pathname));
-
-            window.Echo.private('App.Models.User.' + {{ auth()->id() }})
-                .notification((notification) => {
-                    if (window.showToast) {
-                        window.showToast(notification.title || 'Notifikasi Baru', 'success', true);
-                    }
-
-                    const reloadableTypes = ['konseling_status', 'pelanggaran_baru', 'pelanggaran_status'];
-                    if (shouldAutoReload && reloadableTypes.includes(notification?.data?.event_type) && !window.__konselingNotifReloadScheduled) {
-                        window.__konselingNotifReloadScheduled = true;
-                        const targetLink = notification?.data?.link;
-                        if (targetLink) {
-                            const targetUrl = new URL(targetLink, window.location.origin);
-                            if (targetUrl.pathname !== window.location.pathname || targetUrl.search !== window.location.search) {
-                                setTimeout(() => window.location.href = targetUrl.toString(), 250);
-                                return;
-                            }
-                        }
-                        setTimeout(() => window.location.reload(), 600);
-                    }
-                });
-        }
-    });
+    @include('partials.echo-notifications', [
+        'canAutoReload' => [
+            '^/siswa/dashboard/?$',
+            '^/siswa/notifications(/)?(\\?.*)?$',
+            '^/siswa/riwayat-konseling/?$',
+            '^/siswa/laporan.*$',
+            '^/siswa/konseling/feedback.*$',
+            '^/siswa/panggilan/?$',
+            '^/siswa/detail-panggilan.*$',
+            '^/siswa/mulai-konseling/?$',
+            '^/siswa/konseling-offline/?$',
+            '^/siswa/chat-konseling/?$',
+            '^/siswa/pengajuan-proses/?$',
+            '^/siswa/pengajuan-ditolak/?$'
+        ],
+        'reloadableTypes' => ['konseling_status', 'pelanggaran_baru', 'pelanggaran_status'],
+        'autoRedirect' => true
+    ])
 </script>
 @endif

@@ -5,8 +5,10 @@ namespace App\Notifications;
 use App\Models\Konseling;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class KonselingStatusNotification extends Notification
+class KonselingStatusNotification extends Notification implements ShouldBroadcastNow
 {
     public $konseling;
 
@@ -68,5 +70,10 @@ class KonselingStatusNotification extends Notification
             'link' => route('siswa.chat-konseling'),
             'event_type' => 'konseling_status',
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return (new BroadcastMessage($this->toArray($notifiable)))->onConnection('sync');
     }
 }
