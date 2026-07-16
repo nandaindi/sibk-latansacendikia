@@ -360,8 +360,9 @@ class DashboardController extends Controller
         $request->validate([
             'nama'          => 'required|string|max:100',
             'email'         => 'required|email|unique:users,email',
+            'username'      => 'required|string|max:50|unique:users,username',
             'password'      => 'required|string|min:6',
-            'nis'           => 'required|string|unique:users,nis|unique:users,username',
+            'nis'           => 'required|string|unique:users,nis',
             'kelas'         => 'nullable|string|max:20',
             'jurusan'       => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|in:L,P',
@@ -376,7 +377,7 @@ class DashboardController extends Controller
             'email'         => $request->email,
             'password'      => \Illuminate\Support\Facades\Hash::make($request->password),
             'nis'           => $request->nis,
-            'username'      => $request->nis, // NIS dijadikan default username
+            'username'      => $request->username,
             'kelas'         => $request->kelas,
             'jurusan'       => $request->jurusan,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -415,8 +416,9 @@ class DashboardController extends Controller
         $request->validate([
             'nama'          => 'required|string|max:100',
             'email'         => 'required|email|unique:users,email,'.$user->id,
+            'username'      => 'required|string|max:50|unique:users,username,'.$user->id,
             'password'      => 'nullable|string|min:6',
-            'nis'           => 'required|string|unique:users,nis,'.$user->id.'|unique:users,username,'.$user->id,
+            'nis'           => 'required|string|unique:users,nis,'.$user->id,
             'kelas'         => 'nullable|string|max:20',
             'jurusan'       => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|in:L,P',
@@ -430,7 +432,7 @@ class DashboardController extends Controller
             'name'          => $request->nama,
             'email'         => $request->email,
             'nis'           => $request->nis,
-            'username'      => $request->nis, // Update NIS berarti update username juga
+            'username'      => $request->username,
             'kelas'         => $request->kelas,
             'jurusan'       => $request->jurusan,
             'jenis_kelamin' => $request->jenis_kelamin,

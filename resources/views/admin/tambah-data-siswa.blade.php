@@ -40,6 +40,13 @@
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
+            {{-- Username --}}
+            <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username</label>
+                <input type="text" name="username" placeholder="Username untuk login" value="{{ old('username') }}" required
+                       class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
+            </div>
+
             {{-- Kelas & Jurusan (Row) --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
