@@ -28,21 +28,20 @@
 
             {{-- Nama --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap (beserta Gelar)</label>
-                <input type="text" name="nama" placeholder="Contoh: Dr. Ahmad Hidayat, S.Pd." value="{{ old('nama') }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap (beserta Gelar) <span class="text-red-500">*</span></label>
+                <input type="text" name="nama" placeholder="Contoh: Dr. Ahmad Hidayat, S.Pd." value="{{ old('nama') }}" required pattern="[a-zA-Z\s\.\,\']+" title="Hanya boleh berisi huruf, spasi, titik, dan koma" oninput="this.value = this.value.replace(/[^a-zA-Z\s.,']/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- NIP --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">NIP / NUPTK (Opsional)</label>
-                <input type="text" name="nip" placeholder="Nomor Induk Pegawai" value="{{ old('nip') }}"
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide"> NUPTK <span class="text-red-500">*</span></label>
+                <input type="text" inputmode="numeric" name="nip" placeholder="Nomor Induk Pegawai" value="{{ old('nip') }}" required pattern="\d{16}" maxlength="16" minlength="16" title="Wajib berisi tepat 16 angka" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- Jenis Kelamin --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Jenis Kelamin</label>
                 <select name="jenis_kelamin" class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium cursor-pointer">
                     <option value="">-- Pilih --</option>
                     <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
@@ -67,7 +66,7 @@
             {{-- Telepon --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                 <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">No. Telepon / WhatsApp</label>
-                <input type="text" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon') }}"
+                <input type="text" inputmode="numeric" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon') }}" pattern="\d{12}" maxlength="12" minlength="12" title="Wajib berisi tepat 12 angka" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
         </div>
@@ -88,15 +87,15 @@
 
             {{-- Username --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username</label>
-                <input type="text" name="username" placeholder="guru_bk" value="{{ old('username') }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username <span class="text-red-500">*</span></label>
+                <input type="text" name="username" id="usernameInput" placeholder="contoh: nanda.indi.lestari" value="{{ old('username') }}" required pattern="[A-Za-z0-9\.]+" title="Hanya kombinasi huruf, angka, dan titik" oninput="this.value = this.value.replace(/[^a-zA-Z0-9\.]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- Password --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password</label>
-                <input type="password" name="password" placeholder="Minimal 6 karakter" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password <span class="text-red-500">*</span></label>
+                <input type="password" name="password" id="passwordInput" placeholder="Otomatis mengikuti NUPTK" required minlength="8"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
         </div>
@@ -137,6 +136,38 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const namaInput = document.querySelector('input[name="nama"]');
+    const usernameInput = document.getElementById('usernameInput');
+    const nipInput = document.querySelector('input[name="nip"]');
+    const passwordInput = document.getElementById('passwordInput');
+
+    let usernameManuallyChanged = false;
+    let passwordManuallyChanged = false;
+
+    usernameInput.addEventListener('input', function() {
+        usernameManuallyChanged = true;
+    });
+
+    passwordInput.addEventListener('input', function() {
+        passwordManuallyChanged = true;
+    });
+
+    namaInput.addEventListener('input', function() {
+        if (!usernameManuallyChanged) {
+            let nama = this.value.trim().toLowerCase();
+            let username = nama.replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '.');
+            usernameInput.value = username;
+        }
+    });
+
+    nipInput.addEventListener('input', function() {
+        if (!passwordManuallyChanged) {
+            passwordInput.value = this.value;
+        }
+    });
+});
+
 function showConfirmModal() {
     const form = document.getElementById('tambahBkForm');
     if (form.checkValidity()) {

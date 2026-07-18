@@ -48,7 +48,7 @@
                         <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Kelas</th>
                         <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Jenis</th>
                         <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
-                        <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                        <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#edf2f1]">
@@ -63,7 +63,7 @@
                             </span>
                         </td>
                         <td class="hidden md:table-cell p-4 text-[0.85rem] text-[#888]">{{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('D MMM YYYY') }}</td>
-                        <td class="p-4 text-right">
+                        <td class="p-4 text-center">
                             <a href="{{ route('bk.detail-laporan', ['id' => $laporan->id]) }}" title="Lihat Detail" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors inline-flex">
                                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                             </a>
@@ -90,9 +90,10 @@ $(document).ready(function() {
             </div>`
         },
         columnDefs: [
-            { orderable: false, targets: [0, 5] },
+            { orderable: false, targets: [0, -1] },
+            { className: 'dt-center', targets: -1 },
             { responsivePriority: 1, targets: 1 },
-            { responsivePriority: 2, targets: 5 }
+            { responsivePriority: 2, targets: -1 }
         ]
     });
 });

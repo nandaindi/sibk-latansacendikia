@@ -34,7 +34,7 @@
                             <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
                             <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
                             <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Keterangan</th>
-                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#edf2f1]">
@@ -45,7 +45,7 @@
                                 <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $onlineNo++ }}</td>
                                 <td class="p-4 text-[0.95rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</td>
                                 <td class="hidden md:table-cell p-4 text-[0.9rem] text-[#555]">Laporan Konseling Online</td>
-                                <td class="p-4 text-right">
+                                <td class="p-4 text-center">
                                     <span class="text-[#1a9488] transition-transform group-hover:translate-x-1 inline-block">
                                         <svg width="20" height="20" fill="none" class="stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                                     </span>
@@ -67,7 +67,7 @@
                             <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
                             <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
                             <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Keterangan</th>
-                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#edf2f1]">
@@ -78,7 +78,7 @@
                                 <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $offlineNo++ }}</td>
                                 <td class="p-4 text-[0.95rem] font-bold text-[#1a1a1a]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d F Y') }}</td>
                                 <td class="hidden md:table-cell p-4 text-[0.9rem] text-[#555]">Laporan Konseling Offline</td>
-                                <td class="p-4 text-right">
+                                <td class="p-4 text-center">
                                     <span class="text-[#1a9488] transition-transform group-hover:translate-x-1 inline-block">
                                         <svg width="20" height="20" fill="none" class="stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
                                     </span>
@@ -106,7 +106,7 @@ $(document).ready(function() {
                 <span class="text-[#888] font-medium text-[0.95rem]">Belum ada riwayat konseling.</span>
             </div>`
         },
-        columnDefs: [{ orderable: false, targets: [0, 3] }, { responsivePriority: 1, targets: 1 }]
+        columnDefs: [{ orderable: false, targets: [0, -1] }, { className: 'dt-center', targets: -1 }, { responsivePriority: 1, targets: 1 }]
     };
     $('#riwayatOnlineTable').DataTable(dtConfig);
     $('#riwayatOfflineTable').DataTable(dtConfig);

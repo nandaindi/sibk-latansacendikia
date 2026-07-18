@@ -19,21 +19,21 @@
         @method('PUT')
 
         {{-- Info pengguna (read-only) --}}
-        <div class="bg-[#f8fffe] border-[2px] border-[#e0f5f3] rounded-2xl px-5 py-3.5">
+        <div class="bg-[#f8fffe] border-[2px] border-[#e0f5f3] rounded-2xl px-5 py-3.5 cursor-not-allowed">
             <label class="text-[0.75rem] font-bold text-[#888] block mb-1 uppercase tracking-wide">Nama Pengguna</label>
             <p class="text-[1rem] font-semibold text-[#1a1a1a]">{{ $user->name }}</p>
         </div>
 
         {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Alamat Email</label>
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Alamat Email <span class="text-red-500">*</span></label>
             <input type="email" name="email" placeholder="Email" value="{{ old('email', $user->email) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Role --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Role Akses</label>
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Role Akses <span class="text-red-500">*</span></label>
             <select name="role" required class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium cursor-pointer">
                 <option value="admin" {{ $user->hasRole('admin') ? 'selected' : '' }}>Admin</option>
                 <option value="bk" {{ $user->hasRole('bk') ? 'selected' : '' }}>BK / Konselor</option>
@@ -44,7 +44,7 @@
         {{-- Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password Baru (Kosongkan jika tidak ingin mengubah)</label>
-            <input type="password" name="password" placeholder="Password Baru"
+            <input type="password" name="password" placeholder="Min 8 karakter" minlength="8" maxlength="8"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 

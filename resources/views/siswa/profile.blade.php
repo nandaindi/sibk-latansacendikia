@@ -39,85 +39,23 @@
             @error('avatar')<span class="text-red-500 text-xs text-center">{{ $message }}</span>@enderror
         </div>
 
-        <div class="mt-4 mb-2">
-            <div class="flex items-center gap-2 mb-1">
-                <h3 class="text-[1.1rem] font-bold text-[#1a1a1a]">Informasi Pribadi</h3>
-            </div>
-            <p class="text-[0.8rem] text-[#888]">Data identitas dikelola oleh Admin Sekolah. Silakan hubungi Admin jika terdapat kesalahan.</p>
-        </div>
-
-        {{-- Nama Lengkap (Read Only) --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Nama Lengkap</label>
-            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->name ?? '-' }}</div>
-        </div>
-
-        {{-- NIS (Read Only) --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> NIS</label>
-            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->nis ?? '-' }}</div>
-        </div>
-
-        {{-- Kelas & Jurusan (Read Only) --}}
-        <div class="grid-fluid">
-            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-                <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Kelas</label>
-                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->kelas ?? '-' }}</div>
-            </div>
-            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-                <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Jurusan</label>
-                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->jurusan ?? '-' }}</div>
-            </div>
-        </div>
-
-        {{-- Jenis Kelamin & TTL (Read Only) --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Jenis Kelamin</label>
-            <div class="text-[1rem] text-[#555] font-semibold">{{ $user->jenis_kelamin == 'L' ? 'Laki-laki' : ($user->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</div>
-        </div>
-
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Tempat, Tanggal Lahir</label>
-            <div class="text-[1rem] text-[#555] font-semibold">
-                {{ $user->tempat_lahir ?? '-' }}, {{ $user->tanggal_lahir ? \Carbon\Carbon::parse($user->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
-            </div>
-        </div>
-
-        {{-- Alamat (Read Only) --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Alamat Lengkap</label>
-            <div class="text-[1rem] text-[#555] font-semibold leading-relaxed">{{ $user->alamat ?? '-' }}</div>
-        </div>
-
-        {{-- Data Orang Tua (Read Only) --}}
-        <div class="grid-fluid">
-            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-                <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Nama Orang Tua / Wali</label>
-                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->nama_ortu ?? '-' }}</div>
-            </div>
-            <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] transition-all">
-                <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] font-bold mb-1 uppercase tracking-wider"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> No. HP Orang Tua</label>
-                <div class="text-[1rem] text-[#555] font-semibold">{{ $user->telepon_ortu ?? '-' }}</div>
-            </div>
-        </div>
-
         <div class="my-3">
             <h3 class="text-[1.1rem] font-bold text-[#1a1a1a] border-b-[2px] border-[#eee] pb-2">Pengaturan Akun</h3>
         </div>
 
         {{-- Email (Editable) --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] focus-within:border-[#1a9488] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all group">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] group-focus-within:text-[#1a9488] font-bold mb-1 uppercase tracking-wider transition-colors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email</label>
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all group">
+            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#1a9488] font-bold mb-1 uppercase tracking-wider transition-colors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email</label>
             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
         @error('email')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
         {{-- New Password --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] focus-within:border-[#1a9488] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all group relative">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] group-focus-within:text-[#1a9488] font-bold mb-1 uppercase tracking-wider transition-colors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Ganti Password <span class="text-[0.7rem] font-normal lowercase text-[#aaa] group-focus-within:text-[#1a9488]/70">(Kosongkan jika tidak ingin mengubah)</span></label>
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all group relative">
+            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#1a9488] font-bold mb-1 uppercase tracking-wider transition-colors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Ganti Password <span class="text-[0.7rem] font-normal lowercase text-[#1a9488]/70">(Kosongkan jika tidak ingin mengubah)</span></label>
             <div class="flex items-center">
-                <input type="password" name="password" id="passInput" placeholder="Min. 8 Karakter"
+                <input type="password" name="password" id="passInput" placeholder="Min. Min 8 karakter" minlength="8" maxlength="8"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium pr-10"/>
                 <button type="button" onclick="togglePassword('passInput', 'eyeIcon1')" class="absolute right-5 bottom-3.5 text-[#aaa] hover:text-[#1a9488] transition-colors focus:outline-none border-none bg-transparent cursor-pointer">
                     <svg id="eyeIcon1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -127,10 +65,10 @@
         @error('password')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
         {{-- Confirm Password --}}
-        <div class="border-[2px] border-[#eee] rounded-2xl px-5 py-3.5 bg-[#f9f9f9] focus-within:border-[#1a9488] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all group relative">
-            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#aaa] group-focus-within:text-[#1a9488] font-bold mb-1 uppercase tracking-wider transition-colors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Konfirmasi Password Baru</label>
+        <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all group relative">
+            <label class="flex items-center gap-1.5 text-[0.8rem] text-[#1a9488] font-bold mb-1 uppercase tracking-wider transition-colors"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Konfirmasi Password Baru</label>
             <div class="flex items-center">
-                <input type="password" name="password_confirmation" id="passConfirmInput" placeholder="Ulangi Password"
+                <input type="password" name="password_confirmation" id="passConfirmInput" placeholder="Ulangi Password" minlength="8" maxlength="8"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium pr-10"/>
                 <button type="button" onclick="togglePassword('passConfirmInput', 'eyeIcon2')" class="absolute right-5 bottom-3.5 text-[#aaa] hover:text-[#1a9488] transition-colors focus:outline-none border-none bg-transparent cursor-pointer">
                     <svg id="eyeIcon2" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>

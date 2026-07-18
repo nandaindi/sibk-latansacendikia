@@ -21,12 +21,14 @@
 
         {{-- Nama --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="text" name="nama" placeholder="Nama Lengkap" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap <span class="text-red-500">*</span></label>
+            <input type="text" name="nama" placeholder="Nama Lengkap" required pattern="[a-zA-Z\s\.\,\']+" title="Hanya boleh berisi huruf, spasi, titik, dan koma" oninput="this.value = this.value.replace(/[^a-zA-Z\s.,']/g, '')"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 
         {{-- Email --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Email <span class="text-red-500">*</span></label>
             <input type="email" name="email" placeholder="Email" required
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
@@ -37,7 +39,8 @@
 
         {{-- Password --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-            <input type="password" name="password" placeholder="Password" required
+            <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password <span class="text-red-500">*</span></label>
+            <input type="password" name="password" placeholder="Min 8 karakter" required minlength="8" maxlength="8"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 

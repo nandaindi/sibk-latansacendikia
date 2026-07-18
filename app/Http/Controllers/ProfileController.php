@@ -47,7 +47,7 @@ class ProfileController extends Controller
         ];
 
         if ($user->hasRole('admin')) {
-            $rules['name'] = ['required', 'string', 'max:255'];
+            $rules['name'] = ['required', 'regex:/^[a-zA-Z\s\.\,\']+$/', 'max:255'];
         }
 
         $validated = $request->validate($rules);

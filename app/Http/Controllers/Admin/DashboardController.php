@@ -43,10 +43,10 @@ class DashboardController extends Controller
     public function storeTambahAkun(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
+            'nama' => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email'   => 'required|email|unique:users,email',
-            'telepon' => 'nullable|string|max:20',
-            'password' => 'required|string|min:6',
+            'telepon' => 'nullable|numeric|digits:12',
+            'password' => 'required|string|min:8',
         ]);
 
         $emailPrefix = explode('@', $request->email)[0];
@@ -92,11 +92,11 @@ class DashboardController extends Controller
         $user = User::findOrFail($request->query('id'));
 
         $request->validate([
-            'nama' => 'required|string|max:100',
+            'nama' => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'telepon' => 'nullable|string|max:15',
+            'telepon' => 'nullable|numeric|digits:12',
             'role' => 'required|in:admin,bk,siswa',
-            'password' => 'nullable|string|min:6',
+            'password' => 'nullable|string|min:8',
         ]);
 
         $data = [
@@ -141,9 +141,9 @@ class DashboardController extends Controller
         $user = User::findOrFail($request->query('id'));
 
         $request->validate([
-            'username' => 'required|string|max:50|unique:users,username,'.$user->id,
+            'username' => 'required|regex:/^[a-zA-Z0-9\.]+$/|min:4|max:50|unique:users,username,'.$user->id,
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
 
         $user->update([
@@ -181,10 +181,10 @@ class DashboardController extends Controller
     public function storeTambahData(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100',
+            'nama' => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email' => 'required|email|unique:users,email',
-            'nis' => 'required|string|unique:users,nis|unique:users,username',
-            'password' => 'required|string|min:6',
+            'nis' => 'required|numeric|digits:10|unique:users,nis|unique:users,username',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
@@ -214,10 +214,10 @@ class DashboardController extends Controller
         $user = User::findOrFail($request->query('id'));
 
         $request->validate([
-            'nama' => 'required|string|max:100',
+            'nama' => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'nis' => 'required|string|unique:users,nis,'.$user->id,
-            'password' => 'nullable|string|min:6',
+            'nis' => 'required|numeric|digits:10|unique:users,nis,'.$user->id,
+            'password' => 'nullable|string|min:8',
         ]);
 
         $data = [
@@ -358,18 +358,18 @@ class DashboardController extends Controller
     public function storeDataSiswa(Request $request)
     {
         $request->validate([
-            'nama'          => 'required|string|max:100',
+            'nama'          => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email'         => 'required|email|unique:users,email',
-            'username'      => 'required|string|max:50|unique:users,username',
-            'password'      => 'required|string|min:6',
-            'nis'           => 'required|string|unique:users,nis',
+            'username'      => 'required|regex:/^[a-zA-Z0-9\.]+$/|min:4|max:50|unique:users,username',
+            'password'      => 'required|string|min:8',
+            'nis'           => 'required|numeric|digits:10|unique:users,nis',
             'kelas'         => 'nullable|string|max:20',
             'jurusan'       => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'tempat_lahir'  => 'nullable|string|max:100',
+            'tempat_lahir'  => 'nullable|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'tanggal_lahir' => 'nullable|date',
-            'alamat'        => 'nullable|string',
-            'telepon'       => 'nullable|string|max:20',
+            'alamat'        => 'nullable|string|max:255',
+            'telepon'       => 'nullable|numeric|digits:12',
         ]);
 
         $user = User::create([
@@ -414,18 +414,18 @@ class DashboardController extends Controller
         $user = User::role('siswa')->findOrFail($request->query('id'));
 
         $request->validate([
-            'nama'          => 'required|string|max:100',
+            'nama'          => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email'         => 'required|email|unique:users,email,'.$user->id,
-            'username'      => 'required|string|max:50|unique:users,username,'.$user->id,
-            'password'      => 'nullable|string|min:6',
-            'nis'           => 'required|string|unique:users,nis,'.$user->id,
+            'username'      => 'required|regex:/^[a-zA-Z0-9\.]+$/|min:4|max:50|unique:users,username,'.$user->id,
+            'password'      => 'nullable|string|min:8',
+            'nis'           => 'required|numeric|digits:10|unique:users,nis,'.$user->id,
             'kelas'         => 'nullable|string|max:20',
             'jurusan'       => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'tempat_lahir'  => 'nullable|string|max:100',
+            'tempat_lahir'  => 'nullable|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'tanggal_lahir' => 'nullable|date',
-            'alamat'        => 'nullable|string',
-            'telepon'       => 'nullable|string|max:20',
+            'alamat'        => 'nullable|string|max:255',
+            'telepon'       => 'nullable|numeric|digits:12',
         ]);
 
         $data = [
@@ -492,14 +492,14 @@ class DashboardController extends Controller
     public function storeDataBk(Request $request)
     {
         $request->validate([
-            'nama'          => 'required|string|max:100',
+            'nama'          => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email'         => 'required|email|unique:users,email',
-            'username'      => 'required|string|max:50|unique:users,username',
-            'password'      => 'required|string|min:6',
-            'nip'           => 'nullable|string|max:30',
+            'username'      => 'required|regex:/^[a-zA-Z0-9\.]+$/|min:4|max:50|unique:users,username',
+            'password'      => 'required|string|min:8',
+            'nip'           => 'required|numeric|digits:16',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'alamat'        => 'nullable|string',
-            'telepon'       => 'nullable|string|max:20',
+            'alamat'        => 'nullable|string|max:255',
+            'telepon'       => 'nullable|numeric|digits:12',
             'jabatan'       => 'nullable|string|max:100',
         ]);
 
@@ -542,14 +542,14 @@ class DashboardController extends Controller
         $user = User::role('bk')->findOrFail($request->query('id'));
 
         $request->validate([
-            'nama'          => 'required|string|max:100',
+            'nama'          => 'required|regex:/^[a-zA-Z\s\.\,\']+$/|max:100',
             'email'         => 'required|email|unique:users,email,'.$user->id,
-            'username'      => 'required|string|max:50|unique:users,username,'.$user->id,
-            'password'      => 'nullable|string|min:6',
-            'nip'           => 'nullable|string|max:30',
+            'username'      => 'required|regex:/^[a-zA-Z0-9\.]+$/|min:4|max:50|unique:users,username,'.$user->id,
+            'password'      => 'nullable|string|min:8',
+            'nip'           => 'required|numeric|digits:16',
             'jenis_kelamin' => 'nullable|in:L,P',
-            'alamat'        => 'nullable|string',
-            'telepon'       => 'nullable|string|max:20',
+            'alamat'        => 'nullable|string|max:255',
+            'telepon'       => 'nullable|numeric|digits:12',
             'jabatan'       => 'nullable|string|max:100',
         ]);
 

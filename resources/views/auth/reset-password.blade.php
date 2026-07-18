@@ -81,7 +81,7 @@
                         id="password"
                         name="password"
                         class="w-full py-[13px] pr-[44px] pl-[42px] border-[1.5px] border-[#e0e0e0] rounded-[10px] text-[0.9rem] font-sans text-[#333] bg-[#fafafa] transition-all duration-250 outline-none focus:border-[#1a9488] focus:shadow-[0_0_0_3px_rgba(26,148,136,0.12)] focus:bg-white @error('password') border-[#e74c3c] @enderror"
-                        placeholder="Minimal 8 karakter"
+                        placeholder="Minimal Min 8 karakter"
                         required
                     >
                     <button type="button" onclick="togglePassword('password', 'icon-eye-off-1', 'icon-eye-1')" class="absolute right-[12px] top-1/2 -translate-y-1/2 bg-transparent border-none text-[#aaa] cursor-pointer p-1 hover:text-[#1a9488] transition-colors duration-200">

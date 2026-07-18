@@ -34,7 +34,7 @@
                 <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
                 <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama</th>
                 <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Email</th>
-                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-[#edf2f1]">
@@ -49,8 +49,8 @@
                         <span class="text-red-500 italic text-[0.8rem] font-bold uppercase tracking-tight px-2.5 py-1 rounded-md bg-red-50 border border-red-200">Belum Aktif</span>
                     @endif
                 </td>
-                <td class="p-4 text-right">
-                    <div class="flex items-center justify-end gap-2">
+                <td class="p-4 text-center">
+                    <div class="flex items-center justify-center gap-2">
                         @if(!$akun->email)
                             <a href="{{ route('admin.aktifkan-akun', ['id' => $akun->id]) }}" title="Aktifkan Akun" class="p-2 text-white bg-[#1a9488] hover:brightness-110 rounded-lg transition-colors inline-flex">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -102,9 +102,10 @@ $(document).ready(function() {
     $('#akunTable').DataTable({
         language: { searchPlaceholder: "Cari admin..." },
         columnDefs: [
-            { orderable: false, targets: [0, 3] },
+            { orderable: false, targets: [0, -1] },
+            { className: 'dt-center', targets: -1 },
             { responsivePriority: 1, targets: 1 },
-            { responsivePriority: 2, targets: 3 }
+            { responsivePriority: 2, targets: -1 }
         ]
     });
 });

@@ -30,10 +30,10 @@
             <tr class="bg-[#f8fcfb] border-b border-[#edf2f1]">
                 <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
                 <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama</th>
-                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">NIS</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">NISN</th>
                 <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Kelas</th>
-                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">JK</th>
-                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Jenis Kelamin</th>
+                <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-[#edf2f1]">
@@ -44,8 +44,8 @@
                 <td class="p-4 text-[0.9rem] text-[#555]">{{ $item->nis ?? '-' }}</td>
                 <td class="p-4 text-[0.9rem] text-[#555]">{{ $item->kelas ?? '-' }}</td>
                 <td class="p-4 text-[0.9rem] text-[#555]">{{ $item->jenis_kelamin ?? '-' }}</td>
-                <td class="p-4 text-right">
-                    <div class="flex items-center justify-end gap-2">
+                <td class="p-4 text-center">
+                    <div class="flex items-center justify-center gap-2">
                         <a href="{{ route('admin.data-siswa.detail', ['id' => $item->id]) }}" title="Detail" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                         </a>
@@ -92,9 +92,10 @@ $(document).ready(function() {
     $('#siswaTable').DataTable({
         language: { searchPlaceholder: "Cari siswa..." },
         columnDefs: [
-            { orderable: false, targets: [0, 5] },
+            { orderable: false, targets: [0, -1] },
+            { className: 'dt-center', targets: -1 },
             { responsivePriority: 1, targets: 1 },
-            { responsivePriority: 2, targets: 5 }
+            { responsivePriority: 2, targets: -1 }
         ]
     });
 });

@@ -28,22 +28,22 @@
 
             {{-- Nama Lengkap --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap</label>
-                <input type="text" name="nama" placeholder="Nama lengkap siswa" value="{{ old('nama') }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap <span class="text-red-500">*</span></label>
+                <input type="text" name="nama" placeholder="Nama lengkap siswa" value="{{ old('nama') }}" required pattern="[a-zA-Z\s\.\,\']+" title="Hanya boleh berisi huruf, spasi, titik, dan koma" oninput="this.value = this.value.replace(/[^a-zA-Z\s.,']/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- NIS --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">NIS / NISN</label>
-                <input type="text" name="nis" placeholder="Nomor Induk Siswa" value="{{ old('nis') }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide"> NISN <span class="text-red-500">*</span></label>
+                <input type="text" inputmode="numeric" name="nis" placeholder="Nomor Induk Siswa" value="{{ old('nis') }}" required pattern="\d{10}" maxlength="10" minlength="10" title="Wajib berisi tepat 10 angka" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- Username --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username</label>
-                <input type="text" name="username" placeholder="Username untuk login" value="{{ old('username') }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username <span class="text-red-500">*</span></label>
+                <input type="text" name="username" id="usernameInput" placeholder="contoh: nanda.indi.lestari" value="{{ old('username') }}" required pattern="[A-Za-z0-9\.]+" title="Hanya kombinasi huruf, angka, dan titik" oninput="this.value = this.value.replace(/[^a-zA-Z0-9\.]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
@@ -84,7 +84,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                 <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                     <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Tempat Lahir</label>
-                    <input type="text" name="tempat_lahir" placeholder="Contoh: Surabaya" value="{{ old('tempat_lahir') }}"
+                    <input type="text" name="tempat_lahir" placeholder="Contoh: Surabaya" value="{{ old('tempat_lahir') }}" pattern="[a-zA-Z\s\.\,\']+" title="Hanya boleh berisi huruf, spasi, titik, dan koma" oninput="this.value = this.value.replace(/[^a-zA-Z\s.,']/g, '')"
                            class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
                 </div>
                 <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
@@ -104,7 +104,7 @@
             {{-- Telepon Siswa --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
                 <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">No. Telepon / WhatsApp Siswa</label>
-                <input type="text" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon') }}"
+                <input type="text" inputmode="numeric" name="telepon" placeholder="Contoh: 08123456789" value="{{ old('telepon') }}" pattern="\d{12}" maxlength="12" minlength="12" title="Wajib berisi tepat 12 angka" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
@@ -116,9 +116,9 @@
                            class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
                 </div>
                 <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
-                    <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password</label>
-                    <input type="password" name="password" placeholder="Minimal 6 karakter" required
-                           class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium"/>
+                    <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password <span class="text-red-500">*</span></label>
+                    <input type="password" name="password" id="passwordInput" placeholder="Otomatis mengikuti NISN" required minlength="8"
+                           class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
                 </div>
             </div>
         </div>
@@ -162,6 +162,38 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const namaInput = document.querySelector('input[name="nama"]');
+    const usernameInput = document.getElementById('usernameInput');
+    const nisInput = document.querySelector('input[name="nis"]');
+    const passwordInput = document.getElementById('passwordInput');
+
+    let usernameManuallyChanged = false;
+    let passwordManuallyChanged = false;
+
+    usernameInput.addEventListener('input', function() {
+        usernameManuallyChanged = true;
+    });
+
+    passwordInput.addEventListener('input', function() {
+        passwordManuallyChanged = true;
+    });
+
+    namaInput.addEventListener('input', function() {
+        if (!usernameManuallyChanged) {
+            let nama = this.value.trim().toLowerCase();
+            let username = nama.replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '.');
+            usernameInput.value = username;
+        }
+    });
+
+    nisInput.addEventListener('input', function() {
+        if (!passwordManuallyChanged) {
+            passwordInput.value = this.value;
+        }
+    });
+});
+
 function showConfirmModal() {
     const form = document.getElementById('tambahSiswaForm');
     if (form.checkValidity()) {

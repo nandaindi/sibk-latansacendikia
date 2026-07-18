@@ -34,21 +34,20 @@
 
             {{-- Nama --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap (beserta Gelar)</label>
-                <input type="text" name="nama" value="{{ old('nama', $user->name) }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Nama Lengkap (beserta Gelar) <span class="text-red-500">*</span></label>
+                <input type="text" name="nama" value="{{ old('nama', $user->name) }}" required pattern="[a-zA-Z\s\.\,\']+" title="Hanya boleh berisi huruf, spasi, titik, dan koma" oninput="this.value = this.value.replace(/[^a-zA-Z\s.,']/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- NIP --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">NIP / NUPTK (Opsional)</label>
-                <input type="text" name="nip" value="{{ old('nip', $user->nip) }}"
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide"> NUPTK <span class="text-red-500">*</span></label>
+                <input type="text" inputmode="numeric" name="nip" value="{{ old('nip', $user->nip) }}" required pattern="\d{16}" maxlength="16" minlength="16" title="Wajib berisi tepat 16 angka" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- Jenis Kelamin --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Jenis Kelamin</label>
                 <select name="jenis_kelamin" class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] bg-transparent font-medium cursor-pointer">
                     <option value="">-- Pilih --</option>
                     <option value="L" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
@@ -73,7 +72,7 @@
             {{-- Telepon --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                 <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">No. Telepon / WhatsApp</label>
-                <input type="text" name="telepon" value="{{ old('telepon', $user->telepon) }}"
+                <input type="text" inputmode="numeric" name="telepon" value="{{ old('telepon', $user->telepon) }}" pattern="\d{12}" maxlength="12" minlength="12" title="Wajib berisi tepat 12 angka" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
         </div>
@@ -94,15 +93,15 @@
 
             {{-- Username --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all mb-3">
-                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username</label>
-                <input type="text" name="username" value="{{ old('username', $user->username) }}" required
+                <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username <span class="text-red-500">*</span></label>
+                <input type="text" name="username" value="{{ old('username', $user->username) }}" required pattern="[A-Za-z0-9]+" title="Hanya kombinasi huruf dan angka, tanpa spasi" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
 
             {{-- Password --}}
             <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                 <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Password Baru (Opsional)</label>
-                <input type="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password"
+                <input type="password" name="password" placeholder="Min 8 karakter (Kosongkan jika tidak diubah)" minlength="8" maxlength="8"
                        class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
             </div>
         </div>

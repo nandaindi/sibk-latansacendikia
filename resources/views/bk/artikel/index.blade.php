@@ -25,7 +25,7 @@
                     <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider w-1/3">Judul Artikel</th>
                     <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Penulis</th>
                     <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
-                    <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                    <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-[#edf2f1]">
@@ -45,8 +45,8 @@
                     </td>
                     <td class="hidden md:table-cell p-4 text-[0.9rem] font-medium text-[#555]">{{ $artikel->penulis->name ?? 'Unknown' }}</td>
                     <td class="hidden md:table-cell p-4 text-[0.85rem] text-[#888]">{{ $artikel->created_at->format('d M Y') }}</td>
-                    <td class="p-4 text-right">
-                        <div class="flex items-center justify-end gap-2">
+                    <td class="p-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
                             <a href="{{ route('bk.artikel.preview', $artikel->id) }}" target="_blank" class="p-2 text-[#1a9488] hover:bg-[#e0f5f3] rounded-lg transition-colors" title="Lihat Artikel">
                                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             </a>
@@ -105,10 +105,10 @@
                 </div>`
             },
             columnDefs: [
-                { orderable: false, targets: [0, 4] },
-                { responsivePriority: 1, targets: 0 },
-                { responsivePriority: 2, targets: 1 },
-                { responsivePriority: 3, targets: 4 }
+                { orderable: false, targets: [0, -1] },
+                { className: 'dt-center', targets: -1 },
+                { responsivePriority: 1, targets: 1 },
+                { responsivePriority: 2, targets: -1 }
             ]
         });
     });

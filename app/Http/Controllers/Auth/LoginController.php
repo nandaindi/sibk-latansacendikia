@@ -133,7 +133,7 @@ class LoginController extends Controller
             'password' => 'required|min:8|confirmed',
         ], [
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'password.min' => 'Password minimal 8 karakter.',
+            'password.min' => 'Password minimal Min 8 karakter.',
         ]);
 
         $status = Password::reset(

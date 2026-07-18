@@ -71,14 +71,14 @@
 
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Password Baru</label>
-            <input type="password" name="password" placeholder="Min. 8 Karakter"
+            <input type="password" name="password" placeholder="Min. Min 8 karakter" minlength="8" maxlength="8"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
         @error('password')<span class="text-red-500 text-sm px-2">{{ $message }}</span>@enderror
 
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-3.5 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="block text-[0.8rem] text-[#888] font-bold mb-1 uppercase tracking-wider">Konfirmasi Password Baru</label>
-            <input type="password" name="password_confirmation" placeholder="Ulangi Password"
+            <input type="password" name="password_confirmation" placeholder="Ulangi Password" minlength="8" maxlength="8"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 

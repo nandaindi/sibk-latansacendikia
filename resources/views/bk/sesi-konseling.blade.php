@@ -53,7 +53,7 @@
                             <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
                             <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama Siswa</th>
                             <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
-                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#edf2f1]">
@@ -115,7 +115,7 @@
                             <th class="p-4 text-[0.85rem] text-[#1a9488] font-bold uppercase tracking-wider">No</th>
                             <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Nama Siswa</th>
                             <th class="hidden md:table-cell p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider">Tanggal</th>
-                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-right">Aksi</th>
+                            <th class="p-4 text-[0.85rem] text-[#888] font-bold uppercase tracking-wider text-center w-[1%] whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#edf2f1]">
@@ -126,8 +126,8 @@
                                 <td class="p-4 text-[0.9rem] font-bold text-[#1a9488]">{{ $offlineNo++ }}</td>
                                 <td class="p-4 text-[0.95rem] font-semibold text-[#1a1a1a]">{{ $item->user->name ?? 'User Unknown' }}</td>
                                 <td class="hidden md:table-cell p-4 text-[0.85rem] text-[#888]">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
-                                <td class="p-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
+                                <td class="p-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
                                         <form action="{{ route('bk.konseling-offline.mulai', $item->id) }}" method="POST" class="inline">
                                             @csrf
                                             <button type="submit" class="min-h-11 px-4 py-2 bg-[#1a9488] text-white text-[0.8rem] font-bold rounded-xl hover:brightness-110 transition-all border-none cursor-pointer">
@@ -170,7 +170,7 @@ $(document).ready(function() {
                 <span class="text-[#888] font-medium text-[0.95rem]">Belum ada sesi konseling.</span>
             </div>`
         },
-        columnDefs: [{ orderable: false, targets: [0, 3] }, { responsivePriority: 1, targets: 1 }],
+        columnDefs: [{ orderable: false, targets: [0, -1] }, { className: 'dt-center', targets: -1 }, { responsivePriority: 1, targets: 1 }],
     };
     $('#sesiOnlineTable').DataTable(dtConfig);
     $('#sesiOfflineTable').DataTable(dtConfig);
