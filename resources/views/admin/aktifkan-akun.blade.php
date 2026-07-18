@@ -30,7 +30,7 @@
         {{-- Username --}}
         <div class="border-[2px] border-[#1a9488] rounded-2xl px-5 py-4 bg-white focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
             <label class="text-[0.75rem] font-bold text-[#1a9488] block mb-1 uppercase tracking-wide">Username</label>
-            <input type="text" name="username" placeholder="Username untuk login" value="{{ old('username', $user->username ?? ($user->nis ?? $user->nip)) }}" required
+            <input type="text" name="username" placeholder="Username untuk login" value="{{ old('username', $user->username ?? ($user->nis ?? $user->nip)) }}" required pattern="[A-Za-z0-9\.]+" title="Hanya kombinasi huruf, angka, dan titik" oninput="this.value = this.value.replace(/[^a-zA-Z0-9\.]/g, '')"
                    class="w-full border-none outline-none text-[1rem] text-[#1a1a1a] placeholder-[#aaa] bg-transparent font-medium"/>
         </div>
 

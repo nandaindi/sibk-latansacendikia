@@ -59,7 +59,7 @@
                         name="username"
                         class="w-full py-[13px] pr-[14px] pl-[42px] border-[1.5px] border-[#e0e0e0] rounded-[10px] text-[0.9rem] font-sans text-[#333] bg-[#fafafa] transition-all duration-250 outline-none focus:border-[#1a9488] focus:shadow-[0_0_0_3px_rgba(26,148,136,0.12)] focus:bg-white @error('username') border-[#e74c3c] @enderror"
                         value="{{ old('username') }}"
-                        placeholder="Masukkan username atau email"
+                        placeholder="John.Doe"
                         required
                         autofocus
                         autocomplete="username"
@@ -85,7 +85,7 @@
                         id="password"
                         name="password"
                         class="w-full py-[13px] pr-[14px] pl-[42px] border-[1.5px] border-[#e0e0e0] rounded-[10px] text-[0.9rem] font-sans text-[#333] bg-[#fafafa] transition-all duration-250 outline-none focus:border-[#1a9488] focus:shadow-[0_0_0_3px_rgba(26,148,136,0.12)] focus:bg-white @error('password') border-[#e74c3c] @enderror"
-                        placeholder="Masukkan password"
+                        placeholder="Password"
                         required
                         autocomplete="current-password"
                     >
