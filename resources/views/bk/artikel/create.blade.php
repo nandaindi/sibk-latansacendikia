@@ -9,6 +9,26 @@
     .ql-toolbar { border-radius: 16px 16px 0 0 !important; border-color: #e5e7eb !important; background: #fafafa; }
     .ql-editor { min-height: 340px; line-height: 1.8; color: #333; padding: 16px 20px; }
     .ql-editor.ql-blank::before { color: #bbb; font-style: normal; }
+
+    /* Fix: Tailwind preflight resets SVG fill/stroke which breaks Quill toolbar icons */
+    #editor-wrapper svg { 
+        display: inline-block !important; 
+        width: 18px !important; 
+        height: 18px !important; 
+        max-width: 18px !important;
+        max-height: 18px !important;
+        vertical-align: middle !important; 
+    }
+    #editor-wrapper .ql-stroke { fill: none !important; stroke: #444 !important; stroke-width: 1.5 !important; }
+    #editor-wrapper .ql-fill { fill: #444 !important; stroke: none !important; }
+    #editor-wrapper .ql-thin { stroke-width: 1 !important; }
+    #editor-wrapper button:hover .ql-stroke,
+    #editor-wrapper button.ql-active .ql-stroke { stroke: #1a9488 !important; }
+    #editor-wrapper button:hover .ql-fill,
+    #editor-wrapper button.ql-active .ql-fill { fill: #1a9488 !important; }
+    #editor-wrapper .ql-picker-label .ql-stroke { stroke: #444 !important; }
+    #editor-wrapper .ql-picker-label:hover .ql-stroke,
+    #editor-wrapper .ql-picker-item:hover { color: #1a9488 !important; }
 </style>
 @endpush
 
@@ -65,7 +85,7 @@
         </div>
 
         {{-- Konten dengan Quill --}}
-        <div>
+        <div id="editor-wrapper">
             <label class="block text-[0.8rem] text-[#555] font-bold mb-2 uppercase tracking-wider">Isi Artikel <span class="text-red-400">*</span></label>
             <div class="border-[2px] border-[#1a9488] rounded-[18px] overflow-hidden bg-white shadow-sm focus-within:shadow-[0_0_0_3px_rgba(26,148,136,0.15)] transition-all">
                 <div id="quill-editor"></div>

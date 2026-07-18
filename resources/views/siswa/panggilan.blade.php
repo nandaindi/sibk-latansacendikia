@@ -57,23 +57,34 @@
             @endphp
 
             @forelse($riwayatPanggilan as $item)
-            <div class="bg-[#f9fafb] rounded-2xl border-l-[5px] border-l-[#94a3b8] border-t border-r border-b border-[#f0f0f0] p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-5 cursor-default transition-all duration-200 shrink-0">
-                <div class="w-14 h-14 rounded-[14px] bg-[#f1f5f9] flex-shrink-0 flex items-center justify-center opacity-60">
-                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            @php
+                $isSelesai = $item->status === 'selesai';
+            @endphp
+            <div class="{{ $isSelesai ? 'bg-white border-l-[#1a9488] shadow-sm' : 'bg-[#f9fafb] border-l-[#94a3b8] opacity-80' }} rounded-2xl border-l-[5px] border-t border-r border-b border-[#f0f0f0] p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-5 cursor-default transition-all duration-200 shrink-0 hover:shadow-md">
+                <div class="w-14 h-14 rounded-[14px] {{ $isSelesai ? 'bg-[#e0f5f3]' : 'bg-[#f1f5f9]' }} flex-shrink-0 flex items-center justify-center">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="{{ $isSelesai ? '#1a9488' : '#64748b' }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.61 19"/>
                         <path d="M14.05 2l5 5M2 2l20 20"/>
                     </svg>
                 </div>
-                <div class="flex-1 w-full md:mr-0 mb-3 md:mb-0 opacity-60">
+                <div class="flex-1 w-full md:mr-0 mb-3 md:mb-0 {{ $isSelesai ? '' : 'opacity-70' }}">
                     <div class="text-[1.1rem] font-bold text-[#1a1a1a] mb-1">Guru BK</div>
                     <div class="text-[0.9rem] text-[#777]">{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }} · {{ $item->waktu ?? '-' }}</div>
                 </div>
-                <div class="flex items-center gap-2 self-start md:self-center">
-                    @if($item->status == 'selesai')
-                        {{-- Untuk pelanggaran, mungkin belum ada file laporan khusus, tampilkan badge saja atau detail --}}
-                        <a href="{{ route('siswa.detail-panggilan', $item->id) }}" class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#1a9488] text-white hover:brightness-105 hover:shadow-md transition-all no-underline">Lihat Detail</a>
+                <div class="flex items-center gap-4 self-start md:self-center">
+                    @if($isSelesai)
+                        <a href="{{ route('siswa.detail-panggilan', $item->id) }}" class="text-[0.85rem] font-bold px-5 py-2 rounded-full bg-[#1a9488] text-white hover:brightness-105 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(26,148,136,0.25)] transition-all no-underline flex items-center gap-2">
+                            Lihat Detail
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                    @else
+                        @php
+                            $statusText = ucwords(str_replace('_', ' ', $item->status));
+                        @endphp
+                        <span class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#f1f5f9] text-[#64748b] border border-[#e2e8f0]">
+                            {{ $statusText }}
+                        </span>
                     @endif
-                    <span class="text-[0.85rem] font-bold px-4 py-1.5 rounded-full bg-[#e0f5f3] text-[#1a9488] border border-[#c7ece8] capitalize">{{ $item->status }}</span>
                 </div>
             </div>
             @empty

@@ -34,7 +34,7 @@
     <!-- DataTables Tailwind & Responsive CSS -->
     <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet">
-    
+    @stack('styles')
 </head>
 <body class="bg-[#f4f6f9] min-h-screen text-[#1a1a1a]">
 
