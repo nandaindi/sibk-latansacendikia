@@ -14,22 +14,17 @@ class TandaiJadwalKadaluarsa extends Command
 
     public function handle(): void
     {
-        // Konseling disetujui yang sudah lewat 2 jam → tidak_hadir
-        Konseling::where('status', 'disetujui')->get()->each(function ($sesi) {
-            $jadwal = Carbon::parse($sesi->tanggal.' '.($sesi->waktu ?? '23:59'))->addHours(2);
-            if (now()->greaterThan($jadwal)) {
-                $sesi->update(['status' => 'tidak_hadir']);
-            }
-        });
+        $now = Carbon::now();
 
-        // Panggilan (Pelanggaran) menunggu/diterima yang sudah melewati hari-nya → tidak_hadir
-        Pelanggaran::whereIn('status', ['menunggu', 'diterima'])->get()->each(function ($panggilan) {
-            $jadwal = Carbon::parse($panggilan->tanggal.' '.($panggilan->waktu ?? '23:59'))->addDay();
-            if (now()->greaterThan($jadwal)) {
-                $panggilan->update(['status' => 'tidak_hadir']);
-            }
-        });
+        // ponytail: bulk whereRaw beats ->get()->each() — no PHP loop, single query
+        $konseling = Konseling::where('status', 'disetujui')
+            ->whereRaw("TIMESTAMP(tanggal, IFNULL(waktu, '23:59')) < ?", [$now->subHours(2)])
+            ->update(['status' => 'tidak_hadir']);
 
-        $this->info('Selesai: jadwal kadaluarsa sudah ditandai.');
+        $panggilan = Pelanggaran::whereIn('status', ['menunggu', 'diterima'])
+            ->whereRaw("TIMESTAMP(tanggal, IFNULL(waktu, '23:59')) < ?", [$now->subDay()])
+            ->update(['status' => 'tidak_hadir']);
+
+        $this->info("Selesai: {$konseling} konseling, {$panggilan} panggilan ditandai tidak_hadir.");
     }
 }

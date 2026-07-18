@@ -233,16 +233,15 @@
 
 </div>
 
-{{-- Area cetak – disiapkan statis dan hanya muncul saat window.print() --}}
-<div id="printArea">
-    <div class="pr-header-kop" style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px;">
-        <div style="font-size: 14pt; font-weight: bold; font-family: 'Times New Roman', Times, serif;">SMAIT LATANSA CENDEKIA</div>
-        <div style="font-size: 10pt; font-family: 'Times New Roman', Times, serif;">Telp: 021-59319100, Email: humas.smaitlc@gmail.com</div>
-        <div style="font-size: 10pt; font-family: 'Times New Roman', Times, serif;">Website: sma.latansacendekia.sch.id</div>
+<div id="printArea" style="display: none;">
+    <div style="text-align: center; margin-bottom: 25px; border-bottom: 3px solid black; padding-bottom: 15px;">
+        <div style="font-size: 16pt; font-weight: bold; font-family: 'Times New Roman', Times, serif; letter-spacing: 1px;">SMAIT LATANSA CENDEKIA</div>
+        <div style="font-size: 11pt; font-family: 'Times New Roman', Times, serif; margin-top: 4px;">Telp: 021-59319100, Email: humas.smaitlc@gmail.com</div>
+        <div style="font-size: 11pt; font-family: 'Times New Roman', Times, serif;">Website: sma.latansacendekia.sch.id</div>
     </div>
 
-    <div class="pr-report-title" style="text-align: center; margin-bottom: 30px; font-family: 'Times New Roman', Times, serif;">
-        <div style="font-size: 12pt; font-weight: bold; text-transform: uppercase;">{{ strtoupper($laporan->nama_laporan ?? 'LAPORAN PELAKSANAAN LAYANAN KONSELING') }}</div>
+    <div style="text-align: center; margin-bottom: 35px; font-family: 'Times New Roman', Times, serif;">
+        <div style="font-size: 14pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; margin-bottom: 5px;">{{ strtoupper($laporan->nama_laporan ?? 'LAPORAN PELAKSANAAN LAYANAN KONSELING') }}</div>
         @php
             $tanggalLap = \Carbon\Carbon::parse($laporan->tanggal ?? now());
             $bulan = $tanggalLap->month;
@@ -253,34 +252,34 @@
         <div style="font-size: 12pt; font-weight: bold; text-transform: uppercase;">SEMESTER {{ $semester }} TAHUN AJARAN {{ $tahunAjaran }}</div>
     </div>
 
-    <table style="width: 100%; font-size: 11pt; margin-bottom: 20px; border-collapse: collapse; font-family: 'Times New Roman', Times, serif;">
+    <table style="width: 100%; font-size: 12pt; margin-bottom: 25px; border-collapse: collapse; font-family: 'Times New Roman', Times, serif;">
         <tr>
-            <td style="width: 4%; vertical-align: top; padding-bottom: 5px;">1.</td>
-            <td style="width: 26%; vertical-align: top; padding-bottom: 5px;">Nama Konseli</td>
-            <td style="width: 3%; vertical-align: top; padding-bottom: 5px;">:</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">
+            <td style="width: 5%; vertical-align: top; padding: 6px 0;">1.</td>
+            <td style="width: 25%; vertical-align: top; padding: 6px 0;">Nama Konseli</td>
+            <td style="width: 3%; vertical-align: top; padding: 6px 0;">:</td>
+            <td style="width: 67%; vertical-align: top; padding: 6px 0; font-weight: bold;">
                 @php $konseliNames = $items->map(fn($item) => $item->user->name)->unique()->implode(', '); @endphp
                 {{ $konseliNames ?: '-' }}
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-bottom: 5px;">2.</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">Kelas</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">
+            <td style="vertical-align: top; padding: 6px 0;">2.</td>
+            <td style="vertical-align: top; padding: 6px 0;">Kelas</td>
+            <td style="vertical-align: top; padding: 6px 0;">:</td>
+            <td style="vertical-align: top; padding: 6px 0;">
                 @php 
                     $kelasNames = $items->map(function($item) {
-                        return $item->user->kelas->nama_kelas ?? '-';
+                        return $item->user->kelas ?? '-';
                     })->filter(fn($val) => $val !== '-')->unique()->implode(', ');
                 @endphp
                 {{ $kelasNames ?: '-' }}
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-bottom: 5px;">3.</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">Hari, Tanggal</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">
+            <td style="vertical-align: top; padding: 6px 0;">3.</td>
+            <td style="vertical-align: top; padding: 6px 0;">Hari, Tanggal</td>
+            <td style="vertical-align: top; padding: 6px 0;">:</td>
+            <td style="vertical-align: top; padding: 6px 0;">
                 @php 
                     $firstItem = $items->first();
                     $dateStr = $firstItem ? \Carbon\Carbon::parse($firstItem->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') : '-';
@@ -289,10 +288,10 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-bottom: 5px;">4.</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">Pertemuan Ke</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">
+            <td style="vertical-align: top; padding: 6px 0;">4.</td>
+            <td style="vertical-align: top; padding: 6px 0;">Pertemuan Ke</td>
+            <td style="vertical-align: top; padding: 6px 0;">:</td>
+            <td style="vertical-align: top; padding: 6px 0;">
                 @php 
                     $pertemuanKe = '-';
                     if($firstItem) {
@@ -306,18 +305,18 @@
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-bottom: 5px;">5.</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">Waktu</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">
+            <td style="vertical-align: top; padding: 6px 0;">5.</td>
+            <td style="vertical-align: top; padding: 6px 0;">Waktu</td>
+            <td style="vertical-align: top; padding: 6px 0;">:</td>
+            <td style="vertical-align: top; padding: 6px 0;">
                  {{ $firstItem && $firstItem->waktu ? \Carbon\Carbon::parse($firstItem->waktu)->format('H:i') : '-' }} WIB
             </td>
         </tr>
         <tr>
-            <td style="vertical-align: top; padding-bottom: 5px;">6.</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">Tempat</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">:</td>
-            <td style="vertical-align: top; padding-bottom: 5px;">
+            <td style="vertical-align: top; padding: 6px 0;">6.</td>
+            <td style="vertical-align: top; padding: 6px 0;">Tempat</td>
+            <td style="vertical-align: top; padding: 6px 0;">:</td>
+            <td style="vertical-align: top; padding: 6px 0;">
                 @if($firstItem)
                     {{ $firstItem->jenis === 'online' ? ($firstItem->link_meet ?? 'Online') : 'Ruang BK' }}
                 @else
@@ -339,89 +338,90 @@
             
             @if($problem)
             <tr>
-                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;">{{ $counter++ }}.</td>
-                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;" colspan="3">
-                    Deskripsi Permasalahan :<br>
-                    <div style="margin-top: 5px;">{!! nl2br(e($problem)) !!}</div>
+                <td style="vertical-align: top; padding: 12px 0 6px 0;">{{ $counter++ }}.</td>
+                <td style="vertical-align: top; padding: 12px 0 6px 0;" colspan="3">
+                    <span style="font-weight: bold;">Deskripsi Permasalahan :</span><br>
+                    <div style="margin-top: 8px; text-align: justify; line-height: 1.6;">{!! nl2br(e($problem)) !!}</div>
                 </td>
             </tr>
             @endif
 
             @if($solution)
             <tr>
-                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;">{{ $counter++ }}.</td>
-                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;" colspan="3">
-                    Solusi dan Tindakan :<br>
-                    <div style="margin-top: 5px;">{!! nl2br(e($solution)) !!}</div>
+                <td style="vertical-align: top; padding: 12px 0 6px 0;">{{ $counter++ }}.</td>
+                <td style="vertical-align: top; padding: 12px 0 6px 0;" colspan="3">
+                    <span style="font-weight: bold;">Solusi dan Tindakan :</span><br>
+                    <div style="margin-top: 8px; text-align: justify; line-height: 1.6;">{!! nl2br(e($solution)) !!}</div>
                 </td>
             </tr>
             @endif
 
             @if($additional)
             <tr>
-                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;">{{ $counter++ }}.</td>
-                <td style="vertical-align: top; padding-bottom: 5px; padding-top: 10px;" colspan="3">
-                    Catatan Tambahan :<br>
-                    <div style="margin-top: 5px;">{!! nl2br(e($additional)) !!}</div>
+                <td style="vertical-align: top; padding: 12px 0 6px 0;">{{ $counter++ }}.</td>
+                <td style="vertical-align: top; padding: 12px 0 6px 0;" colspan="3">
+                    <span style="font-weight: bold;">Catatan Tambahan :</span><br>
+                    <div style="margin-top: 8px; text-align: justify; line-height: 1.6;">{!! nl2br(e($additional)) !!}</div>
                 </td>
             </tr>
             @endif
         @empty
             <tr>
-                <td colspan="4" style="font-style: italic; padding-top: 10px;">Belum ada sesi pada laporan ini.</td>
+                <td colspan="4" style="font-style: italic; padding-top: 15px;">Belum ada sesi pada laporan ini.</td>
             </tr>
         @endforelse
     </table>
 
-    <table style="width: 100%; margin-top: 50px; font-size: 11pt; font-family: 'Times New Roman', Times, serif; text-align: left; margin-bottom: 40px;">
+    <table style="width: 100%; margin-top: 60px; font-size: 12pt; font-family: 'Times New Roman', Times, serif; text-align: center; border-collapse: collapse;">
         <tr>
-            <td style="width: 50%; padding-left: 10px;">
+            <td style="width: 50%; vertical-align: top;">
                 Mengetahui,<br>
-                Kepala Sekolah<br><br><br><br><br>
-                <strong>Louly Risdianty, S.P., S.Pd</strong>
+                Kepala Sekolah
+                <br><br><br><br><br><br>
+                <span style="font-weight: bold; text-decoration: underline;">Louly Risdianty, S.P., S.Pd</span>
             </td>
-            <td style="width: 50%; padding-left: 10px;">
+            <td style="width: 50%; vertical-align: top;">
                 Tangerang, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY') }}<br>
-                Guru Bimbingan Konseling<br><br><br><br><br>
-                <strong>{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</strong>
+                Guru Bimbingan Konseling
+                <br><br><br><br><br><br>
+                <span style="font-weight: bold; text-decoration: underline;">{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</span>
             </td>
         </tr>
     </table>
 
-    <div style="border-top: 1px solid black; padding-top: 5px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: space-between; align-items: flex-start;">
+    <div style="border-top: 2px solid black; margin-top: 50px; padding-top: 10px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-            <div style="font-style: italic; margin-bottom: 2px;">Keterangan: Dokumen Ini Bersifat Rahasia</div>
-            <div>SMAIT LATANSA CENDEKIA</div>
+            <div style="font-style: italic; margin-bottom: 4px;">Keterangan: Dokumen Ini Bersifat Rahasia</div>
+            <div style="font-weight: bold;">SMAIT LATANSA CENDEKIA</div>
             <div>{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</div>
         </div>
-        <div>
-            https://gurubkkonselor.com
+        <div style="text-align: right; color: #555;">
+            https://sma.latansacendekia.sch.id
         </div>
     </div>
 </div>
 
-<div id="printFeedbackArea">
-    <div style="text-align: center; font-family: 'Times New Roman', Times, serif; line-height: 1.3;">
-        <div style="font-size: 14pt;">SMAIT LATANSA CENDEKIA BANTEN</div>
-        <div style="font-size: 10pt;">Telp: 021-59319109, Email: humas.smaitlc@gmail.com</div>
-        <div style="font-size: 10pt;">Website: sma.latansacendekia.sch.id</div>
+<div id="printFeedbackArea" style="display: none;">
+    <div style="text-align: center; margin-bottom: 25px; border-bottom: 3px solid black; padding-bottom: 15px;">
+        <div style="font-size: 16pt; font-weight: bold; font-family: 'Times New Roman', Times, serif; letter-spacing: 1px;">SMAIT LATANSA CENDEKIA</div>
+        <div style="font-size: 11pt; font-family: 'Times New Roman', Times, serif; margin-top: 4px;">Telp: 021-59319100, Email: humas.smaitlc@gmail.com</div>
+        <div style="font-size: 11pt; font-family: 'Times New Roman', Times, serif;">Website: sma.latansacendekia.sch.id</div>
     </div>
-    <div style="border-bottom: 2px solid black; margin-top: 10px; margin-bottom: 20px;"></div>
     
-    <div style="text-align: center; font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 12pt; margin-bottom: 30px;">
+    <div style="text-align: center; font-family: 'Times New Roman', Times, serif; font-weight: bold; font-size: 14pt; margin-bottom: 35px; text-decoration: underline;">
         KEPUASAN KONSELI TERHADAP PROSES KONSELING INDIVIDUAL
     </div>
 
-    <table style="width: 100%; font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 20px;" border="0" cellspacing="0" cellpadding="2">
+    <table style="width: 100%; font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin-bottom: 25px;" border="0" cellspacing="0" cellpadding="2">
         <tr>
-            <td style="width: 130px;">Identitas</td>
-            <td style="width: 10px;">:</td>
-            <td></td>
+            <td style="width: 20%; padding: 6px 0; font-weight: bold;">Identitas</td>
+            <td style="width: 3%; padding: 6px 0;"></td>
+            <td style="width: 77%; padding: 6px 0;"></td>
         </tr>
         <tr>
-            <td>Nama Konseli</td>
-            <td>:</td>
-            <td style="border-bottom: 1.5px dashed #000; padding-left: 5px; font-style: italic;">
+            <td style="padding: 6px 0 6px 15px;">Nama Konseli</td>
+            <td style="padding: 6px 0;">:</td>
+            <td style="padding: 6px 0; font-weight: bold;">
                 @php 
                     $studentNames = $items->map(function($item) {
                         return $item->user->name ?? '';
@@ -431,32 +431,40 @@
             </td>
         </tr>
         <tr>
-            <td>Nama Konselor</td>
-            <td>:</td>
-            <td style="border-bottom: 1.5px dashed #000; padding-left: 5px; font-style: italic;">{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</td>
+            <td style="padding: 6px 0 6px 15px;">Nama Konselor</td>
+            <td style="padding: 6px 0;">:</td>
+            <td style="padding: 6px 0;">{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</td>
         </tr>
     </table>
 
-    <div style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 15px;">
+    <div style="font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 15px; font-style: italic;">
         Petunjuk :<br>
-        Bacalah secara teliti, Berilah tanda centang pada kolom jawaban yang tersedia
+        Bacalah secara teliti, Berilah tanda centang (✓) pada kolom jawaban yang tersedia
     </div>
 
     <style>
         @media print {
-            .feedback-table, .feedback-table th, .feedback-table td {
+            .feedback-table {
+                border-collapse: collapse !important;
+            }
+            .feedback-table th, .feedback-table td {
                 border: 1px solid black !important;
+            }
+            .feedback-table thead th {
+                background-color: #f3f4f6 !important; /* light gray for header */
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
             }
         }
     </style>
     <table class="feedback-table" style="width: 100%; border-collapse: collapse; font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 60px; text-align: center; border: 1px solid black;">
-        <thead style="font-weight: bold;">
-            <tr>
-                <td style="padding: 12px 5px; width: 6%; border: 1px solid black;">No</td>
-                <td style="padding: 12px 5px; width: 46%; border: 1px solid black;">Aspek yang dinilai</td>
-                <td style="padding: 12px 5px; width: 16%; border: 1px solid black;">Sangat<br>Memuaskan</td>
-                <td style="padding: 12px 5px; width: 16%; border: 1px solid black;">Memuaskan</td>
-                <td style="padding: 12px 5px; width: 16%; border: 1px solid black;">Kurang<br>Memuaskan</td>
+        <thead>
+            <tr style="font-weight: bold; background-color: #f3f4f6;">
+                <th style="padding: 15px 5px; width: 6%; border: 1px solid black;">No</th>
+                <th style="padding: 15px 15px; width: 46%; border: 1px solid black; text-align: left;">Aspek yang dinilai</th>
+                <th style="padding: 15px 5px; width: 16%; border: 1px solid black;">Sangat<br>Memuaskan</th>
+                <th style="padding: 15px 5px; width: 16%; border: 1px solid black;">Memuaskan</th>
+                <th style="padding: 15px 5px; width: 16%; border: 1px solid black;">Kurang<br>Memuaskan</th>
             </tr>
         </thead>
         <tbody>
@@ -475,67 +483,47 @@
             @foreach($feedbacks as $aspek => $nilai)
             <tr>
                 <td style="padding: 15px 5px; border: 1px solid black;">{{ $no++ }}</td>
-                <td style="padding: 15px 10px; text-align: left; border: 1px solid black;">{{ $aspek }}</td>
-                <td style="padding: 15px 5px; border: 1px solid black;">
-                    @if($nilai == 'Sangat Memuaskan') <span style="font-size: 16pt;">&#10003;</span> @endif
+                <td style="padding: 15px 15px; text-align: left; border: 1px solid black; line-height: 1.4;">{{ $aspek }}</td>
+                <td style="padding: 15px 5px; border: 1px solid black; font-weight: bold; font-size: 16pt;">
+                    @if($nilai == 'Sangat Memuaskan') &#10003; @endif
                 </td>
-                <td style="padding: 15px 5px; border: 1px solid black;">
-                    @if($nilai == 'Memuaskan') <span style="font-size: 16pt;">&#10003;</span> @endif
+                <td style="padding: 15px 5px; border: 1px solid black; font-weight: bold; font-size: 16pt;">
+                    @if($nilai == 'Memuaskan') &#10003; @endif
                 </td>
-                <td style="padding: 15px 5px; border: 1px solid black;">
-                    @if($nilai == 'Kurang Memuaskan') <span style="font-size: 16pt;">&#10003;</span> @endif
+                <td style="padding: 15px 5px; border: 1px solid black; font-weight: bold; font-size: 16pt;">
+                    @if($nilai == 'Kurang Memuaskan') &#10003; @endif
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 
-    <table style="width: 100%; border: none; font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin-bottom: 50px;">
+    <table style="width: 100%; border: none; font-family: 'Times New Roman', Times, serif; font-size: 12pt; margin-bottom: 50px;">
         <tr>
-            <td style="width: 60%;"></td>
-            <td style="width: 40%; text-align: center;">
-                Peserta didik/Konseli,<br><br><br><br><br>
-                <span style="border-bottom: 1px dotted #000; padding: 0 20px; display: inline-block;">
-                    {{ $studentNames ?: ($laporan->user->name ?? '-') }}
+            <td style="width: 50%;"></td>
+            <td style="width: 50%; text-align: center;">
+                Tangerang, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY') }}<br>
+                Peserta Didik / Konseli,
+                <br><br><br><br><br><br>
+                <span style="font-weight: bold; text-decoration: underline; padding: 0 10px;">
+                    {{ $studentNames ?: ($laporan->user->name ?? '_________________________') }}
                 </span>
             </td>
         </tr>
     </table>
 
-    <div style="border-top: 1px solid black; padding-top: 5px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: space-between; align-items: flex-start;">
+    <div style="border-top: 2px solid black; padding-top: 10px; font-size: 10pt; font-family: 'Times New Roman', Times, serif; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-            <div style="font-style: italic; margin-bottom: 2px;">Keterangan: Dokumen Ini Bersifat Rahasia</div>
-            <div>SMAIT LATANSA CENDEKIA BANTEN</div>
+            <div style="font-style: italic; margin-bottom: 4px;">Keterangan: Dokumen Ini Bersifat Rahasia</div>
+            <div style="font-weight: bold;">SMAIT LATANSA CENDEKIA</div>
             <div>{{ $laporan->author->name ?? 'Eni Kustiyorini' }}</div>
         </div>
-        <div>
-            https://gurubkkonselor.com
+        <div style="text-align: right; color: #555;">
+            https://sma.latansacendekia.sch.id
         </div>
     </div>
 </div>
 @endsection
-
-@push('styles')
-<style>
-    /* Sembunyikan printArea saat normal */
-    #printArea, #printFeedbackArea { display: none; }
-    
-    @media print {
-        /* Hide layout elements explicitly */
-        aside, header, nav, .no-print, #app-wrapper { display: none !important; }
-        body { background: white !important; margin: 0; padding: 0; }
-        #printWrap {
-            display: block !important;
-            font-family: 'Times New Roman', Times, serif;
-            padding: 40px;
-            color: black;
-            width: 100%;
-            background: white;
-            line-height: 1.5;
-        }
-    }
-</style>
-@endpush
 
 @push('scripts')
 <script>
@@ -545,8 +533,8 @@
         }
         $('#kepuasanTable').DataTable({
             responsive: true,
-        scrollX: false,
-        autoWidth: false,
+            scrollX: false,
+            autoWidth: false,
             paging: false,
             searching: false,
             info: false,
@@ -559,74 +547,47 @@
         });
     });
 
+    function printHtmlContent(htmlContent, title) {
+        // Buat iframe tersembunyi
+        let iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.width = '0px';
+        iframe.style.height = '0px';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
+        
+        let doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write('<!DOCTYPE html>');
+        doc.write('<html><head><title>' + title + '</title>');
+        doc.write('<style>');
+        doc.write('@page { size: A4 portrait; margin: 20mm; }');
+        doc.write('body { font-family: "Times New Roman", Times, serif; margin: 0; padding: 0; color: black; background: white; }');
+        doc.write('</style>');
+        doc.write('</head><body>');
+        doc.write(htmlContent);
+        doc.write('</body></html>');
+        doc.close();
+        
+        // Beri waktu sejenak agar iframe dirender sebelum diprint
+        setTimeout(() => {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+            // Hapus iframe setelah dialog print muncul/ditutup
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 2000);
+        }, 500);
+    }
+
     function cetakLaporan() {
-        // Hide original body children
-        const children = Array.from(document.body.children);
-        children.forEach(child => {
-            if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
-                child.dataset.originalDisplay = child.style.display;
-                child.style.display = 'none';
-            }
-        });
-        
-        // Create or get print container
-        let printWrap = document.getElementById('printWrap');
-        if(!printWrap) {
-            printWrap = document.createElement('div');
-            printWrap.id = 'printWrap';
-            document.body.appendChild(printWrap);
-        }
-        
-        // Assign content
-        printWrap.innerHTML = document.getElementById('printArea').innerHTML;
-        printWrap.style.display = 'block';
-        
-        // Print
-        window.print();
-        
-        // Restore
-        printWrap.style.display = 'none';
-        printWrap.innerHTML = '';
-        children.forEach(child => {
-            if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
-                child.style.display = child.dataset.originalDisplay || '';
-            }
-        });
+        let content = document.getElementById('printArea').innerHTML;
+        printHtmlContent(content, 'Cetak Laporan Konseling');
     }
 
     function cetakFeedback() {
-        // Hide original body children
-        const children = Array.from(document.body.children);
-        children.forEach(child => {
-            if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
-                child.dataset.originalDisplay = child.style.display;
-                child.style.display = 'none';
-            }
-        });
-        
-        // Create or get print container
-        let printWrap = document.getElementById('printWrap');
-        if(!printWrap) {
-            printWrap = document.createElement('div');
-            printWrap.id = 'printWrap';
-            document.body.appendChild(printWrap);
-        }
-        
-        // Assign content
-        printWrap.innerHTML = document.getElementById('printFeedbackArea').innerHTML;
-        printWrap.style.display = 'block';
-        
-        // Print
-        window.print();
-        
-        // Restore
-        printWrap.style.display = 'none';
-        printWrap.innerHTML = '';
-        children.forEach(child => {
-            if(child.tagName !== 'SCRIPT' && child.id !== 'printWrap') {
-                child.style.display = child.dataset.originalDisplay || '';
-            }
-        });
+        let content = document.getElementById('printFeedbackArea').innerHTML;
+        printHtmlContent(content, 'Cetak Kepuasan Konseli');
     }
 </script>
 @endpush

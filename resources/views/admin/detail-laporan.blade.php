@@ -85,9 +85,9 @@
     
     <div class="pr-section">
         <h2>Informasi Laporan</h2>
-        <div class="pr-field"><label>Nama</label><span>: {{ $laporan->nama_laporan }}</span></div>
-        <div class="pr-field"><label>Autor</label><span>: {{ $laporan->author->name ?? 'Admin / BK' }}</span></div>
-        <div class="pr-field"><label>Tanggal Buat</label><span>: {{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span></div>
+        <div class="pr-field"><label>Nama Laporan</label><span>: {{ preg_replace('/ \([^)]+\)$/', '', $laporan->nama_laporan) }}</span></div>
+        <div class="pr-field"><label>Disusun Oleh</label><span>: {{ $laporan->author->name ?? 'Admin / BK' }}</span></div>
+        <div class="pr-field"><label>Tanggal Laporan</label><span>: {{ \Carbon\Carbon::parse($laporan->tanggal)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span></div>
     </div>
 
     <div class="pr-section">
@@ -95,10 +95,10 @@
         <div class="pr-log-container">
             @forelse($items as $index => $item)
             <div class="pr-log-item">
-                <div class="pr-log-title">
-                    Sesi: {{ $item->user->name ?? '-' }}
+                <div class="pr-log-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 1.05em;">{{ $item->user->name ?? '-' }}</span>
                     <span style="font-weight:normal; font-size:0.85em; color:#555;">
-                        ({{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('D MMMM YYYY') }} - {{ ucfirst($item->jenis) }})
+                        {{ \Carbon\Carbon::parse($item->tanggal)->locale('id')->isoFormat('D MMMM YYYY') }} &bull; Sesi {{ ucfirst($item->jenis) }}
                     </span>
                 </div>
                 <div class="pr-log-content">

@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\Admin;
-use App\Models\Bk;
-use App\Models\Siswa;
 use App\Models\User;
 
 return [
@@ -17,39 +14,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-        'bk' => [
-            'driver' => 'session',
-            'provider' => 'bks',
-        ],
-        'siswa' => [
-            'driver' => 'session',
-            'provider' => 'siswas',
-        ],
     ],
 
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
-        ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => Admin::class,
-        ],
-
-        'bks' => [
-            'driver' => 'eloquent',
-            'model' => Bk::class,
-        ],
-
-        'siswas' => [
-            'driver' => 'eloquent',
-            'model' => Siswa::class,
         ],
     ],
 

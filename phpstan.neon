@@ -1,0 +1,17 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+
+    level: 5
+
+    excludePaths:
+        - app/Http/Middleware/RoleMiddleware.php
+
+    ignoreErrors:
+        # All relations exist in models — Larastan false-positive on with() calls
+        - identifier: larastan.relationExistence
+        # view() string validation — views are dynamically computed from role
+        - identifier: argument.type

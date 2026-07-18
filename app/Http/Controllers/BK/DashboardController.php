@@ -367,8 +367,10 @@ class DashboardController extends Controller
 
     private function buatLaporan(Konseling $konseling): void
     {
+        $jenisProblem = ucfirst($konseling->problem_type ?? 'Umum');
+        
         Laporan::firstOrCreate(['konseling_id' => $konseling->id], [
-            'nama_laporan' => 'Laporan Konseling: '.$konseling->user->name,
+            'nama_laporan' => "Laporan Konseling {$jenisProblem} - {$konseling->user->name}",
             'author_id'    => auth()->id(),
             'user_id'      => $konseling->user_id,
             'konseling_id' => $konseling->id,
