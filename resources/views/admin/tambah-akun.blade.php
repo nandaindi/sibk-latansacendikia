@@ -109,7 +109,10 @@ function hideConfirmModal() {
     document.getElementById('confirmModal').classList.remove('flex');
 }
 
+let isSubmitting = false;
 function submitForm() {
+    if (isSubmitting) return;
+    isSubmitting = true;
     document.getElementById('tambahAkunForm').submit();
 }
 </script>

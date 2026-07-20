@@ -207,7 +207,10 @@ function hideConfirmModal() {
     document.getElementById('confirmModal').classList.add('hidden');
     document.getElementById('confirmModal').classList.remove('flex');
 }
+let isSubmitting = false;
 function submitForm() {
+    if (isSubmitting) return;
+    isSubmitting = true;
     document.getElementById('tambahSiswaForm').submit();
 }
 </script>
